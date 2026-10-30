@@ -13,6 +13,7 @@
 //! `--wayland-notice` previews the native file drag-and-drop guidance shown in Wayland sessions.
 //! `--update-notice` previews a newer release without contacting the network.
 //! `--custom-titlebar` draws the Windows/Linux title bar (caption buttons in the top bar).
+//! `--system-font-warmup` lets the existing lazy system-font fallback load before strict glyph checks.
 //!
 //! `--monitor 1366x768 --window-top 31` simulates the display the window is on (in points) and
 //! where its content starts on it, e.g. a window running under a Windows taskbar.
@@ -38,6 +39,7 @@ fn main() {
         .and_then(|s| s.split_once('x').and_then(|(a, b)| Some((a.parse::<f32>().ok()?, b.parse::<f32>().ok()?))))
         .unwrap_or((1440.0, 900.0));
     let scale: f32 = arg(&args, "--scale").and_then(|s| s.parse().ok()).unwrap_or(2.0);
+    let system_font_warmup = args.iter().any(|a| a == "--system-font-warmup");
     let wayland_notice = args.iter().any(|a| a == "--wayland-notice");
     let update_notice = args.iter().any(|a| a == "--update-notice");
     let script: Vec<(String, Value)> =
@@ -73,44 +75,42 @@ fn main() {
     let settle_ms: u64 = arg(&args, "--settle-ms").and_then(|s| s.parse().ok()).unwrap_or(0);
     let mut render_options = eframe::egui_wgpu::RendererOptions::PREDICTABLE;
     render_options.predictable_texture_filtering = !args.iter().any(|a| a == "--hardware-filtering");
-    let mut harness = egui_kittest::Harness::builder()
-        .with_size(egui::vec2(w, h))
-        .with_pixels_per_point(scale)
-        .with_max_steps(64)
-        .with_render_options(render_options)
-        .wgpu()
-        .build_eframe(move |cc| {
-            PhotocraftApp::setup_context(&cc.egui_ctx, Default::default());
-            let mut services = services;
-            services.is_wayland = wayland_notice;
-            services.xwayland_command = wayland_notice.then(|| "WAYLAND_DISPLAY= photocraft".into());
-            let mut app = PhotocraftApp::new(photocraft_engine::Session::new(), services);
-            if update_notice {
-                app.session.updates.status = photocraft_engine::updates_cmds::Status::Available {
-                    release: photocraft_engine::updates_cmds::Release {
-                        version: "99.0.0".into(),
-                        url: "https://github.com/storytold/photocraft/releases/tag/v99.0.0".into(),
-                    },
-                };
+    let harness_builder =
+        egui_kittest::Harness::builder().with_size(egui::vec2(w, h)).with_pixels_per_point(scale).with_max_steps(64).with_render_options(render_options).wgpu();
+    // build_eframe draws its first frame before returning the harness.
+    let harness_builder = if system_font_warmup { harness_builder.allow_missing_glyphs() } else { harness_builder };
+    let mut harness = harness_builder.build_eframe(move |cc| {
+        PhotocraftApp::setup_context(&cc.egui_ctx, Default::default());
+        let mut services = services;
+        services.is_wayland = wayland_notice;
+        services.xwayland_command = wayland_notice.then(|| "WAYLAND_DISPLAY= photocraft".into());
+        let mut app = PhotocraftApp::new(photocraft_engine::Session::new(), services);
+        if update_notice {
+            app.session.updates.status = photocraft_engine::updates_cmds::Status::Available {
+                release: photocraft_engine::updates_cmds::Release {
+                    version: "99.0.0".into(),
+                    url: "https://github.com/storytold/photocraft/releases/tag/v99.0.0".into(),
+                },
+            };
+        }
+        app.background_jobs = background_jobs;
+        app.custom_titlebar = custom_titlebar;
+        // `--safe-gpu`: the CPU canvas, as the desktop app's `--safe-gpu` launch.
+        if safe_gpu {
+            app.perf.gpu_info.selected = "cpu".into();
+            app.perf.gpu_info.canvas = "cpu".into();
+            app.perf.gpu_info.fallback = Some("--safe-gpu: CPU renderer for this launch".into());
+            if let Some(rs) = cc.wgpu_render_state.as_ref() {
+                app.perf.gpu_info.set_adapter(&rs.adapter.get_info());
             }
-            app.background_jobs = background_jobs;
-            app.custom_titlebar = custom_titlebar;
-            // `--safe-gpu`: the CPU canvas, as the desktop app's `--safe-gpu` launch.
-            if safe_gpu {
-                app.perf.gpu_info.selected = "cpu".into();
-                app.perf.gpu_info.canvas = "cpu".into();
-                app.perf.gpu_info.fallback = Some("--safe-gpu: CPU renderer for this launch".into());
-                if let Some(rs) = cc.wgpu_render_state.as_ref() {
-                    app.perf.gpu_info.set_adapter(&rs.adapter.get_info());
-                }
-            } else if let Some(rs) = cc.wgpu_render_state.as_ref() {
-                app.set_wgpu(rs.clone());
-            }
-            if let Some(path) = &open {
-                app.open_path(path).expect("open --open file");
-            }
-            app
-        });
+        } else if let Some(rs) = cc.wgpu_render_state.as_ref() {
+            app.set_wgpu(rs.clone());
+        }
+        if let Some(path) = &open {
+            app.open_path(path).expect("open --open file");
+        }
+        app
+    });
     if let Some((mw, mh)) = arg(&args, "--monitor").and_then(|s| s.split_once('x').and_then(|(a, b)| Some((a.parse::<f32>().ok()?, b.parse::<f32>().ok()?)))) {
         let top: f32 = arg(&args, "--window-top").and_then(|s| s.parse().ok()).unwrap_or(0.0);
         let v = harness.input_mut().viewports.entry(egui::ViewportId::ROOT).or_default();
@@ -177,6 +177,10 @@ fn main() {
     // Let fade animations settle.
     for _ in 0..12 {
         harness.step();
+    }
+    if system_font_warmup {
+        ctx.set_missing_glyph_policy(egui::MissingGlyphPolicy::Panic);
+        harness.run_steps(2);
     }
     let (req, _rx) = ControlRequest::new("ui.inspect", Value::Null);
     if let Outcome::Done(v) = handle(harness.state_mut(), &ctx, &req) {

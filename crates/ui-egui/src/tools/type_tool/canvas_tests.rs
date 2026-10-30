@@ -2253,15 +2253,16 @@ mod multi_layer_formatting {
         // The first style row under the family (so it is in view), other than the defaults'.
         let pick = super::super::styles("Inter").into_iter().find(|s| s != "Regular" && s != "Bold Italic").expect("Inter has several styles");
         assert_ne!(app.ui.tool_options.type_style, pick);
+        // The font search caret keeps requesting repaints; advance bounded frames.
         let mut h = controls(app, true);
         h.get_all_by_role(Role::ComboBox).next().unwrap().click();
-        h.run();
+        h.run_steps(4);
         h.get_all_by_role(Role::TextInput).find(|n| n.is_focused()).expect("the search field has the focus").type_text("Inter");
-        h.run();
+        h.run_steps(4);
         h.get_all_by_label("Show Styles").next().unwrap().click();
-        h.run();
+        h.run_steps(4);
         h.get_by_label(&super::super::style_label(&pick)).click();
-        h.run();
+        h.run_steps(4);
         assert_eq!(h.state().ui.tool_options.type_style, pick, "new type takes the picked style");
         for id in &ids[..2] {
             assert_eq!(style(h.state(), *id, 0).font_style, pick, "the selected layers are set in it");

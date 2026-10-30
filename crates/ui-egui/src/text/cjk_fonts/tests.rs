@@ -1894,6 +1894,34 @@ fn ui_works_without_craft_fonts() {
     }
 }
 
+/// System-only builds must resolve a missing glyph before the strict first frame finishes.
+#[test]
+fn system_only_provider_draws_the_first_strict_frame() {
+    let ctx = egui::Context::default();
+    ctx.set_missing_glyph_policy(egui::MissingGlyphPolicy::Panic);
+    crate::theme::install_fonts_with(
+        &ctx,
+        Sources {
+            locale: || Some("zh-hant".into()),
+            files: |_| vec![fake("hant.ttf")],
+            last_resort: Vec::new,
+            pending: || false,
+            scripts: no_script_files,
+            covers: scripts::covering_face,
+            embedded: no_embedded,
+            eager_craft_fonts: true,
+        },
+    );
+    ctx.run_ui(Default::default(), |ui| {
+        ui.label("龍");
+        ui.monospace("龍");
+    })
+    .textures_delta
+    .clear();
+    let discovered = ctx.fonts(|fonts| fonts.discovered_fonts().to_vec());
+    assert!(discovered.iter().any(|font| font.name.starts_with("craft-system-")));
+}
+
 /// With the real system fonts, every CJK sample renders (skipped per script when the
 /// machine has no font for it, e.g. CI Linux without Noto CJK).
 #[test]

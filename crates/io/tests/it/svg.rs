@@ -380,8 +380,26 @@ fn an_embedded_svg_gets_only_the_nesting_depth_the_drawing_left() {
             let r = open(&embed(svg::MAX_XML_DEPTH - 1, svg::MAX_XML_DEPTH - 1));
             assert!(px(&r.document, 4, 4)[3] < 0.01, "{:?}", px(&r.document, 4, 4));
             // Within the shared budget the embedded drawing renders (its rect is black).
-            let r = open(&embed(250, 250));
+            let r = open(&embed(svg::MAX_XML_DEPTH / 4, svg::MAX_XML_DEPTH / 4));
             assert!(close(px(&r.document, 4, 4), [0.0, 0.0, 0.0, 1.0]), "{:?}", px(&r.document, 4, 4));
+        })
+        .unwrap()
+        .join()
+        .unwrap();
+}
+
+/// This fixed input aborted MSVC release tests with the old 512-level budget. Do not raise the
+/// worker stack: deeply nested untrusted drawings must fail before recursive parsing begins.
+#[test]
+fn old_512_level_embedded_svg_is_rejected_on_a_small_stack() {
+    let url = base64_data_url("image/svg+xml", nested(511).as_bytes());
+    let xml = format!("<svg {NS} width=\"8\" height=\"8\">{}<image width=\"8\" height=\"8\" href=\"{url}\"/>{}</svg>", "<g>".repeat(511), "</g>".repeat(511),);
+    std::thread::Builder::new()
+        .name("svg-depth-regression".into())
+        .stack_size(1 << 20)
+        .spawn(move || {
+            let result = import("deep-embedded.svg", xml.as_bytes());
+            assert!(matches!(result, Err(IoError::Svg(message)) if message.contains(&svg::MAX_XML_DEPTH.to_string())));
         })
         .unwrap()
         .join()

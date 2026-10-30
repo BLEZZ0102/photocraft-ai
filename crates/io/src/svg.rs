@@ -106,9 +106,10 @@ const MAX_NODES: usize = 2_000;
 /// Nesting past which a subtree is rasterised instead of walked (bounded recursion).
 const MAX_RECURSION: usize = 200;
 /// Deepest element nesting accepted. The XML parser recurses once per level, so a file nested
-/// a few thousand deep (70 KB of `<g>`) overflows a 2 MB thread stack, an abort no guard can
-/// catch; real drawings stay under a hundred levels.
-pub const MAX_XML_DEPTH: usize = 512;
+/// 512 levels can overflow a 1 MB thread in MSVC release builds, even when an embedded drawing
+/// shares the budget. Reject deeper input before usvg's recursive parser; real drawings stay
+/// under a hundred levels. The budget applies equally to outer and embedded XML.
+pub const MAX_XML_DEPTH: usize = 128;
 /// Largest `.svgz` accepted once inflated (a 1.5 MB gzip can hold 1.5 GB of whitespace).
 pub const MAX_INFLATED_BYTES: u64 = 128 << 20;
 

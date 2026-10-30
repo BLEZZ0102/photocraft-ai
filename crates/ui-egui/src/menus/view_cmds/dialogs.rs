@@ -58,6 +58,12 @@ fn open_exr_parts_dialog(app: &mut PhotocraftApp) -> Option<Result<Value, String
 }
 
 pub(super) fn form(app: &mut PhotocraftApp, command: &str, label: &str, fields: Value, choices: Value) -> u64 {
+    if command == "edit.ai.codex" {
+        if let Some(dialog) = app.ui.dialogs.iter().find(|dialog| crate::ai_account_ui::owns(&dialog.fields)) {
+            return dialog.id;
+        }
+        crate::ai_account_ui::opened(app);
+    }
     let mut f = Map::new();
     f.insert("__command".into(), json!(command));
     f.insert("__label".into(), json!(label));

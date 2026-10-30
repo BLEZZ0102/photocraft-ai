@@ -1,7 +1,7 @@
 //! Newline-delimited JSON-RPC over the installed Codex runtime's stdio transport.
 use std::collections::VecDeque;
 use std::io::{BufRead, BufReader, Read, Write};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::{Child, ChildStdin, Command, Stdio};
 use std::sync::mpsc::{self, Receiver};
 use std::time::{Duration, Instant};
@@ -10,6 +10,10 @@ use serde_json::{Value, json};
 
 use crate::{EditRequest, EditResult, Error, ImageProvider};
 
+mod account;
+pub use account::{AccountInfo, AccountService, valid_login_url};
+
+#[derive(Clone)]
 pub struct CodexProvider {
     /// Point at the executable inside the COMPLETE desktop runtime; do not copy it out.
     pub executable: PathBuf,
@@ -41,28 +45,25 @@ impl Drop for Server {
 }
 
 impl Rpc {
-    fn start(provider: &CodexProvider, request: &EditRequest<'_>) -> Result<Self, Error> {
+    fn start(provider: &CodexProvider, workspace: &Path, chatgpt_only: bool) -> Result<Self, Error> {
         let deadline = Instant::now().checked_add(provider.timeout).ok_or_else(|| Error::Provider("Invalid Codex timeout".into()))?;
         let mut cmd = Command::new(&provider.executable);
-        cmd.args([
-            "app-server",
-            "--stdio",
-            "-c",
-            "forced_login_method=\"chatgpt\"",
-            "-c",
-            "model_provider=\"openai\"",
-            "-c",
-            "features.shell_tool=false",
-            "-c",
-            "web_search=\"disabled\"",
-        ])
-        .current_dir(request.workspace)
-        .env_remove("OPENAI_API_KEY")
-        .env_remove("OPENAI_BASE_URL")
-        .env_remove("CODEX_API_KEY")
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null());
+        cmd.args(["app-server", "--stdio", "-c", "model_provider=\"openai\"", "-c", "features.shell_tool=false", "-c", "web_search=\"disabled\""])
+            .current_dir(workspace)
+            .env_remove("OPENAI_API_KEY")
+            .env_remove("OPENAI_BASE_URL")
+            .env_remove("CODEX_API_KEY")
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null());
+        if chatgpt_only {
+            cmd.args(["-c", "forced_login_method=\"chatgpt\""]);
+        }
+        // An explicit profile is shared by authentication and edits, and never changes the
+        // desktop app's normal login. File storage prevents an isolated test using its keyring.
+        if let Some(home) = std::env::var_os("PHOTOCRAFT_CODEX_HOME") {
+            cmd.env("CODEX_HOME", home).args(["-c", "cli_auth_credentials_store=\"file\""]);
+        }
         #[cfg(windows)]
         {
             use std::os::windows::process::CommandExt;
@@ -164,7 +165,7 @@ impl Rpc {
 
 fn chatgpt_account(value: &Value) -> Result<(), Error> {
     if value.pointer("/account/type").and_then(Value::as_str) != Some("chatgpt") {
-        return Err(Error::Provider("Sign in to the installed Codex app with ChatGPT first. PhotoCraft will not use API-key billing.".into()));
+        return Err(Error::Provider("Sign in with ChatGPT from AI Edit or the installed Codex app. PhotoCraft will not use API-key billing.".into()));
     }
     Ok(())
 }
@@ -185,7 +186,7 @@ impl ImageProvider for CodexProvider {
         if cancelled() {
             return Err(Error::Cancelled);
         }
-        let mut rpc = Rpc::start(self, request)?;
+        let mut rpc = Rpc::start(self, request.workspace, true)?;
         rpc.request(
             1,
             "initialize",
@@ -193,7 +194,11 @@ impl ImageProvider for CodexProvider {
             cancelled,
         )?;
         rpc.send(json!({"method":"initialized"}))?;
-        chatgpt_account(&rpc.request(2, "account/read", json!({"refreshToken":false}), cancelled)?)?;
+        let account = rpc.request(2, "account/read", json!({"refreshToken":true}), cancelled).map_err(|error| match error {
+            Error::Cancelled | Error::Timeout => error,
+            _ => Error::Provider("Could not verify ChatGPT sign-in. Check the connection or sign in again from AI Edit; no layer was added.".into()),
+        })?;
+        chatgpt_account(&account)?;
         let start = rpc.request(3, "thread/start", json!({
             "cwd":request.workspace,"ephemeral":true,"modelProvider":"openai","approvalPolicy":"untrusted","sandbox":"workspace-write",
             "baseInstructions":"You are PhotoCraft's image editor. Use the native image generation tool to EDIT the supplied image. Do not use shell, code, web, MCP, skills or other tools. Preserve canvas dimensions. Return one edited image. If image generation is unavailable, report failure; never use an API or substitute an explanation.",

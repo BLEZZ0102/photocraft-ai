@@ -7,10 +7,11 @@
 
 - `photocraft-gen`（L4）的 `ImageProvider` 接口隔离服务、认证与传输；首个实现是 `CodexProvider`。
 - `edit.ai.codex {"prompt":"编辑指令"}` 由 UI、CLI、控制通道和 MCP 共用。
-- 编辑菜单的“AI 编辑…”打开指令表单；确认后使用现有后台任务。
+- 编辑菜单的“AI 编辑…”或左侧工具栏顶部的星光快捷按钮打开同一个指令表单；确认后使用现有后台任务。快捷按钮固定在滚动工具区上方，无文档时置灰，仅打开表单不会触发生成。
 - 工作线程将可见画布合成为独立文档，通过 ICC 转为 sRGB、8 位 PNG。不会传送隐藏图层、原文件名、EXIF 或 XMP。
 - 临时目录只保存本次输入；其生命周期覆盖导出、请求及结果解码，随后自动清理。Codex 自己保存的结果由 Codex 管理。
 - 从**原安装位置**启动完整 Codex 运行时，复用其现有 ChatGPT 登录；不复制 codex.exe，不读取或另存登录令牌。
+- AI 编辑窗口显示账户连接状态及订阅类型；检查、浏览器登录和取消通过 `ai.codex.account` 引擎命令运行，工作线程负责 I/O，不锁文档。只有明确点击“使用 ChatGPT 登录”才打开官方浏览器页面；由 Codex App Server 管理本地回调与凭据，收到匹配本次登录的完成事件后再次检查账户。取消、失败、超时或关闭窗口均不会触发图片生成；不提供会影响共享 Codex 会话的退出账户按钮。
 - `initialize → initialized → account/read → thread/start → turn/start`，等待匹配线程的 `item/completed`，其中 `imageGeneration.status=completed` 且有 `savedPath`；整个 turn 成功后才接收图片。
 - API-key 登录会失败；强制 `forced_login_method=chatgpt`、OpenAI provider，并从子进程环境移除 API key/base URL。没有 API 适配器或自动回退。
 - 禁用 Codex shell 和网页搜索工具；交互工具请求会返回不支持。图片能力缺失时明确失败。
@@ -25,10 +26,11 @@
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\ai-local.ps1 Setup
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\ai-local.ps1 Format
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\ai-local.ps1 Check
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\ai-local.ps1 Run -CodexPath '完整 Codex 安装目录中的 codex.exe'
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\ai-local.ps1 Run
 ```
 
 Rust 工具链安装在项目 `.tools`，脚本只为当前进程配置 PATH。微软 C++ Build Tools 和 Windows SDK 按安装器的标准位置安装。上述执行策略设置仅影响该次 PowerShell 进程。
+`Run` 优先使用显式 `-CodexPath` 或现有 `PHOTOCRAFT_CODEX_PATH`，随后检查 PATH 和桌面版的 `AppData/Local/OpenAI/Codex/bin/*/codex.exe`。存在多个安装目录时选择程序修改时间最新的完整运行时，并输出实际路径；可用 `-CodexPath '完整安装目录中的 codex.exe'` 覆盖。找不到时会在启动前明确报错，无需修改全局 PATH。
 脚本默认关闭增量编译，以复用本次验证构建；可在调用前显式设置 `CARGO_INCREMENTAL=1` 覆盖。
 脚本会尝试为下载工具复用 Windows 已有的系统代理，仅设置本次进程及子进程环境，不修改全局 Git 或 Windows 网络配置。
 `Run` 使用独立实例，默认将原型配置与恢复数据保存在 `.tools/photocraft-profile`；显式设置的 `PHOTOCRAFT_CONFIG_DIR` 会保留。
@@ -41,9 +43,27 @@ $env:PATH = "$env:CARGO_HOME/bin;$env:PATH"
 cargo fmt --all
 ```
 
-打开或新建 1024×1024 RGB 图像，选择编辑 → AI 编辑…，输入“把天空改成日落，保留其余构图”，确认。
+打开或新建 1024×1024 RGB 图像，点击左侧工具栏顶部的星光按钮（悬停显示“AI 编辑…”），或选择编辑 → AI 编辑…，输入“把天空改成日落，保留其余构图”，确认。
 应出现 `AI Edit (Codex)` 新图层；检查隐藏它后原画布不变，Ctrl+Z 移除新图层，Ctrl+Shift+Z 恢复。
-用状态栏取消操作，或退出 Codex 登录后再运行，均应明确失败而不添加图层。
+图片编辑中可用状态栏取消操作，不添加图层。账户流程使用下面的隔离目录验收，无需退出当前 Codex 账户。
+
+## 首次登录的独立桌面验收
+
+默认启动会复用现有 Codex 登录，已有登录时不会再次要求授权。首次登录验收应使用一个新的目录（若示例目录已登录，请改用另一个尚未使用的目录）：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\ai-local.ps1 Launch -CodexHome .\.tools\codex-login-test
+```
+
+`Launch` 使用已构建的桌面程序，不等待正在运行的 Cargo 检查；尚未构建时先用 `Run`。`-CodexHome` 只给本次 PhotoCraft 启动的 Codex 子进程设置独立配置目录和文件凭据存储；同一目录同时用于账户检查、登录和图片编辑，不更改主 Codex 的登录。凭据由 Codex 保存在该目录，整个 `.tools` 不提交。
+
+1. 打开测试图片并点击左侧星光按钮。应显示“需要登录 ChatGPT”，生成确认按钮置灰。
+2. 点击“使用 ChatGPT 登录”，应通过 PhotoCraft 的系统浏览器服务打开 Codex 返回的官方登录页面；完成后回到 PhotoCraft，应显示“已连接 ChatGPT”及可用的订阅类型。浏览器已有会话时可能省略部分交互，不要求每次输入密码。系统浏览器打开失败会明确提示，可点击“打开登录页面”重试，或“复制登录链接”后自行粘贴到浏览器。
+3. 输入编辑指令后确认按钮才可用；仅验证登录时可直接关闭表单，不生成图片。
+4. 用相同命令和目录重启，应复用该次登录，不再次自动打开浏览器。
+5. 另选一个尚未使用的新目录验证取消：打开登录页面后点击“取消登录”或关闭 AI 表单，应结束等待、不回填图层，也不退出主 Codex。
+
+登录失败/超时可重试，“检查连接”会要求 Codex 刷新并验证登录。网络错误或登录失效时显示无法验证账户并提供登录入口；不把“连接成功”等同于图片能力或额度保证。自动化测试覆盖成功、取消、失败/超时、其他账户类型和失效后的状态。2026-10-30 用户已按上述隔离目录流程确认浏览器打开、登录成功及重启复用全部通过。
 
 可单独测试服务链路（会使用现有订阅额度，测试不会自动执行）：
 
@@ -70,9 +90,12 @@ cargo run -p photocraft-ui-egui --profile test --example snapshot -- --out ai-di
 
 ## 当前边界与验证状态
 
+- **账户验收范围：**已实现状态显示、官方浏览器登录入口、完成回调检查和取消。当前 Codex 0.166.0-alpha.5.1 的真实隔离目录检查为未登录；真实登录开始可取得官方链接并取消，取消后仍未登录。额外使用隔离的合成 API-key 凭据验证检查返回不支持、原文件不变，没有推理请求。2026-10-30 用户确认真实浏览器打开、登录成功和重启复用通过；这是用户手动验收反馈。失效/超时等异常有自动化覆盖，不能当作真实账户撤销/过期的验收结果。已有登录态时仍直接复用，不自动要求重新授权。
+- 桌面授权链接通过既有系统浏览器服务打开，不能依赖本构建未启用的 eframe `links` 输出。打开失败提供提示、重试和显式复制；PhotoCraft 不把授权链接写入状态历史、文档或 UI 配置。7 项账户/表单测试包含系统浏览器服务调用及打开失败后的复制/重试。
+- 账户功能最终回归通过：provider 6 项、引擎单元测试 2355 项（15 项忽略）及其集成测试、界面单元测试 4204 项（18 项忽略）、账户/表单 7 项、图形集成 134 项（1 项忽略）；完整日志 `.tools/account-regression-final.log`。测试使用项目临时目录和 4 个测试线程；现有硬链接测试需要放宽 Windows 执行限制后运行，未跳过或修改断言。新增命令的 `panic_hunt`、三个模块全部 target 的严格 Clippy、32 crates 分层、wasm 25 crates/HEIF、格式检查均通过；菜单覆盖仍为 631/631。14 个主题在两种窗口尺寸的截图及真实未登录/等待界面已检查。真实账户过期/撤销仍不包含在本次手动验收范围中。
 - 仅桌面启用。输入与输出最大 16 MP；生成 PNG 最大 64 MiB。同宽高比输出会适配原画布尺寸，允许不超过 1% 的像素舍入误差；明显改变宽高比的输出会明确拒绝，避免拉伸或裁切。
 - PNG 交换为 8 位 sRGB，回填转换回目标模式/位深；这不会恢复模型输出中已丢失的高动态范围信息。
-- 未实现选择区/遮罩、变体、ComfyUI、付费 API、独立登录 UI、可配置模型和运行时自动发现。
+- 未实现选择区/遮罩、变体、ComfyUI、付费 API、可配置模型和应用内的运行时自动发现（本地启动脚本可查找）。账户入口使用 Codex 的登录存储，不另建账号库。
 - 默认从 PATH 启动 `codex`；可用 `PHOTOCRAFT_CODEX_PATH` 指定完整运行时内的可执行文件。
 - 超时为 10 分钟，取消会关闭本次私有 App Server。外部服务已接受的生成任务是否继续由服务决定。
 - 完整工作区已通过 provider 两项、引擎 AI 九项、UI 两项及 `panic_hunt` 对抗参数检查；覆盖登录类型、完成事件过滤、多模式/位深、原图保留、新图层与撤销/重做、失败、取消、尺寸适配和菜单表单。菜单放在“内容识别填充”之后，通过现有扩展机制加入，不改变 Photoshop 对照目录。
@@ -87,8 +110,10 @@ cargo run -p photocraft-ui-egui --profile test --example snapshot -- --out ai-di
 - GitHub 下载问题通过本次进程复用 Windows 现有系统代理解决，大型 Git 依赖只缓存原锁定提交；crates.io 保持其默认连接方式。没有改写上游锁定的依赖版本。
 - 2026-10-30：先通过真实适配器将测试红圆改为黄色；随后通过完整引擎的 `Session::start` 后台任务，将 1024×1024 测试画布左侧红方块改为黄色，保留右侧蓝方块。真实输出为 1254×1254，经引擎适配至 1024×1024；验证原图像素完全不变、新增图层、撤销和重做全部通过，耗时约 143 秒。结果 `target/ai-codex-live-result.png` 已目视检查。两次均使用 ChatGPT 登录及原安装位置的完整 Codex 运行时，未调用付费 API。
 - 桌面程序已成功构建至 `target/debug/photocraft.exe`。续修后的中文对话框截图 `.tools/ai-dialog-strict.png` 已目视检查，从首帧使用严格缺字策略，无需预热。本机未提供可选的 craft-fonts 输入；使用既有 provider 补齐系统字体。
-- Codex App 更新后 `bin` 子目录可能变化，应传入当前完整安装位置。2026-10-30 当前 `0.166.0-alpha.5.1` 的初始化、ChatGPT 登录类型预检通过，本地 Schema 仍包含 `localImage`、`imageGeneration` 和 `savedPath`。前述两次真实图片编辑在 `0.165.0-alpha.1.2` 上完成；续修阶段没有再次触发模型或图片生成。
-- 用户已创建 [BLEZZ0102/photocraft-ai](https://github.com/BLEZZ0102/photocraft-ai) Fork，本地 `origin` 已指向该仓库，`upstream` 保留为 `storytold/photocraft`；`main` 继续跟踪 `upstream/main`。已只读验证 Fork 的 `main` 可访问。功能分支为 `feat/ai-provider-codex`，当前开发成果仅保存在本地，没有 push、发布 Alpha 或创建 PR。
+- Codex App 更新后 `bin` 子目录可能变化，本地启动脚本可自动查找，也可显式传入当前完整安装位置。2026-10-30 当前 `0.166.0-alpha.5.1` 的初始化、ChatGPT 登录类型预检通过，本地 Schema 仍包含 `localImage`、`imageGeneration` 和 `savedPath`。前述两次自动化真实图片编辑在 `0.165.0-alpha.1.2` 上完成。
+- 2026-10-30：用户确认 `0.166.0-alpha.5.1` 的真实桌面验收全部通过：从 PhotoCraft 的 AI 编辑表单提交测试画布与指令、生成结果回填新图层、隐藏新图层查看原图、保持 1024×1024 画布、撤销/重做、窗口可响应，以及保存 `.pcraft` 后关闭重开并保留原图层与 AI 图层。此条为用户手动验收反馈；不代表取消、超时或其他异常场景也在该次手动验收中覆盖。
+- 左侧工具栏新增固定的 AI 编辑快捷按钮，复用菜单命令与禁用规则，不切换当前绘图工具。新增两项测试覆盖全部 14 个主题的单列/双列布局、仅打开表单及无文档置灰；原有变换切换测试补充先滚动到抓手工具并点击其可见区域。界面单元测试最终为 4204 项通过、18 项忽略，集成测试 134 项通过、1 项忽略，AI 表单测试 2 项通过；使用项目内临时目录、4 个测试线程，日志 `.tools/toolbar-tests-final.log`。严格 Clippy、32 crates 分层及 wasm 25 crates/HEIF 检查通过。已目视检查 14 个主题在 1280×900 单列和 800×600 双列下的截图，以及实际点击快捷按钮打开中文表单的截图（`.tools/toolbar-qa/`）。桌面程序已重新构建；本次未额外调用图片生成服务。
+- 用户已创建 [BLEZZ0102/photocraft-ai](https://github.com/BLEZZ0102/photocraft-ai) Fork，本地 `origin` 已指向该仓库，`upstream` 保留为 `storytold/photocraft`；`main` 继续跟踪 `upstream/main`。功能分支为 `feat/ai-provider-codex`，用户已授权将已验收原型整理提交并推送到 Fork 的同名分支。尚未发布 Alpha 或创建上游 PR。
 
 ## 上游研究
 
@@ -98,4 +123,4 @@ cargo run -p photocraft-ui-egui --profile test --example snapshot -- --out ai-di
 - [OpenAI App Server 文档](https://learn.chatgpt.com/docs/app-server)及本机 `0.165.0-alpha.1.2` 生成的 JSON Schema：传输、初始化、账户类型、线程和生成完成事件字段。
 - [Codex 配置参考](https://learn.chatgpt.com/docs/config-file/config-reference)：ChatGPT 登录限制、shell 工具开关。实际图片能力仍依赖完整运行时和账号，本原型不会假装所有 codex.exe 都支持它。
 
-下一步完成新版运行时的真实桌面验收，之后再推送功能分支。Alpha 和上游 PR 留待后续授权；本次仅交付本地原型。后续可扩展 provider 设置、选区/遮罩与其他后端。
+新版运行时的图片编辑闭环及首次浏览器登录、重启复用均已通过用户手动验收。侧栏快捷入口、账户连接、启动脚本和验收记录作为本次功能分支提交内容；用户已授权推送至 Fork。后续单独安排 Alpha 测试包和上游 PR，也可扩展 provider 设置、选区/遮罩与其他后端。

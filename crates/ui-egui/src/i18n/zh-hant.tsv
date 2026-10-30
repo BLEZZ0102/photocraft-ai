@@ -3124,3 +3124,7 @@ curves	Smooth	平滑
 	Font size presets	字體大小預設
 	Leading presets	行距預設
 	Tracking presets	字距調整預設
+	AI Edit…	AI 編輯…
+@id	edit.ai.codex	AI 編輯…
+	Describe your edit	描述你想進行的編輯
+	The visible canvas and instruction will be sent to Codex using your ChatGPT sign-in. The result is fitted to the canvas and added as a new layer.	可見畫布和編輯指令將透過你的 ChatGPT 登入傳送給 Codex，結果將配合畫布尺寸並新增為圖層。

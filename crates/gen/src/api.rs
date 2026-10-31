@@ -14,6 +14,7 @@ const MAX_INPUT: usize = 30 * 1024 * 1024;
 const MAX_RESPONSE: usize = 90 * 1024 * 1024;
 const MAX_PIXELS: u64 = 16_777_216;
 mod flux;
+mod rejection;
 
 fn error(message: &str) -> Error {
     Error::Provider(message.into())
@@ -94,17 +95,7 @@ impl ApiProvider {
         let header = if self.profile.protocol == Protocol::Seedream { "authorization" } else { "x-goog-api-key" };
         let mut response = client.post(self.profile.request_url()).header(header, auth).json(&body).send().await.map_err(network_error)?;
         if !response.status().is_success() {
-            let code = response.status().as_u16();
-            let hint = match code {
-                401 | 403 => "Check the API key, model access and region",
-                404 => "Check the API address and model ID",
-                429 => "Rate limit or quota exceeded; check the provider console before retrying",
-                400 | 422 => "The provider rejected the image, model or request options",
-                300..=399 => "Redirects are disabled; enter the final API address",
-                _ => "The image service is unavailable; no automatic retry was made",
-            };
-            // Provider bodies and transport errors can echo credentials, prompts or URLs.
-            return Err(error(&format!("Image API HTTP {code}. {hint}. No layer was added.")));
+            return Err(rejection::http(response, self.profile.protocol).await);
         }
         if response.content_length().is_some_and(|n| n > MAX_RESPONSE as u64) {
             return Err(error("Image API response exceeds 90 MiB"));
@@ -214,7 +205,9 @@ fn request_body(profile: &Profile, prompt: &str, input: &[u8], width: u32, heigh
             let w = (f64::from(width) * scale).round() as u32;
             let h = (f64::from(height) * scale).round() as u32;
             json!({"model":profile.model,"prompt":prompt,"image":format!("data:image/png;base64,{encoded}"),
-                "size":format!("{w}x{h}"),"response_format":"b64_json","stream":false})
+                // Non-streaming is the API default. Flash/pro do not support the stream
+                // option, so omit it rather than sending a field for other model versions.
+                "size":format!("{w}x{h}"),"response_format":"b64_json"})
         }
     };
     if let Some(ratio) = standard_aspect(width, height) {
@@ -250,6 +243,11 @@ fn decode_image(data: &str) -> Result<Vec<u8>, Error> {
 
 fn parse_result(protocol: Protocol, value: &Value) -> Result<Vec<u8>, Error> {
     if value.get("error").is_some_and(|e| !e.is_null()) {
+        if protocol == Protocol::Seedream
+            && let Some(detail) = rejection::detail(value)
+        {
+            return Err(error(&format!("Image service rejected the request. {detail}. No layer was added.")));
+        }
         return Err(error("Image service rejected the request; check the model and provider console. No layer was added."));
     }
     let images = match protocol {
@@ -272,6 +270,9 @@ fn array<'a>(value: &'a Value, field: &str) -> impl Iterator<Item = &'a Value> {
 
 fn seedream_images(value: &Value) -> Result<Vec<&str>, Error> {
     if array(value, "data").any(|item| item.get("error").is_some_and(|e| !e.is_null())) {
+        if let Some(detail) = array(value, "data").find_map(rejection::detail) {
+            return Err(error(&format!("Image service reported a failed image. {detail}. No layer was added.")));
+        }
         return Err(error("Image service reported a failed image; no layer was added"));
     }
     Ok(array(value, "data").filter_map(|item| item.get("b64_json").and_then(Value::as_str)).collect())

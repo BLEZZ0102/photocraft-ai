@@ -87,6 +87,7 @@ fn all_protocols_send_canvas_prompt_and_exactly_one_request() {
         if protocol == Protocol::Seedream {
             assert!(header.to_ascii_lowercase().contains("authorization: bearer secret-test-key"));
             assert_eq!(body["size"], "2309x1732");
+            assert!(body.get("stream").is_none(), "the synchronous request omits model-dependent stream options");
         } else {
             assert!(header.to_ascii_lowercase().contains("x-goog-api-key: secret-test-key"));
             if protocol == Protocol::GeminiInteractions {
@@ -125,6 +126,82 @@ fn http_failures_and_redirects_never_echo_provider_secrets_or_retry() {
         assert!(error.contains(&status.to_string()));
         assert!(!error.contains("private-credential"));
         thread.join().unwrap();
+    }
+}
+
+#[test]
+fn seedream_http_rejection_keeps_safe_code_and_field_without_output_or_private_message() {
+    let private = "private-credential PRIVATE_PROMPT https://private.example/signed?token=secret data:image/png;base64,PRIVATE_IMAGE";
+    let response = json!({"error":{"code":"InvalidParameter.UnsupportedParameter","param":"stream","message":private}});
+    let (endpoint, thread, _) = server(400, response.to_string(), false);
+    let provider = ApiProvider::new(Profile { endpoint, ..preset("seedream").unwrap() }, "private-credential".into()).unwrap();
+    let work = tempfile::tempdir().unwrap();
+    let input = work.path().join("canvas.png");
+    std::fs::write(&input, png()).unwrap();
+    let rejected =
+        provider.edit(&EditRequest { image: &input, prompt: "PRIVATE_PROMPT", workspace: work.path() }, &|| false).err().expect("HTTP 400").to_string();
+    assert!(rejected.contains("HTTP 400"));
+    assert!(rejected.contains("InvalidParameter.UnsupportedParameter; parameter: stream"));
+    assert!(rejected.contains("does not support"));
+    for value in ["private-credential", "PRIVATE_PROMPT", "private.example", "PRIVATE_IMAGE", "data:image"] {
+        assert!(!rejected.contains(value), "{rejected}");
+    }
+    assert!(!work.path().join("api-result.png").exists());
+    let request = thread.join().unwrap();
+    assert_eq!(request.matches("POST /edit HTTP/").count(), 1);
+}
+
+#[test]
+fn seedream_diagnostics_allowlist_fields_codes_and_content_categories() {
+    for (value, expected) in [
+        (
+            json!({"error":{"code":"InvalidParameter","message":"The parameter `size` specified in the request is not valid: PRIVATE_PROMPT"}}),
+            "parameter: size",
+        ),
+        (json!({"error":{"code":"MissingParameter","param":"image"}}), "parameter: image"),
+        (json!({"error":{"code":"InvalidImageURL.InvalidFormat","message":"PRIVATE_IMAGE"}}), "could not decode"),
+        (json!({"error":{"code":"InvalidSubscription","message":"PRIVATE_ACCOUNT"}}), "account eligibility"),
+        (json!({"error":{"code":"InputImageSensitiveContentDetected.PrivacyInformation","message":"PRIVATE_PROMPT"}}), "ContentRejected"),
+        (json!({"error":{"code":"InvalidParameter.PRIVATE_KEY","param":"PRIVATE_PROMPT","message":"PRIVATE_IMAGE"}}), "InvalidParameter"),
+    ] {
+        let detail = rejection::detail(&value).unwrap();
+        assert!(detail.contains(expected), "{detail}");
+        assert!(!detail.contains("PRIVATE"), "{detail}");
+        let error = parse_result(Protocol::Seedream, &value).unwrap_err().to_string();
+        assert!(error.contains(expected), "{error}");
+        let item = json!({"data":[value]});
+        assert!(parse_result(Protocol::Seedream, &item).unwrap_err().to_string().contains(expected));
+    }
+    for value in [json!({"error":{"code":"PRIVATE_KEY","param":"size","message":"PRIVATE_PROMPT"}}), json!({"error":{"code":null}}), json!({"error":true})] {
+        assert!(rejection::detail(&value).is_none());
+        assert!(!parse_result(Protocol::Seedream, &value).unwrap_err().to_string().contains("PRIVATE"));
+    }
+}
+
+#[test]
+fn seedream_error_body_limits_keep_status_and_do_not_echo_html_or_oversized_data() {
+    for body in ["<html>PRIVATE_KEY PRIVATE_PROMPT</html>".into(), "PRIVATE_KEY".repeat(7000)] {
+        let (endpoint, thread, _) = server(400, body, false);
+        let provider = ApiProvider::new(Profile { endpoint, ..preset("seedream").unwrap() }, "PRIVATE_KEY".into()).unwrap();
+        let error = cancellable(provider.request(json!({})), &|| false).unwrap_err().to_string();
+        assert!(error.contains("HTTP 400"));
+        assert!(!error.contains("PRIVATE"));
+        thread.join().unwrap();
+    }
+}
+
+#[test]
+fn seedream_synchronous_payload_is_minimal_for_flash_pro_and_legacy_models() {
+    for model in ["doubao-seedream-5-0-flash-260915", "doubao-seedream-5-0-pro-260628", "doubao-seedream-5-0-lite-260128", "doubao-seedream-4-5-251128"] {
+        let profile = Profile { model: model.into(), ..preset("seedream").unwrap() };
+        let body = request_body(&profile, "Edit the background", &png(), 1024, 768).unwrap();
+        assert_eq!(body["model"], model);
+        assert_eq!(body["size"], "2309x1732");
+        assert_eq!(body["response_format"], "b64_json");
+        assert!(body["image"].as_str().unwrap().starts_with("data:image/png;base64,"));
+        assert_eq!(body.as_object().unwrap().len(), 5);
+        assert!(body.get("stream").is_none());
+        assert!(body.get("sequential_image_generation").is_none());
     }
 }
 

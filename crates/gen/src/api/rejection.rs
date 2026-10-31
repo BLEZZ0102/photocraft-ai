@@ -41,43 +41,22 @@ async fn read(mut response: reqwest::Response) -> Option<Value> {
 pub(super) fn detail(value: &Value) -> Option<String> {
     let rejected = value.get("error")?;
     let code = rejected.get("code")?.as_str().filter(|code| code.len() <= 128)?;
-    let (code, reason) = match code {
-        "InvalidParameter.UnsupportedParameter" => ("InvalidParameter.UnsupportedParameter", "This model does not support the parameter"),
-        "InvalidEndpoint.ClosedEndpoint" => ("InvalidEndpoint.ClosedEndpoint", "The model endpoint is closed or unavailable"),
-        "InvalidImageURL.InvalidFormat" => ("InvalidImageURL.InvalidFormat", "The provider could not decode the reference image"),
-        "InvalidImageURL.EmptyURL" => ("InvalidImageURL.EmptyURL", "The provider received no reference image"),
-        "InputTextSensitiveContentDetected.PolicyViolation" => {
-            ("InputTextSensitiveContentDetected.PolicyViolation", "The provider's policy check rejected the input text")
+    let (code, reason) = if let Some(review) = crate::api_error::review_code(code) {
+        (review.code, review.kind.description())
+    } else {
+        match code {
+            "InvalidParameter.UnsupportedParameter" => ("InvalidParameter.UnsupportedParameter", "This model does not support the parameter"),
+            "InvalidEndpoint.ClosedEndpoint" => ("InvalidEndpoint.ClosedEndpoint", "The model endpoint is closed or unavailable"),
+            "InvalidImageURL.InvalidFormat" => ("InvalidImageURL.InvalidFormat", "The provider could not decode the reference image"),
+            "InvalidImageURL.EmptyURL" => ("InvalidImageURL.EmptyURL", "The provider received no reference image"),
+            // Unknown suffixes are not echoed: even a code field can contain reflected secrets.
+            code => match code.split('.').next()? {
+                "InvalidParameter" => ("InvalidParameter", "Check the rejected parameter and model requirements"),
+                "MissingParameter" => ("MissingParameter", "A required parameter is missing"),
+                "InvalidSubscription" => ("InvalidSubscription", "Check account eligibility in the provider console"),
+                _ => return None,
+            },
         }
-        "InputImageSensitiveContentDetected.PolicyViolation" => {
-            ("InputImageSensitiveContentDetected.PolicyViolation", "The provider's policy check rejected the reference image")
-        }
-        "InputImageSensitiveContentDetected.PrivacyInformation" => {
-            ("InputImageSensitiveContentDetected.PrivacyInformation", "The provider's privacy check rejected the reference image")
-        }
-        "OutputImageSensitiveContentDetected.PolicyViolation" => {
-            ("OutputImageSensitiveContentDetected.PolicyViolation", "The provider's policy check rejected the generated image")
-        }
-        "OutputImageSensitiveContentDetected.DeepFake" => {
-            ("OutputImageSensitiveContentDetected.DeepFake", "The provider's policy check rejected the generated image")
-        }
-        // Unknown suffixes are not echoed: even a code field can contain reflected secrets.
-        code => match code.split('.').next()? {
-            "InvalidParameter" => ("InvalidParameter", "Check the rejected parameter and model requirements"),
-            "MissingParameter" => ("MissingParameter", "A required parameter is missing"),
-            "InvalidSubscription" => ("InvalidSubscription", "Check account eligibility in the provider console"),
-            "SensitiveContentDetected" => ("SensitiveContentDetected", "The provider rejected the input text under its content rules"),
-            "InputTextSensitiveContentDetected" => ("InputTextSensitiveContentDetected", "The provider rejected the input text under its content rules"),
-            "InputImageSensitiveContentDetected" => ("InputImageSensitiveContentDetected", "The provider rejected the reference image under its content rules"),
-            "InputTextRiskDetection" => ("InputTextRiskDetection", "The provider rejected the input text under its content rules"),
-            "InputImageRiskDetection" => ("InputImageRiskDetection", "The provider rejected the reference image under its content rules"),
-            "OutputImageSensitiveContentDetected" => {
-                ("OutputImageSensitiveContentDetected", "The provider rejected the generated image under its content rules")
-            }
-            "OutputImageRiskDetection" => ("OutputImageRiskDetection", "The provider rejected the generated image under its content rules"),
-            "ContentSecurityDetectionError" => ("ContentSecurityDetectionError", "The provider's content review service failed"),
-            _ => return None,
-        },
     };
     let field = rejected.get("param").and_then(Value::as_str).and_then(known_field).or_else(|| {
         let message = rejected.get("message")?.as_str().filter(|message| message.len() <= 4096)?.to_ascii_lowercase();

@@ -7,6 +7,7 @@ use std::path::{Path, PathBuf};
 #[cfg(not(target_arch = "wasm32"))]
 pub mod api;
 pub mod api_config;
+pub mod api_error;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod api_settings;
 #[cfg(not(target_arch = "wasm32"))]

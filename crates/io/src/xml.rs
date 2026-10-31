@@ -4,8 +4,9 @@
 
 use roxmltree::{Document, ParsingOptions};
 
-/// Deepest element nesting accepted, the same as for SVG drawings: real files stay far below.
-pub const MAX_DEPTH: usize = crate::svg::MAX_XML_DEPTH;
+/// Budget for roxmltree, independent of SVG's more restrictive rendering pipeline.
+/// Krita uses two XML levels per layer group and must support the document's group limit.
+pub const MAX_DEPTH: usize = 512;
 
 /// Parses `text`, refusing nesting deeper than [`MAX_DEPTH`] before roxmltree sees it.
 ///
@@ -77,6 +78,21 @@ mod tests {
         // The root plus MAX_DEPTH - 1 levels is exactly MAX_DEPTH deep.
         assert!(parse(&nested(MAX_DEPTH - 1), ParsingOptions::default()).is_ok());
         assert!(parse(&nested(MAX_DEPTH), ParsingOptions::default()).is_err());
+    }
+
+    #[test]
+    fn accepted_nesting_limit_fits_a_native_thread_stack() {
+        std::thread::Builder::new()
+            .stack_size(1024 * 1024)
+            .spawn(|| {
+                let xml = nested(MAX_DEPTH - 1);
+                for opts in [ParsingOptions::default(), dtd()] {
+                    assert!(parse(&xml, opts).is_ok());
+                }
+            })
+            .unwrap()
+            .join()
+            .unwrap();
     }
 
     #[test]

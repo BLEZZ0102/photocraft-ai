@@ -2,7 +2,7 @@
 
 开发分支：`feat/ai-provider-codex`，起点为上游 main `5f9b439`。
 现已合入官方 `v0.18.0`（`8a87a457abb43ac344deeb3fdb67541b91a72ff1`），继续在该分支保留 AI 功能。
-当前是已在本机完成真实 Codex 编辑、后台新图层回填及撤销/重做验证的桌面原型，尚未发布 Alpha。用户自配 Gemini/Seedream/FLUX API 的使用方式见 [自定义图片 API](ai-api.md)，服务始终由用户明确选择。
+此前的 v0.17 原型已在本机完成真实 Codex 编辑、后台新图层回填及撤销/重做验证；v0.18.0 的验证范围见下文。尚未发布 Alpha。用户自配 Gemini/Seedream/FLUX API 的使用方式见 [自定义图片 API](ai-api.md)，服务始终由用户明确选择。
 
 ## 实现
 
@@ -94,6 +94,15 @@ UI 视觉检查（生成后必须查看图片）：
 ```powershell
 cargo run -p photocraft-ui-egui --profile test --example snapshot -- --out ai-dialog.png --open canvas.png --script '[["engine.execute",{"command":"prefs.set","params":{"path":"interface.language","value":"zh-hans"}}],["ui.menu.invoke",{"id":"edit.ai.codex"}]]'
 ```
+
+## v0.18.0 合并验证（2026-10-31）
+
+- 桌面程序已构建，`--version` 返回 `photocraft 0.18.0 (dev build)`，`--help` 正常；旧版程序备份保留在本机 `.tools/`，不提交二进制。
+- 原生回归通过：桌面单元测试 195 项及集成测试 14 项、引擎单元测试 2476 项及其集成测试、图片服务 27 项、界面单元测试 4465 项、API 表单 7 项、账户表单 8 项、图形集成 146 项。新增更新窗口回归用例验证未保存文档保留、链接打开及无官方安装入口；该用例最终单独重跑通过。
+- 格式检查、相关模块全部 target 的严格 Clippy、32 crates 分层、wasm 25 crates/HEIF、631/631 菜单覆盖及异常参数 `panic_hunt` 均通过；RAW 单元/集成测试与 Rust 文档构建也通过。
+- 合并兼容修复：通用 XML 解析使用独立的 512 层预算，SVG 渲染继续使用原有的 128 层安全预算。新增真实 Krita 导入用例覆盖合法 99 层分组及超限拒绝，并在 1 MB 线程栈检查 XML 的合法上限；文件读写单元测试 440 项通过。
+- 标准真实文件语料验证完成：PSD、编解码和文件读写模块在 `corpus`/HEIF 发布模式下共 2410 项通过、15 项按项目标记忽略、0 项失败；修复后的引擎语料集成测试另有 289 项通过、5 项忽略。引擎的注释导入语料分支也单独通过。完整语料按格式模块与引擎目标分别执行；未启用可选 PIXLS RAW 全量语料。XML/Krita 两项新增回归在原生单元测试和发布模式中都通过，原有畸形文件断言未放宽。
+- 已目视检查 Codex、Gemini、Seedream、FLUX 在 800×600 窗口的中文表单，以及深浅主题的更新窗口。Codex 连接状态和更新通知使用合成数据，API 表单不含密钥；本轮没有真实登录或图片生成请求，不能替代新基础版本的手动出图验收。
 
 ## 当前边界与验证状态
 

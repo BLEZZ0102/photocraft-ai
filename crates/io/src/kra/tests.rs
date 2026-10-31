@@ -218,6 +218,26 @@ fn deeply_nested_maindoc_is_an_error_not_a_stack_overflow() {
 }
 
 #[test]
+fn deep_groups_do_not_inherit_svg_rendering_limit() {
+    let nested = |levels: usize| {
+        let xml = maindoc("RGBA", &format!("{}{}", r#"<layer nodetype="grouplayer"><layers>"#.repeat(levels), "</layers></layer>".repeat(levels)));
+        archive(&xml, &[])
+    };
+    // The importer counts the root container at depth one. A valid document with
+    // 99 groups uses two XML elements per group and exceeds SVG's rendering budget.
+    let limit = photocraft_doc::MAX_GROUP_DEPTH - 1;
+    let imported = crate::import("nested.kra", &nested(limit)).expect("valid deep groups within the document limit");
+    let mut layers = imported.document.layers.as_slice();
+    for _ in 0..limit {
+        assert_eq!(layers.len(), 1);
+        layers = layers.first().unwrap().children().expect("group");
+    }
+    assert!(layers.is_empty());
+    let rejected = crate::import("nested.kra", &nested(photocraft_doc::MAX_GROUP_DEPTH + 1));
+    assert!(matches!(rejected, Err(IoError::Unsupported(_))), "document group limit: {rejected:?}");
+}
+
+#[test]
 fn lzf_decodes_literals_and_overlapping_references() {
     // "abc" then a 6-byte back-reference 3 back: abcabcabc.
     assert_eq!(lzf_decompress(&[2, b'a', b'b', b'c', 0x80, 2], 9).unwrap(), b"abcabcabc");

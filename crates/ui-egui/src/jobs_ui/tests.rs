@@ -54,6 +54,32 @@ fn ai_review_failure_uses_localized_notice_and_preserves_document_history() {
     assert_eq!(app.session.active().unwrap().doc.layers.len(), 2);
 }
 
+#[test]
+fn ai_job_completion_and_cancellation_use_localized_labels() {
+    use photocraft_engine::jobs::{JobEvent, JobOutcome};
+    let mut app = PhotocraftApp::new(photocraft_engine::Session::new(), Default::default());
+    app.session.execute("file.new", json!({"width":16,"height":16})).unwrap();
+    for lang in crate::i18n::Lang::all() {
+        crate::i18n::with_language(lang, || {
+            let label = crate::i18n::tr(lang, "AI Edit");
+            for outcome in [JobOutcome::Done(json!({})), JobOutcome::Cancelled] {
+                let expected = if matches!(outcome, JobOutcome::Done(_)) {
+                    label.to_owned()
+                } else {
+                    crate::i18n::fmt(crate::i18n::tr(lang, "Cancelled {label}"), &[("label", label)])
+                };
+                super::on_event(
+                    &mut app,
+                    &egui::Context::default(),
+                    JobEvent { id: JobId(901), command: "edit.ai.api".into(), label: "AI Edit".into(), document: None, outcome },
+                );
+                assert_eq!(app.ui.status, expected, "{}", lang.code());
+            }
+        });
+    }
+    assert_eq!(app.session.active().unwrap().doc.layers.len(), 1);
+}
+
 /// [`app_harness`] over the given services (the beep test records the hook's calls).
 fn app_harness_with(services: crate::Services) -> Harness<'static, PhotocraftApp> {
     let mut h = Harness::builder().with_size(vec2(1280.0, 800.0)).with_max_steps(8).build_eframe(|cc| {

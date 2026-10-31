@@ -3268,3 +3268,8 @@ curves	Smooth	平滑
 	Try again manually later. Contact the service provider if the problem continues.	请稍后手动重试；若持续发生，请联系服务商。
 	This edit did not change existing layers or add a new layer.	本次未改动已有图层，也未添加新图层。
 	Error code: {code}	错误码：{code}
+# AI editing, account, API and review notices (original translations).
+	AI Edit	AI 编辑
+	AI Edit via API	通过 API 进行 AI 编辑
+	Codex Account	Codex 账户
+	AI Provider Settings	AI 服务配置

@@ -149,6 +149,38 @@ fn cancelling_drops_secret_draft_without_saving() {
 }
 
 #[test]
+fn all_languages_update_ai_controls_and_saved_feedback_without_losing_the_prompt() {
+    use photocraft_ui_egui::i18n::{Lang, tr};
+    let mut h = harness();
+    h.state_mut().session.execute("ai.provider.settings", json!({"action":"save","provider":"seedream","profile":photocraft_engine::cmd::ai_provider_cmds::preset("seedream"),"apiKey":"local-translation-key","rememberKey":false})).unwrap();
+    h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("seedream"));
+    h.state_mut().ui.dialogs[0].fields.insert("prompt".into(), json!("Keep this instruction unchanged"));
+    h.state_mut().session.execute("prefs.set", json!({"path":"interface.language","value":"zh-hans"})).unwrap();
+    h.run_steps(4);
+    h.get_by_label("保存 API 配置").click();
+    h.run_steps(3);
+    assert!(h.query_by_label("API 配置已保存").is_some());
+    for lang in Lang::all() {
+        h.state_mut().session.execute("prefs.set", json!({"path":"interface.language","value":lang.code()})).unwrap();
+        h.run_steps(3);
+        for key in ["Image service", "Model ID", "Save API settings", "API settings saved"] {
+            assert!(h.query_by_label(tr(lang, key)).is_some(), "{}: missing {key}", lang.code());
+        }
+        assert_eq!(h.state().ui.dialogs[0].fields["prompt"], "Keep this instruction unchanged");
+        assert!(!h.get_by_label(tr(lang, "OK")).accesskit_node().is_disabled());
+        h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("codex"));
+        h.run_steps(3);
+        for key in ["Image service", "Sign in with ChatGPT", "Check connection"] {
+            assert!(h.query_by_label(tr(lang, key)).is_some(), "{}: missing {key}", lang.code());
+        }
+        h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("seedream"));
+    }
+    assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 1);
+    assert!(!h.state().session.ai_account.pending());
+    assert!(!serde_json::to_string(&h.state().ui).unwrap().contains("local-translation-key"));
+}
+
+#[test]
 fn expanded_api_settings_keep_confirmation_buttons_on_a_small_screen() {
     let mut h = harness();
     h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("gemini"));

@@ -50,7 +50,8 @@ fn apply(app: &mut PhotocraftApp, provider: &str, result: Result<Value, String>,
                 persistent: value.get("persistentStorage").and_then(Value::as_bool).unwrap_or(false),
                 remember: value.get("rememberKey").and_then(Value::as_bool).unwrap_or(false),
                 saved_remember: value.get("rememberKey").and_then(Value::as_bool).unwrap_or(false),
-                message: value.get("credentialError").and_then(Value::as_str).map(str::to_owned).or_else(|| success.map(|s| tl!(s).into())),
+                // Keep the source key: a saved message must follow live language changes too.
+                message: value.get("credentialError").and_then(Value::as_str).map(str::to_owned).or_else(|| success.map(str::to_owned)),
                 message_error: value.get("credentialError").and_then(Value::as_str).is_some(),
             };
         }

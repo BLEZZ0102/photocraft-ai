@@ -509,6 +509,7 @@ fn on_event(app: &mut PhotocraftApp, ctx: &egui::Context, e: JobEvent) {
         end_batch(&mut app.jobs);
         return;
     }
+    let label = if matches!(e.command.as_str(), "edit.ai.codex" | "edit.ai.api") { crate::i18n::t(&e.label).to_owned() } else { e.label };
     match e.outcome {
         JobOutcome::Done(v) if e.command == "brush.presets.importAbr" => {
             let n = v.get("count").and_then(Value::as_u64).unwrap_or(0);
@@ -527,7 +528,7 @@ fn on_event(app: &mut PhotocraftApp, ctx: &egui::Context, e: JobEvent) {
         }
         JobOutcome::Done(_) => {
             app.sync_views();
-            app.ui.status = e.label;
+            app.ui.status = label;
             app.ui.status_error = false;
         }
         JobOutcome::Failed(err) => {
@@ -536,11 +537,11 @@ fn on_event(app: &mut PhotocraftApp, ctx: &egui::Context, e: JobEvent) {
             }
             app.sync_views();
             if !crate::ai_errors_ui::report(app, &e.command, &err) {
-                notices::error(app, format!("{}: {err}", e.label));
+                notices::error(app, format!("{label}: {err}"));
             }
         }
         JobOutcome::Cancelled => {
-            app.ui.status = crate::i18n::fmt(tl!("Cancelled {label}"), &[("label", &e.label)]);
+            app.ui.status = crate::i18n::fmt(tl!("Cancelled {label}"), &[("label", &label)]);
             app.ui.status_error = false;
         }
     }

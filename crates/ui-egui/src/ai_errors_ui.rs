@@ -120,4 +120,18 @@ mod tests {
         assert_eq!(app.ui.notices, before);
         assert_eq!(app.ui.status, status);
     }
+
+    #[test]
+    fn visible_review_notice_switches_across_all_languages_and_keeps_the_code() {
+        let mut app = PhotocraftApp::new(Session::new(), Default::default());
+        let code = "InputImageSensitiveContentDetected.PrivacyInformation";
+        assert!(report(&mut app, "edit.ai.api", &format!("Image API HTTP 400. {code}. PRIVATE_BODY")));
+        for lang in Lang::all() {
+            let text = rendered(&app, lang.code());
+            assert!(text.contains(i18n::tr(lang, "Your reference image did not pass the service's privacy review.")), "{}: {text}", lang.code());
+            assert!(text.contains(code), "{}: {text}", lang.code());
+            assert!(!text.contains("PRIVATE"));
+        }
+        assert_eq!(app.ui.notices.len(), 1, "language changes do not duplicate notices");
+    }
 }

@@ -33,6 +33,8 @@ contextual, command-ID and plural translations; missing entries fall back to Eng
 | Suomi | `fi` | one / other (partitive after every count but 1) |
 | Dansk | `da` | one / other |
 | Norsk bokmål | `nb` | one / other |
+| Türkçe | `tr` | one form |
+| العربية | `ar` | zero / one / two / few / many / other |
 
 Languages registered with `complete_menus` cover the current menu labels, `tl!` literals, blend
 mode names, and generated preference labels. A string a catalog lacks shows in English:
@@ -100,6 +102,22 @@ identity continues to use command IDs, independent of translated labels.
 This is hot switching among the bundled catalogs. Catalog files are embedded with
 `include_str!`; editing a TSV file requires a rebuild. External catalog watching and
 file-resource hot reload are not implemented.
+
+## AI extension UI
+
+The AI extension follows the same language preference and all 27 registered languages
+(English source plus 26 catalogs). Its 76 catalog entries cover the AI edit command and
+shortcut, Codex account states and browser sign-in controls, API configuration and feedback,
+content-review notices, job labels, and the AI build's update window. Saved API feedback and
+visible review notices follow live language switching. Instructions and document contents are
+not translated; service/model/protocol identifiers, addresses and diagnostic codes stay intact.
+Raw engine/provider diagnostic details retain their original language, as elsewhere in the app.
+
+`i18n::ai_tests` checks this scoped vocabulary in every registered catalog, including dynamic
+templates and command-ID labels. The AI form and update-window integration tests exercise all
+languages without real account sign-in, API requests or key storage. These added translations
+are original work under the existing translation license; native-speaker review of the AI
+entries remains open and does not inherit a catalog's earlier review status.
 
 ## Right-to-left languages
 

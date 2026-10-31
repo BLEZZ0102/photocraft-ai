@@ -1,6 +1,6 @@
 # Localization parity
 
-> **Last reviewed:** 2026-10-12 · **Last updated:** 2026-10-29 · **Change:** minor (Swedish, Finnish, Danish and Norwegian Bokmål UI catalogs; previously minor: Arabic UI catalog) · **Target:** Adobe Photoshop 2026
+> **Last reviewed:** 2026-10-12 · **Last updated:** 2026-10-31 · **Change:** minor (AI extension vocabulary in all 27 registered languages; previously minor: Nordic UI catalogs) · **Target:** Adobe Photoshop 2026
 
 Per-language status of PhotoCraft's UI. How catalogs work and how to add one:
 [`localization.md`](localization.md). Language notes: [Korean](localization-ko.md), [Spanish](localization-es.md),
@@ -71,6 +71,15 @@ labels translate. Import warning counts use parentheses in Czech. New dynamic te
 back to English in catalogs without entries. This is additional UI coverage, not a claim that
 engine localization or native review is complete.
 
+## AI extension (2026-10-31)
+
+The fork's 76 AI UI entries cover all 26 non-English catalogs, with English supplied by the
+source: edit command/shortcut, account and sign-in, API configuration and feedback, review
+notices, job labels and AI update information. This is a scoped vocabulary check, not a new
+measurement of the entire app's percentages above. Live-switch tests preserve prompts and
+diagnostic codes. Raw technical details remain untranslated. Native-speaker review of these
+new entries is still open; the broader localization gaps and estimates are unchanged.
+
 ## Cross-language gaps
 
 - Engine error, status and parameter-help messages are English in every language.
@@ -86,6 +95,7 @@ engine localization or native review is complete.
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-10-31 | minor | AI extension: 76 UI entries in every registered language, live API-feedback and notice switching; scoped coverage only, no global readiness or estimate change; native review open |
 | 2026-10-10 | major | First version, measured from the catalogs with the `i18n-coverage` rules |
 | 2026-10-10 | minor | Right-to-left shell layout (menu bar, title, options and status bars, toolbox and dock sides) |
 | 2026-10-11 | minor | Czech dynamic status/notice and hardware text, render labels and Navigator zoom context; engine messages remain English |

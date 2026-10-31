@@ -45,6 +45,18 @@ fn upstream_notice_offers_information_and_ai_project_without_installing_or_closi
     );
     assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 2);
     assert!(h.state().has_unsaved_work());
+    for lang in photocraft_ui_egui::i18n::Lang::all() {
+        use photocraft_ui_egui::i18n::{fmt, tr};
+        h.state_mut().session.execute("prefs.set", json!({"path":"interface.language","value":lang.code()})).unwrap();
+        h.run_steps(3);
+        for key in ["PhotoCraft AI Updates", "AI Project Page", "Release Notes"] {
+            assert!(h.query_by_label(tr(lang, key)).is_some(), "{}: {key}", lang.code());
+        }
+        let version = fmt(tr(lang, "Upstream PhotoCraft {version} is available."), &[("version", "99.0.0")]);
+        assert!(h.query_by_label(&version).is_some(), "{}: {version}", lang.code());
+    }
+    h.state_mut().session.execute("prefs.set", json!({"path":"interface.language","value":"en"})).unwrap();
+    h.run_steps(3);
     h.get_by_label("AI Project Page").click();
     h.run_steps(2);
     assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 2);

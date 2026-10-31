@@ -49,11 +49,19 @@ generateContent 地址中的 `{model}` 会替换为模型名称。切换协议�
 
 新版本会从豆包错误中提取已识别的错误码和参数名，例如 `InvalidParameter; parameter: size`、`InvalidParameter.UnsupportedParameter; parameter: stream`。只有预定义的诊断文字会显示；不会显示原始 `message`、未知错误码后缀、密钥、提示词、图片数据或 URL。HTTP 错误正文最多读取 64 KiB、等待两秒，读取失败、超限或未知格式时仍报告原 HTTP 状态。HTTP 200 中的请求级和图片级错误也使用同样的诊断规则。
 
-`size` 指向模型输出尺寸要求，`image` 指向参考图要求，`model` 指向模型名称、区域或开通权限；内容审核失败会单独提示。若仍只有通用错误，请在服务商控制台查看失败请求。重试始终由用户发起，程序不会自动重发或切换模型。
+`size` 指向模型输出尺寸要求，`image` 指向参考图要求，`model` 指向模型名称、区域或开通权限。若仍只有通用错误，请在服务商控制台查看失败请求。重试始终由用户发起，程序不会自动重发或切换模型。
+
+审核拒绝保留已识别的具体错误码与阶段：`InputTextSensitiveContentDetected` / `InputTextRiskDetection` 为输入文字，`InputImageSensitiveContentDetected` / `InputImageRiskDetection` 为参考图片，`OutputImageSensitiveContentDetected` / `OutputImageRiskDetection` 为生成结果。已知的 `PolicyViolation`、`PrivacyInformation`、`DeepFake` 细分码会原样显示；未知后缀仍丢弃，原始正文仍不回显。`ContentSecurityDetectionError` 单独报告审核服务失败，不归类为用户内容被拒绝。依据见[方舟错误码说明](https://docs.volcengine.com/docs/ark/error-codes?lang=zh&redirect=1)。
+
+旧版把以上审核拒绝合并成 `ContentRejected`，只能据此确认错误类别，不能恢复具体阶段或推断触发原因。接入验收可新建空白画布，使用原创普通物体作为测试内容；特定角色名称可能与服务商的审核有关，但不能仅凭角色名断定收到的是哪一个错误码。
 
 2026-10-31 补充验证：图片服务测试 31 项通过、1 项凭据库测试按设计忽略，包含模拟 400 的错误码和参数显示、隐私保护、畸形或过大错误正文、HTTP 200 内嵌错误、四种 Seedream 型号的同步请求字段，以及取消、超时和不重复提交。测试不使用真实服务密钥或额度。删除多余 `stream` 是兼容性修正，尚不能单凭旧的 400 提示确认这次真实调用的根因。
 
 引擎 AI 编辑定向测试 7 项、严格 Clippy、格式、32 crates 分层及 wasm 25 crates/HEIF 检查通过。已在 800×600 中文界面检查模拟 400 提示：只显示白名单错误码和参数，未显示服务商正文；使用纯白 64×64 测试画布，模拟服务确认仅收到一次请求且没有 `stream` 字段。桌面程序已重新构建；真实豆包调用仍需用户在新版中复测。
+
+同日审核诊断补充：服务层 32 项通过、1 项按设计忽略。新增回归覆盖各输入／输出审核阶段、已知细分码、未知后缀隐私保护、HTTP 200 内嵌错误，以及审核服务故障与内容拒绝的区分。本轮只改诊断信息，不改写用户指令或重新提交请求。
+
+审核诊断补充已通过严格 Clippy、格式、分层与 wasm 检查，桌面程序已构建。已在 800×600 中文界面用纯白测试画布和模拟隐私审核错误确认完整细分码及阶段能正常换行显示，模拟服务确认单次提交。截图是模拟响应，不代表任何一次真实请求的审核原因；旧版合并后的提示无法恢复其原始细分码。
 
 ## 引擎命令
 

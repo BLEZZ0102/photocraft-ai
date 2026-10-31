@@ -161,7 +161,7 @@ fn seedream_diagnostics_allowlist_fields_codes_and_content_categories() {
         (json!({"error":{"code":"MissingParameter","param":"image"}}), "parameter: image"),
         (json!({"error":{"code":"InvalidImageURL.InvalidFormat","message":"PRIVATE_IMAGE"}}), "could not decode"),
         (json!({"error":{"code":"InvalidSubscription","message":"PRIVATE_ACCOUNT"}}), "account eligibility"),
-        (json!({"error":{"code":"InputImageSensitiveContentDetected.PrivacyInformation","message":"PRIVATE_PROMPT"}}), "ContentRejected"),
+        (json!({"error":{"code":"InputImageSensitiveContentDetected.PrivacyInformation","message":"PRIVATE_PROMPT"}}), "privacy check"),
         (json!({"error":{"code":"InvalidParameter.PRIVATE_KEY","param":"PRIVATE_PROMPT","message":"PRIVATE_IMAGE"}}), "InvalidParameter"),
     ] {
         let detail = rejection::detail(&value).unwrap();
@@ -175,6 +175,52 @@ fn seedream_diagnostics_allowlist_fields_codes_and_content_categories() {
     for value in [json!({"error":{"code":"PRIVATE_KEY","param":"size","message":"PRIVATE_PROMPT"}}), json!({"error":{"code":null}}), json!({"error":true})] {
         assert!(rejection::detail(&value).is_none());
         assert!(!parse_result(Protocol::Seedream, &value).unwrap_err().to_string().contains("PRIVATE"));
+    }
+}
+
+#[test]
+fn seedream_content_diagnostics_preserve_stage_and_only_known_policy_suffixes() {
+    for (code, expected_code, stage) in [
+        ("SensitiveContentDetected", "SensitiveContentDetected", "input text"),
+        ("InputTextSensitiveContentDetected", "InputTextSensitiveContentDetected", "input text"),
+        ("InputImageSensitiveContentDetected", "InputImageSensitiveContentDetected", "reference image"),
+        ("InputTextRiskDetection", "InputTextRiskDetection", "input text"),
+        ("InputImageRiskDetection", "InputImageRiskDetection", "reference image"),
+        ("OutputImageSensitiveContentDetected", "OutputImageSensitiveContentDetected", "generated image"),
+        ("OutputImageRiskDetection", "OutputImageRiskDetection", "generated image"),
+        ("InputTextSensitiveContentDetected.PolicyViolation", "InputTextSensitiveContentDetected.PolicyViolation", "policy check rejected the input text"),
+        (
+            "InputImageSensitiveContentDetected.PolicyViolation",
+            "InputImageSensitiveContentDetected.PolicyViolation",
+            "policy check rejected the reference image",
+        ),
+        (
+            "InputImageSensitiveContentDetected.PrivacyInformation",
+            "InputImageSensitiveContentDetected.PrivacyInformation",
+            "privacy check rejected the reference image",
+        ),
+        (
+            "OutputImageSensitiveContentDetected.PolicyViolation",
+            "OutputImageSensitiveContentDetected.PolicyViolation",
+            "policy check rejected the generated image",
+        ),
+        ("OutputImageSensitiveContentDetected.DeepFake", "OutputImageSensitiveContentDetected.DeepFake", "policy check rejected the generated image"),
+        ("InputImageSensitiveContentDetected.PRIVATE_KEY", "InputImageSensitiveContentDetected", "reference image"),
+        ("OutputImageRiskDetection.PRIVATE_KEY", "OutputImageRiskDetection", "generated image"),
+        ("ContentSecurityDetectionError", "ContentSecurityDetectionError", "review service failed"),
+    ] {
+        let value = json!({"error":{"code":code,"param":"PRIVATE_PARAM","message":"PRIVATE_KEY PRIVATE_PROMPT data:image/png;base64,PRIVATE_IMAGE"}});
+        let detail = rejection::detail(&value).unwrap();
+        assert!(detail.starts_with(&format!("{expected_code}.")), "{detail}");
+        assert!(detail.contains(stage), "{detail}");
+        assert!(!detail.contains("PRIVATE"), "{detail}");
+        assert!(!detail.contains("data:image"), "{detail}");
+        assert!(!detail.contains("ContentRejected"), "{detail}");
+        for response in [value.clone(), json!({"data":[value]})] {
+            let error = parse_result(Protocol::Seedream, &response).unwrap_err().to_string();
+            assert!(error.contains(expected_code) && error.contains(stage), "{error}");
+            assert!(!error.contains("PRIVATE"), "{error}");
+        }
     }
 }
 

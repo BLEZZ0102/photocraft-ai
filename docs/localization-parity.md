@@ -73,7 +73,7 @@ engine localization or native review is complete.
 
 ## AI extension (2026-10-31)
 
-The fork's 76 AI UI entries cover all 26 non-English catalogs, with English supplied by the
+The fork's 77 AI UI entries cover all 26 non-English catalogs, with English supplied by the
 source: edit command/shortcut, account and sign-in, API configuration and feedback, review
 notices, job labels and AI update information. This is a scoped vocabulary check, not a new
 measurement of the entire app's percentages above. Live-switch tests preserve prompts and
@@ -95,7 +95,7 @@ new entries is still open; the broader localization gaps and estimates are uncha
 
 | Date | Change | Summary |
 |---|---|---|
-| 2026-10-31 | minor | AI extension: 76 UI entries in every registered language, live API-feedback and notice switching; scoped coverage only, no global readiness or estimate change; native review open |
+| 2026-10-31 | minor | AI extension: 77 UI entries in every registered language, including the API settings disclosure, live API-feedback and notice switching; scoped coverage only, no global readiness or estimate change; native review open |
 | 2026-10-10 | major | First version, measured from the catalogs with the `i18n-coverage` rules |
 | 2026-10-10 | minor | Right-to-left shell layout (menu bar, title, options and status bars, toolbox and dock sides) |
 | 2026-10-11 | minor | Czech dynamic status/notice and hardware text, render labels and Navigator zoom context; engine messages remain English |

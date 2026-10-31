@@ -1,5 +1,6 @@
 // AI view vocabulary, including dynamic form, job and notice templates.
 const AI_KEYS: &[(&str, &str)] = &[
+    ("", "API settings"),
     (r#""#, r#"AI Edit…"#),
     (r#"@id"#, r#"edit.ai.codex"#),
     (r#""#, r#"Describe your edit"#),

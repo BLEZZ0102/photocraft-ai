@@ -106,7 +106,7 @@ file-resource hot reload are not implemented.
 ## AI extension UI
 
 The AI extension follows the same language preference and all 27 registered languages
-(English source plus 26 catalogs). Its 76 catalog entries cover the AI edit command and
+(English source plus 26 catalogs). Its 77 catalog entries cover the AI edit command and
 shortcut, Codex account states and browser sign-in controls, API configuration and feedback,
 content-review notices, job labels, and the AI build's update window. Saved API feedback and
 visible review notices follow live language switching. Instructions and document contents are

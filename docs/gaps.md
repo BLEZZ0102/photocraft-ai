@@ -392,7 +392,7 @@ what an agent can't finish alone.
 - **Detail:** [`localization-parity.md`](localization-parity.md).
 - **Estimate:** 80–140 h. **Human:** native-speaker review of every catalog (none is recorded).
 - **Fork evidence (2026-10-31):** AI extension controls, feedback, review notices, job labels and
-  update information now have 76 entries in all 26 non-English catalogs (27 languages including
+  update information now have 77 entries in all 26 non-English catalogs (27 languages including
   English). Scoped coverage and live-switch regressions do not close G13 or change its estimate;
   raw technical diagnostics and native-speaker review of the added translations remain open.
 
@@ -410,7 +410,7 @@ what an agent can't finish alone.
 
 | Date | Change | Summary |
 |---|---|---|
-| 2026-10-31 | minor | G13 fork evidence: 76 AI UI entries across all registered languages; live-switch feedback tests, technical diagnostics and native review remain separate; estimates unchanged |
+| 2026-10-31 | minor | G13 fork evidence: 77 AI UI entries across all registered languages; live-switch feedback tests, technical diagnostics and native review remain separate; estimates unchanged |
 | 2026-10-27 | minor | Smooth/Feather command reads and replacement use selection bounds plus blur reach; full-canvas reference and release comparisons extended; percentages and scorecard budgets unchanged |
 | 2026-10-27 | minor | G9: 12 of 181 preferences do nothing, the scorecard's count with integration batch 9 (#9775) on main; no estimate changed |
 | 2026-10-26 | minor | Expand/Contract/Border distance work, mask reads and replacement cropped to nonzero bounds; bounded distances for radii ≤5; 36 MP exact-output comparisons improve 1.54–37.82× across eight cases; percentages, estimates and scorecard budgets unchanged |

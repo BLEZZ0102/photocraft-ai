@@ -172,6 +172,7 @@ fn main() {
             "unsupported" => State::Unsupported,
             "failed" => State::Failed,
             "cancelled" => State::Cancelled,
+            "runtimeUnavailable" => State::RuntimeUnavailable,
             _ => {
                 eprintln!("unsupported account fixture");
                 std::process::exit(2);

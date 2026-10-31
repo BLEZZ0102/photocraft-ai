@@ -41,6 +41,7 @@ pub enum State {
     Unsupported,
     Cancelling,
     Cancelled,
+    RuntimeUnavailable,
     Failed,
 }
 
@@ -55,7 +56,7 @@ pub struct Snapshot {
 #[cfg(not(target_arch = "wasm32"))]
 enum Event {
     Url(String),
-    Done(std::result::Result<AccountInfo, String>),
+    Done(std::result::Result<AccountInfo, AccountError>),
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -128,7 +129,7 @@ impl Account {
                 } else {
                     service.check(&cancelled)
                 };
-                let _ = tx.try_send(Event::Done(result.map_err(|e| e.to_string())));
+                let _ = tx.try_send(Event::Done(result));
             })
             .map_err(|e| EngineError::Other(format!("Could not start account worker: {e}")))?;
         self.pending = Some(Pending { events, cancel, worker });
@@ -154,7 +155,7 @@ impl Account {
             let event = match pending.events.try_recv() {
                 Ok(event) => event,
                 Err(TryRecvError::Empty) => return,
-                Err(TryRecvError::Disconnected) => Event::Done(Err("The Codex account connection stopped. Try again.".into())),
+                Err(TryRecvError::Disconnected) => Event::Done(Err(AccountError::Provider("The Codex account connection stopped. Try again.".into()))),
             };
             let cancelled = pending.cancel.load(Ordering::Acquire);
             match event {
@@ -173,7 +174,8 @@ impl Account {
                             Ok(AccountInfo::SignedOut) => Snapshot { state: State::SignedOut, ..Default::default() },
                             Ok(AccountInfo::Unsupported) => Snapshot { state: State::Unsupported, ..Default::default() },
                             Ok(AccountInfo::ChatGpt { plan }) => Snapshot { state: State::Connected, plan, message: None },
-                            Err(message) => Snapshot { state: State::Failed, message: Some(message), plan: None },
+                            Err(AccountError::RuntimeUnavailable(message)) => Snapshot { state: State::RuntimeUnavailable, message: Some(message), plan: None },
+                            Err(error) => Snapshot { state: State::Failed, message: Some(error.to_string()), plan: None },
                         }
                     };
                 }

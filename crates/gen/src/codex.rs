@@ -11,18 +11,20 @@ use serde_json::{Value, json};
 use crate::{EditRequest, EditResult, Error, ImageProvider};
 
 mod account;
+mod runtime;
 pub use account::{AccountInfo, AccountService, valid_login_url};
 
 #[derive(Clone)]
 pub struct CodexProvider {
-    /// Point at the executable inside the COMPLETE desktop runtime; do not copy it out.
+    /// Empty discovers an installed runtime on each connection. An explicit path must point
+    /// inside the COMPLETE desktop runtime; do not copy the executable out.
     pub executable: PathBuf,
     pub timeout: Duration,
 }
 
 impl Default for CodexProvider {
     fn default() -> Self {
-        Self { executable: std::env::var_os("PHOTOCRAFT_CODEX_PATH").map(PathBuf::from).unwrap_or_else(|| "codex".into()), timeout: Duration::from_secs(600) }
+        Self { executable: PathBuf::new(), timeout: Duration::from_secs(600) }
     }
 }
 
@@ -47,7 +49,10 @@ impl Drop for Server {
 impl Rpc {
     fn start(provider: &CodexProvider, workspace: &Path, chatgpt_only: bool) -> Result<Self, Error> {
         let deadline = Instant::now().checked_add(provider.timeout).ok_or_else(|| Error::Provider("Invalid Codex timeout".into()))?;
-        let mut cmd = Command::new(&provider.executable);
+        // Resolve in the worker, before changing cwd to the private image workspace. This also
+        // refreshes versioned desktop paths after Codex updates while PhotoCraft stays open.
+        let executable = runtime::resolve(&provider.executable)?;
+        let mut cmd = Command::new(executable);
         cmd.args(["app-server", "--stdio", "-c", "model_provider=\"openai\"", "-c", "features.shell_tool=false", "-c", "web_search=\"disabled\""])
             .current_dir(workspace)
             .env_remove("OPENAI_API_KEY")

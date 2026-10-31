@@ -1,7 +1,7 @@
 # PhotoCraft AI 本地原型
 
 开发分支：`feat/ai-provider-codex`，起点为上游 main `5f9b439`。
-当前是已在本机完成真实 Codex 编辑、后台新图层回填及撤销/重做验证的桌面原型，尚未发布 Alpha。
+当前是已在本机完成真实 Codex 编辑、后台新图层回填及撤销/重做验证的桌面原型，尚未发布 Alpha。用户自配 Gemini/Seedream/FLUX API 的使用方式见 [自定义图片 API](ai-api.md)，服务始终由用户明确选择。
 
 ## 实现
 
@@ -13,7 +13,7 @@
 - 从**原安装位置**启动完整 Codex 运行时，复用其现有 ChatGPT 登录；不复制 codex.exe，不读取或另存登录令牌。
 - AI 编辑窗口显示账户连接状态及订阅类型；检查、浏览器登录和取消通过 `ai.codex.account` 引擎命令运行，工作线程负责 I/O，不锁文档。只有明确点击“使用 ChatGPT 登录”才打开官方浏览器页面；由 Codex App Server 管理本地回调与凭据，收到匹配本次登录的完成事件后再次检查账户。取消、失败、超时或关闭窗口均不会触发图片生成；不提供会影响共享 Codex 会话的退出账户按钮。
 - `initialize → initialized → account/read → thread/start → turn/start`，等待匹配线程的 `item/completed`，其中 `imageGeneration.status=completed` 且有 `savedPath`；整个 turn 成功后才接收图片。
-- API-key 登录会失败；强制 `forced_login_method=chatgpt`、OpenAI provider，并从子进程环境移除 API key/base URL。没有 API 适配器或自动回退。
+- Codex 模式的 API-key 登录会失败；强制 `forced_login_method=chatgpt`、OpenAI provider，并从子进程环境移除 API key/base URL。另有明确选择的 API 模式，但 Codex 绝不会自动回退到它。
 - 禁用 Codex shell 和网页搜索工具；交互工具请求会返回不支持。图片能力缺失时明确失败。
 - 结果经 PNG 大小与宽高比检查、解码后，同宽高比但像素尺寸不同的图片通过现有 Bicubic 重采样适配原画布。随后转换为目标文档色彩/位深，新增一个顶层图层，并产生一个“AI Edit”撤销步骤。命令结果包含 `resizedToCanvas` 和原始输出尺寸。现有图层不变。
 - 后台任务使用引擎的文档锁、快照校验及取消机制，取消/失败不会回填。
@@ -30,7 +30,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\ai-local.ps1 R
 ```
 
 Rust 工具链安装在项目 `.tools`，脚本只为当前进程配置 PATH。微软 C++ Build Tools 和 Windows SDK 按安装器的标准位置安装。上述执行策略设置仅影响该次 PowerShell 进程。
-`Run` 优先使用显式 `-CodexPath` 或现有 `PHOTOCRAFT_CODEX_PATH`，随后检查 PATH 和桌面版的 `AppData/Local/OpenAI/Codex/bin/*/codex.exe`。存在多个安装目录时选择程序修改时间最新的完整运行时，并输出实际路径；可用 `-CodexPath '完整安装目录中的 codex.exe'` 覆盖。找不到时会在启动前明确报错，无需修改全局 PATH。
+启动脚本保留显式 `-CodexPath` 或现有 `PHOTOCRAFT_CODEX_PATH`，没有指定时由程序自行查找完整安装，避免将会随 Codex 更新变化的路径固定到启动环境。找不到时仍可打开 PhotoCraft，AI 编辑中会显示安装指引，也可明确选择其他图片服务。无需修改全局 PATH。
 脚本默认关闭增量编译，以复用本次验证构建；可在调用前显式设置 `CARGO_INCREMENTAL=1` 覆盖。
 脚本会尝试为下载工具复用 Windows 已有的系统代理，仅设置本次进程及子进程环境，不修改全局 Git 或 Windows 网络配置。
 `Run` 使用独立实例，默认将原型配置与恢复数据保存在 `.tools/photocraft-profile`；显式设置的 `PHOTOCRAFT_CONFIG_DIR` 会保留。
@@ -95,8 +95,11 @@ cargo run -p photocraft-ui-egui --profile test --example snapshot -- --out ai-di
 - 账户功能最终回归通过：provider 6 项、引擎单元测试 2355 项（15 项忽略）及其集成测试、界面单元测试 4204 项（18 项忽略）、账户/表单 7 项、图形集成 134 项（1 项忽略）；完整日志 `.tools/account-regression-final.log`。测试使用项目临时目录和 4 个测试线程；现有硬链接测试需要放宽 Windows 执行限制后运行，未跳过或修改断言。新增命令的 `panic_hunt`、三个模块全部 target 的严格 Clippy、32 crates 分层、wasm 25 crates/HEIF、格式检查均通过；菜单覆盖仍为 631/631。14 个主题在两种窗口尺寸的截图及真实未登录/等待界面已检查。真实账户过期/撤销仍不包含在本次手动验收范围中。
 - 仅桌面启用。输入与输出最大 16 MP；生成 PNG 最大 64 MiB。同宽高比输出会适配原画布尺寸，允许不超过 1% 的像素舍入误差；明显改变宽高比的输出会明确拒绝，避免拉伸或裁切。
 - PNG 交换为 8 位 sRGB，回填转换回目标模式/位深；这不会恢复模型输出中已丢失的高动态范围信息。
-- 未实现选择区/遮罩、变体、ComfyUI、付费 API、可配置模型和应用内的运行时自动发现（本地启动脚本可查找）。账户入口使用 Codex 的登录存储，不另建账号库。
-- 默认从 PATH 启动 `codex`；可用 `PHOTOCRAFT_CODEX_PATH` 指定完整运行时内的可执行文件。
+- 未实现选择区/遮罩、变体和 ComfyUI。Gemini/Seedream/FLUX API 模式支持用户配置模型和兼容地址；Codex 账户入口仍使用 Codex 的登录存储。
+- 程序会自动查找 Codex，无需先运行开发脚本或修改 PATH。Windows 优先查找本机 `OpenAI/Codex/bin` 下最新的运行时（也检查用户目录，兼容启动环境重定向）；macOS 检查系统与用户 Applications 中的 Codex 应用，随后使用 PATH 中的本机可执行文件。macOS 路径仅有合成测试覆盖，真实桌面验收目前限 Windows。发现可执行文件不代表图片能力可用，仍需完整安装与实际编辑验收。
+- 每次连接都重新定位运行时，因此 Codex 更新后可以在 AI 编辑中点击“检查连接”。未找到运行时时显示安装指引，不再误报为账户登录故障。安装后可在同一窗口重查。
+- 可用 `PHOTOCRAFT_CODEX_PATH` 指定完整运行时内的可执行文件；显式指定路径无效会直接报错，不会悄悄换用另一安装。查找仅访问已知目录与 PATH，限制扫描数量，不递归搜索磁盘，不下载或复制 Codex。
+- 2026-10-30 本机补充验收：移除 `PHOTOCRAFT_CODEX_PATH`，PATH 仅保留 Windows 系统目录，使用新的独立 Codex 目录检查账户，成功自动发现完整桌面运行时并返回未登录状态；未打开浏览器或请求图片。随后指定不存在的路径，验证即使本机已安装 Codex 也会明确报错。此测试不替代真实图片编辑或真实 macOS/Linux 验收。
 - 超时为 10 分钟，取消会关闭本次私有 App Server。外部服务已接受的生成任务是否继续由服务决定。
 - 完整工作区已通过 provider 两项、引擎 AI 九项、UI 两项及 `panic_hunt` 对抗参数检查；覆盖登录类型、完成事件过滤、多模式/位深、原图保留、新图层与撤销/重做、失败、取消、尺寸适配和菜单表单。菜单放在“内容识别填充”之后，通过现有扩展机制加入，不改变 Photoshop 对照目录。
 - 最终分层检查通过（32 crates），WebAssembly 检查通过（25 crates 及 HEIF 可选功能），provider 的 wasm 示例也通过；菜单覆盖保持 631/631。

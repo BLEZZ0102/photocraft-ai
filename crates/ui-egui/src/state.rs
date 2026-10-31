@@ -470,6 +470,9 @@ pub struct UiState {
     /// Public connection state only; always rechecked after loading UI state.
     #[serde(default, skip_deserializing)]
     pub ai_account: crate::ai_account_ui::AccountUi,
+    /// API drafts contain a masked secret; never persist them or expose them through inspect.
+    #[serde(skip)]
+    pub ai_api: crate::ai_api_ui::ApiUi,
     /// Pending GPU fallback warning, visible to automation.
     #[serde(default)]
     pub gpu_fallback_notice: Option<String>,
@@ -584,6 +587,7 @@ impl Default for UiState {
             notices: Vec::new(),
             updates_open: false,
             ai_account: Default::default(),
+            ai_api: Default::default(),
             gpu_fallback_notice: None,
             kys_offer: None,
             slow_refresh_noticed: Vec::new(),

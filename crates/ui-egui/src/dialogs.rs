@@ -324,7 +324,12 @@ fn command_body_more(app: &mut PhotocraftApp, ui: &mut egui::Ui, d: &Dialog, fie
         _ if crate::blur_pins::owns(fields) => crate::blur_pins::body(ui, fields),
         _ if fields.contains_key("__filter") => filter_body(app, ui, d, fields, id),
         _ if crate::new_guide_ui::owns(fields) => crate::new_guide_ui::body(ui, fields),
-        _ if crate::ai_account_ui::owns(fields) => crate::ai_account_ui::body(app, ui, fields),
+        _ if crate::ai_account_ui::owns(fields) => {
+            let room = (ui.ctx().content_rect().height() - DIALOG_CHROME).max(120.0);
+            egui::ScrollArea::vertical().id_salt(id.with("ai-body")).max_height(room).show(ui, |ui| {
+                crate::ai_account_ui::body(app, ui, fields);
+            });
+        }
         _ if fields.contains_key("__form") => crate::view_cmds::form_body(ui, fields),
         _ => {}
     }
@@ -691,11 +696,14 @@ pub fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
             ctx.data_mut(|m| m.insert_persisted(size_id(place), size));
         }
         // Pin once laid out at its real size (the first frame is an invisible sizing pass).
-        if !sizing && (web || pinned.is_none() || drag != egui::Vec2::ZERO) {
+        if !sizing && (web || crate::ai_account_ui::owns(&fields) || pinned.is_none() || drag != egui::Vec2::ZERO) {
             let screen = ctx.content_rect();
             // Keep the whole dialog (and so its title bar) on screen.
             let room = (screen.size() - modal.response.rect.size()).max(egui::Vec2::ZERO);
             let offset = (pinned.unwrap_or(modal.response.rect.min - screen.min) + drag).clamp(egui::Vec2::ZERO, room);
+            if crate::ai_account_ui::owns(&fields) && pinned != Some(offset) {
+                ctx.request_repaint();
+            }
             ctx.data_mut(|m| m.insert_temp(id, offset));
             // A dialog the user moved reopens there (Photoshop remembers each dialog's place).
             if drag != egui::Vec2::ZERO {
@@ -894,7 +902,11 @@ fn confirm_generic_command(app: &mut PhotocraftApp, d: Dialog) -> Result<Value, 
             return Err(e);
         }
     };
+    let (cmd, params) = crate::ai_api_ui::edit_command(&d.fields, cmd, params);
     let result = app.run(&cmd, params.clone());
+    if crate::ai_account_ui::owns(&d.fields) {
+        crate::ai_api_ui::closed(app);
+    }
     // A filter that runs as a background job keeps its preview on screen until the job
     // lands (`canvas::committed_filter_preview`) instead of flashing the unfiltered image.
     let running =
@@ -1023,6 +1035,7 @@ pub fn cancel(app: &mut PhotocraftApp, id: u64) -> Result<Value, String> {
     let closed = app.ui.close_dialog(id).ok_or_else(|| format!("no dialog {id}"))?;
     if crate::ai_account_ui::owns(&closed.fields) {
         crate::ai_account_ui::closed(app);
+        crate::ai_api_ui::closed(app);
     }
     crate::actions::stopped(app, &closed.fields);
     if crate::guide_layout_ui::owns(&closed.fields) {

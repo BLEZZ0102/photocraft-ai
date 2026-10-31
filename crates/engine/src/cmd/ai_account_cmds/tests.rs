@@ -2,6 +2,29 @@ use super::*;
 use photocraft_gen::Error;
 use std::time::{Duration, Instant};
 
+#[test]
+fn missing_runtime_is_distinct_from_an_expired_account_and_preserves_document() {
+    struct Missing;
+    impl AccountService for Missing {
+        fn check(&self, _: &dyn Fn() -> bool) -> std::result::Result<AccountInfo, Error> {
+            Err(Error::RuntimeUnavailable("Install Codex first".into()))
+        }
+        fn login(&self, _: &mut dyn FnMut(String) -> std::result::Result<(), Error>, cancel: &dyn Fn() -> bool) -> std::result::Result<AccountInfo, Error> {
+            self.check(cancel)
+        }
+    }
+    let mut s = Session::new();
+    s.execute("file.new", json!({"width":16,"height":16})).unwrap();
+    s.ai_account.set_service(Arc::new(Missing)).unwrap();
+    s.execute(COMMAND, json!({"action":"refresh"})).unwrap();
+    wait(&mut s, State::RuntimeUnavailable);
+    let status = s.execute(COMMAND, json!({"action":"status"})).unwrap();
+    assert_eq!(status["state"], "runtimeUnavailable");
+    assert_eq!(status["message"], "Install Codex first");
+    assert!(s.execute(COMMAND, json!({"action":"loginUrl"})).unwrap()["url"].is_null());
+    assert_eq!(s.active().unwrap().doc.layers.len(), 1);
+}
+
 struct Mock {
     info: AccountInfo,
     finish_login: Arc<AtomicBool>,

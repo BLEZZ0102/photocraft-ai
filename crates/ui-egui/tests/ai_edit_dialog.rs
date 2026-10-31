@@ -44,9 +44,13 @@ mod account_flow {
         finish: AtomicBool,
         opened: Mutex<Vec<String>>,
         fail_browser: AtomicBool,
+        runtime_missing: AtomicBool,
     }
     impl AccountService for Fake {
         fn check(&self, _: &dyn Fn() -> bool) -> Result<AccountInfo, AccountError> {
+            if self.runtime_missing.load(Ordering::Acquire) {
+                return Err(AccountError::RuntimeUnavailable("Synthetic missing runtime".into()));
+            }
             self.info.lock().unwrap_or_else(PoisonError::into_inner).clone().ok_or_else(|| AccountError::Provider("Expired session".into()))
         }
         fn login(&self, url: &mut dyn FnMut(String) -> Result<(), AccountError>, cancel: &dyn Fn() -> bool) -> Result<AccountInfo, AccountError> {
@@ -64,6 +68,7 @@ mod account_flow {
             finish: AtomicBool::new(false),
             opened: Mutex::new(Vec::new()),
             fail_browser: AtomicBool::new(false),
+            runtime_missing: AtomicBool::new(false),
         });
         let service = fake.clone();
         let mut h = Harness::builder().with_size(egui::vec2(1280.0, 900.0)).with_max_steps(64).build_eframe(move |cc| {
@@ -164,6 +169,23 @@ mod account_flow {
             assert!(!wait(&mut h, expected.clone()));
             assert_eq!(h.query_by_label("Sign in with ChatGPT").is_some(), expected == State::Unsupported);
         }
+    }
+
+    #[test]
+    fn missing_runtime_guides_install_and_recheck_without_requesting_login() {
+        let (mut h, fake) = harness(AccountInfo::ChatGpt { plan: None });
+        wait(&mut h, State::Connected);
+        fake.runtime_missing.store(true, Ordering::Release);
+        h.get_by_label("Check connection").click();
+        assert!(!wait(&mut h, State::RuntimeUnavailable));
+        assert!(h.query_by_label("Codex was not found. Install and open the Codex desktop app, then check the connection again.").is_some());
+        assert!(h.query_by_label("Sign in with ChatGPT").is_none());
+        assert!(h.get_by_label("OK").accesskit_node().is_disabled());
+        fake.runtime_missing.store(false, Ordering::Release);
+        h.get_by_label("Check connection").click();
+        assert!(!wait(&mut h, State::Connected));
+        assert!(fake.opened.lock().unwrap_or_else(PoisonError::into_inner).is_empty());
+        assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 1);
     }
 
     #[test]

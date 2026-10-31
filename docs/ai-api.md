@@ -1,0 +1,74 @@
+# PhotoCraft 自定义图片 API
+
+在左侧星光按钮或编辑菜单打开 **AI 编辑…**，选择图片服务。默认仍为 Codex（ChatGPT 订阅），不会自动切换到付费 API。
+
+## 使用
+
+1. 选择 **Gemini / Nano Banana**、**豆包 / Seedream** 或 **FLUX / Black Forest Labs**。
+2. 填写服务商提供的 API 密钥，确认模型名称；预置模型是否可用取决于账户、地区和服务商权限。
+   保存时会忽略密钥首尾的空格或换行；中间的空格、不可见字符或其他无效字符仍会拒绝，请重新复制完整密钥。失败会显示红色错误提示；保存成功会显示“API 配置已保存”，密钥框清空并标记已配置。保存配置不会验证服务商是否接受这把密钥。
+3. 如需重启后复用，勾选“将密钥记在本机系统凭据库”；不勾选时密钥只保留在本次运行中。
+4. 点击“保存 API 配置”。此操作只保存本机设置，不发送画布，不验证付费额度，也不生成图片。
+5. 输入编辑指令并点击确认。仅向所选服务提交一次编辑任务，使用费用由对应服务商收取。
+6. 成功后得到一个 `AI Edit (Gemini)`、`AI Edit (Seedream)` 或 `AI Edit (FLUX)` 新图层；Ctrl+Z 撤销，Ctrl+Shift+Z 重做。
+
+无需为 API 模式安装 Codex。Codex 模式仍独立使用其现有 ChatGPT 登录。
+不要将 API 密钥发到聊天、提交到 Git，或粘贴到模型名称和地址中。
+
+密钥入口：[Google AI Studio](https://aistudio.google.com/apikey)、[火山方舟 API Key 管理](https://ark.volcengine.com/region:cn-beijing/apikey)、[BFL 控制台](https://dashboard.bfl.ai/)。创建密钥不代表已开通对应图片模型或有可用余额。
+
+## 地址和模型
+
+展开“API 地址与协议”可以修改完整请求地址、协议和模型名称，以连接兼容服务。支持的是以下图片接口，不是任意聊天模型接口。
+
+| 协议 | 默认完整请求地址 | 鉴权 |
+|---|---|---|
+| Gemini Interactions | `https://generativelanguage.googleapis.com/v1beta/interactions` | `x-goog-api-key` |
+| Gemini generateContent | `https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent` | `x-goog-api-key` |
+| Seedream | `https://ark.cn-beijing.volces.com/api/v3/images/generations` | `Authorization: Bearer …` |
+| FLUX (BFL) | `https://api.bfl.ai/v1/{model}` | `x-key` |
+
+generateContent 地址中的 `{model}` 会替换为模型名称。切换协议会填入其官方默认地址；自定义网关请随后填写自己的完整地址。更换地址或协议后，须重新填写对应密钥，旧密钥不会自动发送到新地址。HTTPS 地址不允许嵌入账号密码、查询参数或 fragment；HTTP 只允许回环地址，便于本机服务和离线测试。
+
+配置位于 PhotoCraft 设置目录中的 `ai-providers.json`，只包含模型、协议、地址和记住密钥的选项。Windows 使用系统凭据管理器，macOS 使用 Keychain，Linux 使用 Secret Service。凭据库不可用时会报错，可选择只在本次运行中使用密钥；不会退回明文文件。不同 PhotoCraft 配置目录的凭据相互隔离。移除密钥不会更改服务商账户或撤销其远端密钥。
+
+## 结果和限制
+
+- 发送经 ICC 转换的 8 位 sRGB PNG，只包含当前可见画布及指令，不发送隐藏图层、文档文件名、EXIF 或 XMP。
+- 输入 PNG 最大 30 MiB，画布最大 16 MP。输出接受单张 PNG/JPEG，最大 64 MiB、16 MP；Gemini/Seedream 使用内嵌 Base64，JSON 响应最大 90 MiB。FLUX 使用下述异步下载流程。不接受多张结果或文字解释代替图片。
+- Gemini Interactions 请求使用 `store:false`，不建立可继续检索的对话；数据处理规则仍以服务商条款为准。generateContent 不使用聊天历史。Gemini 的思考中间图不会作为最终结果。
+- Seedream 请求传入参考图、指令和保持比例的约 4 MP 输出尺寸，适配 4.5 与 5.0 flash/pro 的像素区间。其他兼容模型若不支持这些参数，会明确报错；不会重试或切换模型。
+- 同比例结果缩放回原画布，并转换为目标文档模式和位深。宽高比误差超过 1% 会拒绝回填，避免拉伸或裁切。8 位模型输出无法恢复原图中已丢失的 HDR 信息。
+- 网络请求超时为 10 分钟；取消关闭本次客户端请求，不回填图层。服务商已经接受的请求是否继续处理或收费，由服务商决定。
+- API 请求不自动重试、不跟随重定向、不回退到其他服务。错误提示不回显服务响应正文、API 密钥或包含敏感数据的网络错误。本机配置文件遇到 Windows 的短暂占用时，原子替换会有限重试；不会重复提交图片请求。
+- 保存配置不等于已验证 API 连通性、模型权限或余额。自动测试使用本地模拟服务，没有使用真实 API 额度。真实 Gemini/Seedream 的效果、权限和计费仍需用户在配置后验收。
+
+## 引擎命令
+
+- `ai.provider.settings {"action":"get","provider":"gemini|seedream|flux"}`：返回非敏感配置及是否有密钥。
+- `ai.provider.settings {"action":"save","provider":"gemini|seedream|flux","profile":{"protocol":"geminiInteractions|geminiGenerateContent|seedream|flux","endpoint":"…","model":"…"},"apiKey":"…","rememberKey":false}`：保存配置；省略 `apiKey` 保留当前地址的已有密钥。该命令不写操作日志或动作记录，不返回密钥。
+- `ai.provider.settings {"action":"removeKey","provider":"gemini|seedream|flux"}`：移除所选服务的本机密钥。
+- `edit.ai.api {"provider":"gemini|seedream|flux","prompt":"编辑指令"}`：明确调用所选已配置 API，结果作为单个可撤销的新图层。
+- `edit.ai.codex` 的既有行为保持不变，不读取这些 API 密钥。
+
+接口依据：[Gemini 图片编辑](https://ai.google.dev/gemini-api/docs/image-generation)、[generateContent](https://ai.google.dev/api/generate-content)、[Interactions](https://ai.google.dev/api/interactions-api)、[Seedream 图片接口](https://docs.volcengine.com/docs/ark/image-generation-api?lang=zh&redirect=1)。
+
+## 本地验证（2026-10-30，Windows）
+
+- 服务层 17 项通过，覆盖三种协议、取消、超时、HTTP 错误、配置重启读取、密钥地址绑定，以及 Windows 文件占用时的保存和保留原配置。另已显式运行并通过系统凭据库读写/删除检查，只使用临时合成条目，随后清理。
+- 引擎 2359 项单元测试及其集成测试通过；包含模拟 API 返回 PNG/JPEG、生成新图层、位深转换和撤销/重做。界面单元测试 4204 项、AI 设置及 Codex 账户表单 11 项、图形集成 134 项通过；桌面程序单元测试 189 项及其 13 项集成测试通过。原有按设计忽略的测试保持不变，未调用被忽略的真实 Codex 编辑测试。
+- 严格 Clippy、格式检查、32 crates 分层、wasm 25 crates/HEIF、631/631 菜单覆盖和命令对抗参数检查通过。文档示例的编译检查顺序复跑通过。
+- 已查看深浅主题、800×600 / 1280×900，以及小窗口展开地址与协议后的中文截图。配置完成状态使用合成密钥，不代表真实账户已连接。
+- 首轮完整回归发现 Windows 短暂占用配置文件的问题，已加入有限原子替换重试和两项回归并通过。并行构建造成的文档检查缓存冲突，已在其他构建结束后顺序复跑通过；未修改或禁用检查。
+- 已构建 `target/debug/photocraft.exe` 并通过启动检查。本次尚未运行真实 Gemini/Seedream 请求；需用户在软件内填写密钥后，验证模型权限、效果、额度及重启复用。
+
+## FLUX（BFL 官方接口）
+
+- 在 AI 编辑中选择 **FLUX / Black Forest Labs**，默认模型 `flux-2-pro`，地址模板 `https://api.bfl.ai/v1/{model}`，协议 `FLUX (BFL)`。填写 BFL 提供的 API 密钥并保存，即可明确提交当前画布和编辑指令。模型名称会替换地址中的 `{model}`；只适用于采用相同接口的图片编辑模型，不能把任意文生图模型当作编辑模型。
+- 画布以 Base64 PNG 的 `input_image` 提交，要求单张 PNG 输出。每次编辑只提交一次任务，随后每 500 毫秒查询返回的 `polling_url`；`Ready` 后下载 `result.sample`。查询属于同一个已提交任务，不会重新提交生成。
+- 密钥使用 `x-key`，仅发送到配置的请求地址及受支持的查询地址。下载图片不携带密钥；不跟随重定向。官方 API 支持 `api.bfl.ai`、`api.us.bfl.ai`、`api.eu.bfl.ai` 的查询地址，以及 BFL 的 `.bfl.ai` / `.bfl.ml` 图片交付域名。自定义兼容服务的查询和图片地址必须与配置地址同源；外部 CDN 地址会被明确拒绝。
+- 任务元数据最多 1 MiB，图片最多 64 MiB；10 分钟总超时覆盖提交、等待、查询和下载。取消会停止本地等待与回填，但不能保证已提交的远端任务停止或不收费。
+- 内容审核、失败、未知状态、失效下载地址和 HTTP 错误均明确报错，不回填图层、不自动重试或切换服务。图层命名含 FLUX，使用原有尺寸、色彩转换与单步撤销路径。
+- 接口依据：[FLUX.2 图片编辑](https://docs.bfl.ai/flux_2/flux2_image_editing)、[BFL 异步任务流程](https://help.bfl.ai/articles/8446125349-quickstart-guide)。本轮只用本机模拟服务验证，不代表真实密钥、模型权限、计费或图片效果已经验收。
+
+FLUX 本轮本地验证：服务层 27 项通过（另 1 项凭据库检查按设计忽略），包含提交/轮询/下载、密钥不传给图片下载、地址限制、取消、总超时、审核失败、HTTP 错误及元数据上限；引擎 AI/账户/配置定向测试 20 项，AI 配置与账户表单 13 项，以及显式异常参数检查通过。严格 Clippy、格式、32 crates 分层、wasm 25 crates 与 HEIF 检查通过。桌面程序重新构建并通过启动检查，已检查深浅主题及两种尺寸的三张 FLUX 中文截图。此轮未重复整个图形集成回归，也未调用真实 BFL API。

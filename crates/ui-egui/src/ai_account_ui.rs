@@ -93,13 +93,20 @@ pub fn closed(app: &mut PhotocraftApp) {
 
 pub fn can_confirm(app: &PhotocraftApp, fields: &Map<String, Value>) -> bool {
     !owns(fields)
-        || (app.ui.ai_account.status.state == State::Connected
-            && fields.get("prompt").and_then(Value::as_str).is_some_and(|prompt| !prompt.trim().is_empty() && prompt.len() <= 16_000))
+        || ((if crate::ai_api_ui::selected(fields) == "codex" {
+            app.ui.ai_account.status.state == State::Connected
+        } else {
+            crate::ai_api_ui::can_confirm(app, fields)
+        }) && fields.get("prompt").and_then(Value::as_str).is_some_and(|prompt| !prompt.trim().is_empty() && prompt.len() <= 16_000))
 }
 
 pub fn body(app: &mut PhotocraftApp, ui: &mut egui::Ui, fields: &mut Map<String, Value>) {
     tick(app, ui.ctx());
     ui.set_max_width(440.0);
+    if crate::ai_api_ui::selector(app, ui, fields) {
+        crate::ai_api_ui::body(app, ui, fields);
+        return;
+    }
     let state = app.ui.ai_account.status.state.clone();
     let text = match state {
         State::Unknown => tl!("Codex account has not been checked"),
@@ -110,6 +117,7 @@ pub fn body(app: &mut PhotocraftApp, ui: &mut egui::Ui, fields: &mut Map<String,
         State::Unsupported => tl!("Codex is using another login method. Sign in with ChatGPT to use your subscription."),
         State::Cancelling => tl!("Cancelling sign-in…"),
         State::Cancelled => tl!("Sign-in cancelled"),
+        State::RuntimeUnavailable => tl!("Codex was not found. Install and open the Codex desktop app, then check the connection again."),
         State::Failed => tl!("Could not verify the account. Check your connection or sign in again."),
     };
     ui.label(text);
@@ -118,7 +126,7 @@ pub fn body(app: &mut PhotocraftApp, ui: &mut egui::Ui, fields: &mut Map<String,
     {
         ui.weak(format!("{}: {plan}", tl!("ChatGPT plan")));
     }
-    if state == State::Failed
+    if matches!(state, State::Failed | State::RuntimeUnavailable)
         && let Some(message) = &app.ui.ai_account.status.message
     {
         ui.collapsing(tl!("Connection details"), |ui| {
@@ -127,7 +135,7 @@ pub fn body(app: &mut PhotocraftApp, ui: &mut egui::Ui, fields: &mut Map<String,
     }
     ui.horizontal_wrapped(|ui| {
         let busy = app.session.ai_account.pending();
-        if !matches!(state, State::Connected | State::Checking | State::WaitingForBrowser | State::Cancelling)
+        if !matches!(state, State::Connected | State::Checking | State::WaitingForBrowser | State::Cancelling | State::RuntimeUnavailable)
             && ui.add_enabled(!busy, egui::Button::new(tl!("Sign in with ChatGPT"))).clicked()
         {
             action(app, "login");
@@ -149,6 +157,9 @@ pub fn body(app: &mut PhotocraftApp, ui: &mut egui::Ui, fields: &mut Map<String,
             closed(app);
         }
     });
+    if state == State::RuntimeUnavailable {
+        ui.weak(tl!("Use the complete Codex installation; copying codex.exe alone may omit image-editing components."));
+    }
     if app.ui.ai_account.browser_error {
         ui.label(tl!("Could not open your browser. Try again or copy the sign-in link into your browser."));
     }

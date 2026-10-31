@@ -1,6 +1,7 @@
 # PhotoCraft AI 本地原型
 
 开发分支：`feat/ai-provider-codex`，起点为上游 main `5f9b439`。
+现已合入官方 `v0.18.0`（`8a87a457abb43ac344deeb3fdb67541b91a72ff1`），继续在该分支保留 AI 功能。
 当前是已在本机完成真实 Codex 编辑、后台新图层回填及撤销/重做验证的桌面原型，尚未发布 Alpha。用户自配 Gemini/Seedream/FLUX API 的使用方式见 [自定义图片 API](ai-api.md)，服务始终由用户明确选择。
 
 ## 实现
@@ -19,6 +20,12 @@
 - 后台任务使用引擎的文档锁、快照校验及取消机制，取消/失败不会回填。
 
 ## 在 Windows 本机测试
+
+### AI 版的更新方式
+
+本地 AI 版的更新窗口只报告官方发布信息，并提供发布说明和 AI 项目页面。它不下载、安装或重启到官方二进制，避免覆盖本地 Codex、Gemini、Seedream、FLUX 集成。显示基础版本已是最新，不代表 AI 版有新的公开安装包。开发阶段通过合并已选定的官方版本、回归测试并重新构建更新；发布 Beta 仍需另行安排。
+
+### 启动与验收
 
 先安装 Visual Studio C++ Build Tools（Desktop development with C++）和 Windows SDK（如果尚无）。在普通 PowerShell 中进入项目目录：
 
@@ -126,4 +133,4 @@ cargo run -p photocraft-ui-egui --profile test --example snapshot -- --out ai-di
 - [OpenAI App Server 文档](https://learn.chatgpt.com/docs/app-server)及本机 `0.165.0-alpha.1.2` 生成的 JSON Schema：传输、初始化、账户类型、线程和生成完成事件字段。
 - [Codex 配置参考](https://learn.chatgpt.com/docs/config-file/config-reference)：ChatGPT 登录限制、shell 工具开关。实际图片能力仍依赖完整运行时和账号，本原型不会假装所有 codex.exe 都支持它。
 
-新版运行时的图片编辑闭环及首次浏览器登录、重启复用均已通过用户手动验收。侧栏快捷入口、账户连接、启动脚本和验收记录作为本次功能分支提交内容；用户已授权推送至 Fork。后续单独安排 Alpha 测试包和上游 PR，也可扩展 provider 设置、选区/遮罩与其他后端。
+Codex 图片编辑闭环、首次浏览器登录及重启复用的手动验收记录对应此前的 v0.17 原型。2026-10-31 的 v0.18.0 升级继续保留这些功能及 Gemini、Seedream、FLUX 配置，本次只保存本地提交，不推送、发布或创建 PR。新基础版本的自动回归与离屏界面检查不替代真实账户登录、图片编辑及付费 API 出图的重新验收；后续测试包和上游 PR 另行安排。

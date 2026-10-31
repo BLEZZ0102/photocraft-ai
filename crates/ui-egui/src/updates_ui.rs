@@ -5,35 +5,11 @@ use serde_json::Value;
 
 use crate::PhotocraftApp;
 
+// This fork reports upstream releases, but never installs an official binary over its AI build.
+#[derive(Default)]
 pub(crate) struct Runtime {
     startup_checked: bool,
     notified_version: Option<String>,
-    /// The startup prompt and the self-update behind it (desktop).
-    #[cfg(not(target_arch = "wasm32"))]
-    updater: craft_update::updater::Updater,
-}
-
-impl Default for Runtime {
-    fn default() -> Self {
-        Self {
-            startup_checked: false,
-            notified_version: None,
-            #[cfg(not(target_arch = "wasm32"))]
-            updater: craft_update::updater::Updater::new(&crate::UPDATE_APP, photocraft_engine::build_info::VERSION),
-        }
-    }
-}
-
-/// The release the engine found, as `craft-update` knows it.
-#[cfg(not(target_arch = "wasm32"))]
-fn release_of(found: &photocraft_engine::updates_cmds::Release) -> craft_update::Release {
-    craft_update::Release {
-        tag: format!("v{}", found.version),
-        version: craft_update::parse_version(&found.version),
-        name: format!("PhotoCraft {}", found.version),
-        html_url: found.url.clone(),
-        ..Default::default()
-    }
 }
 
 pub(crate) fn check(app: &mut PhotocraftApp, _ctx: &egui::Context, params: Value) -> Result<Value, String> {
@@ -61,8 +37,6 @@ pub(crate) fn tick(app: &mut PhotocraftApp, ctx: &egui::Context) {
     {
         app.updates_rt.notified_version = Some(release.version.clone());
         app.ui.updates_open = true;
-        #[cfg(not(target_arch = "wasm32"))]
-        app.updates_rt.updater.offer(release_of(release));
     }
     if app.session.updates.check.is_none() {
         return;
@@ -81,37 +55,13 @@ pub(crate) fn tick(app: &mut PhotocraftApp, ctx: &egui::Context) {
 pub(crate) fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
     let mut download: Option<String> = None;
 
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-        let was_open = app.updates_rt.updater.prompt_open();
-        app.updates_rt.updater.tick(ctx);
-        // The restart helper is scheduled before the app closes, so no update starts over unsaved work.
-        let clean = !app.has_unsaved_work();
-        match app.updates_rt.updater.show_if(ctx, clean) {
-            craft_update::updater::Action::None => {}
-            craft_update::updater::Action::OpenUrl(url) => download = Some(url),
-            // The guarded close path asks about unsaved work and waits for saves; the restart helper
-            // relaunches once the process exits.
-            craft_update::updater::Action::Close => ctx.send_viewport_cmd(egui::ViewportCommand::Close),
-        }
-        if was_open && !app.updates_rt.updater.prompt_open() {
-            app.ui.updates_open = false;
-        }
-        if app.updates_rt.updater.prompt_open() {
-            return;
-        }
-    }
-
     if !app.ui.updates_open {
-        if let Some(url) = download {
-            crate::links::open(app, ctx, &url);
-        }
         return;
     }
     let mut open = true;
     let status = app.session.updates.status.clone();
     let mut retry = false;
-    egui::Window::new(tl!("PhotoCraft Updates"))
+    egui::Window::new(tl!("PhotoCraft AI Updates"))
         .id(egui::Id::unique("photocraft_updates"))
         .open(&mut open)
         .collapsible(false)
@@ -120,6 +70,9 @@ pub(crate) fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
         .show(ctx, |ui| {
             let t = crate::theme::Tokens::get(ctx);
             ui.label(crate::i18n::fmt(crate::i18n::t("Installed version: {version}"), &[("version", photocraft_engine::build_info::VERSION)]));
+            ui.label(tl!(
+                "This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project."
+            ));
             ui.add_space(8.0);
             match &status {
                 Status::Checking => {
@@ -129,23 +82,13 @@ pub(crate) fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
                     });
                 }
                 Status::Available { release } => {
-                    ui.label(crate::i18n::fmt(crate::i18n::t("PhotoCraft {version} is available."), &[("version", &release.version)]));
-                    #[cfg(not(target_arch = "wasm32"))]
-                    {
-                        if crate::widgets::primary_button(ui, tl!("Update and Restart"), 180.0).clicked() {
-                            app.updates_rt.updater.offer(release_of(release));
-                        }
-                        if ui.button(tl!("Release Notes")).clicked() {
-                            download = Some(release.url.clone());
-                        }
-                    }
-                    #[cfg(target_arch = "wasm32")]
-                    if crate::widgets::primary_button(ui, tl!("Open Download Page"), 160.0).clicked() {
+                    ui.label(crate::i18n::fmt(crate::i18n::t("Upstream PhotoCraft {version} is available."), &[("version", &release.version)]));
+                    if ui.button(tl!("Release Notes")).clicked() {
                         download = Some(release.url.clone());
                     }
                 }
                 Status::UpToDate => {
-                    ui.label(tl!("PhotoCraft is up to date."));
+                    ui.label(tl!("The upstream base is up to date. AI build updates are managed separately."));
                 }
                 Status::Failed { message } => {
                     ui.colored_label(t.warning, tl!("Could not check for updates."));
@@ -154,6 +97,9 @@ pub(crate) fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
                 Status::Idle => {
                     ui.label(tl!("Updates have not been checked yet."));
                 }
+            }
+            if ui.button(tl!("AI Project Page")).clicked() {
+                download = Some("https://github.com/BLEZZ0102/photocraft-ai".into());
             }
             if !matches!(status, Status::Checking) && ui.button(tl!("Check Again")).clicked() {
                 retry = true;
@@ -283,7 +229,7 @@ mod tests {
 
     #[test]
     #[cfg(not(target_arch = "wasm32"))]
-    fn startup_update_prompt_appears_and_can_be_dismissed() {
+    fn startup_update_notice_is_information_only() {
         let (mut app, _, sender) = app();
         let ctx = egui::Context::default();
         at(&mut app, &ctx, 0.0);
@@ -295,14 +241,14 @@ mod tests {
             .send(Ok(Some(Release { version: "99.0.0".into(), url: "https://github.com/storytold/photocraft/releases/tag/v99.0.0".into() })))
             .unwrap();
         at(&mut app, &ctx, 1.0);
-        assert!(app.updates_rt.updater.prompt_open(), "startup prompt initialized on available release");
+        assert!(app.ui.updates_open, "upstream release opens the information window");
 
-        // Rendering show() renders the prompt modal
+        // Rendering release information never starts an installer or closes the document.
         let mut output = ctx.run_ui(egui::RawInput::default(), |ui| {
             show(&mut app, ui.ctx());
         });
         output.textures_delta.clear();
-        assert!(app.updates_rt.updater.prompt_open());
+        assert!(app.ui.updates_open);
     }
 
     #[test]

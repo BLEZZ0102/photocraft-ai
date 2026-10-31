@@ -1,5 +1,22 @@
 use super::*;
 
+#[test]
+fn inspect_keeps_ai_account_and_upstream_status_fields_together() {
+    let mut app = PhotocraftApp::new(photocraft_engine::Session::new(), crate::Services::default());
+    app.ui.ai_account.status = photocraft_engine::cmd::ai_account_cmds::Snapshot {
+        state: photocraft_engine::cmd::ai_account_cmds::State::Connected,
+        plan: Some("plus".into()),
+        message: None,
+    };
+    let value = call(&mut app, &egui::Context::default(), "ui.inspect", json!({}));
+    let result = &value["result"];
+    assert_eq!(result["aiAccount"]["state"], "connected");
+    assert_eq!(result["aiAccount"]["plan"], "plus");
+    assert_eq!(result["updates"]["currentVersion"], photocraft_engine::build_info::VERSION);
+    assert!(result["perf"]["slowFrames"].is_array());
+    assert!(result.get("cameraRaw").is_some());
+}
+
 fn call(app: &mut PhotocraftApp, ctx: &egui::Context, method: &str, params: Value) -> Value {
     let (req, _rx) = ControlRequest::new(method, params);
     match handle(app, ctx, &req) {

@@ -3242,3 +3242,9 @@ curves	Smooth	平滑
 	Select and Mask was closed: another layer was selected	已关闭“选择与蒙版”：已选择另一个图层
 	Drag to move the selected path	拖动以移动选中的路径
 	Edit Brush…	编辑画笔…
+	PhotoCraft AI Updates	PhotoCraft AI 更新
+	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	此 AI 版仅提示官方更新。官方安装包不包含本版 AI 功能，请通过 AI 项目获取本版更新。
+	Upstream PhotoCraft {version} is available.	官方 PhotoCraft {version} 已发布。
+	The upstream base is up to date. AI build updates are managed separately.	基础版本已是最新官方发布。AI 版更新单独提供。
+	AI Project Page	AI 项目页面
+	Release Notes	发布说明

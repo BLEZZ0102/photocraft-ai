@@ -1,0 +1,1 @@
+Restricted ArtCraft mark artwork is omitted from this unofficial PhotoCraft AI Beta distribution. The original mark license is retained in LICENSE-brand.txt. The separately licensed PhotoCraft app icon in assets/app-icon is retained with its MIT OR Apache-2.0 notice.

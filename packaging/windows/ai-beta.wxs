@@ -12,6 +12,10 @@
     <Property Id="ARPURLUPDATEINFO" Value="https://github.com/BLEZZ0102/photocraft-ai/releases" />
     <Property Id="ARPHELPLINK" Value="https://github.com/BLEZZ0102/photocraft-ai/issues" />
     <Property Id="INSTALLFOLDER" Secure="yes" />
+    <Property Id="AI_PREVIOUSFOLDER" Secure="yes">
+      <RegistrySearch Id="AISavedInstallFolder" Root="HKCU" Key="Software\BLEZZ0102\PhotoCraftAI" Name="InstallDir" Type="raw" Bitness="always64" />
+    </Property>
+    <SetProperty Id="INSTALLFOLDER" Action="AIRestoreInstallFolder" Value="[AI_PREVIOUSFOLDER]" After="AppSearch" Sequence="both" Condition="AI_PREVIOUSFOLDER AND NOT INSTALLFOLDER" />
     <StandardDirectory Id="LocalAppDataFolder">
       <Directory Id="ProgramsFolder" Name="Programs">
         <Directory Id="INSTALLFOLDER" Name="PhotoCraftAI">
@@ -39,6 +43,7 @@
         <File Id="AIExe" Source="$(var.Payload)\photocraft.exe" />
         <File Id="AICli" Source="$(var.Payload)\photocraft-cli.exe" />
         <RegistryValue Root="HKCU" Key="Software\BLEZZ0102\PhotoCraftAI" Name="BinaryVersion" Value="$(var.DisplayVersion)" Type="string" KeyPath="yes" />
+        <RegistryValue Root="HKCU" Key="Software\BLEZZ0102\PhotoCraftAI" Name="InstallDir" Value="[INSTALLFOLDER]" Type="string" />
         <Shortcut Id="AIStart" Directory="AIStartMenu" Name="PhotoCraft AI Beta" Target="[#AIExe]" WorkingDirectory="INSTALLFOLDER" Icon="PhotoCraftAI.exe" />
         <!-- RemoveFolder removes empty directories only; no recursive data cleanup. -->
         <RemoveFolder Id="RemoveAIMenu" Directory="AIStartMenu" On="uninstall" />

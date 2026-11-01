@@ -44,6 +44,22 @@ Assert ($files.Count -eq 12) 'Unexpected files in the installer; do not bundle p
 foreach ($row in (Rows 'SELECT `Root`, `Key` FROM `Registry`' 2)) {
     Assert ($row[0] -eq '1' -and $row[1] -eq 'Software\BLEZZ0102\PhotoCraftAI') 'Registry writes must be restricted to the fork HKCU key'
 }
+$savedFolder = @(Rows 'SELECT `Value` FROM `Registry` WHERE `Name` = ''InstallDir''' 1)
+Assert ($savedFolder.Count -eq 1 -and $savedFolder[0][0] -eq '[INSTALLFOLDER]') 'Maintenance must remember the exact installed directory'
+$restore = @(Rows 'SELECT `Condition` FROM `InstallExecuteSequence` WHERE `Action` = ''AIRestoreInstallFolder''' 1)
+Assert ($restore.Count -eq 1) 'Missing directory restore action before maintenance costing'
+$session = $installer.OpenPackage($msi, 1)
+try {
+    foreach ($case in @(@('E:\Existing beta\', '', 'E:\Existing beta\'), @('E:\Existing beta\', 'F:\Explicit beta\', 'F:\Explicit beta\'), @('', '', ''))) {
+        [void]$session.GetType().InvokeMember('Property', 'SetProperty', $null, $session, @('AI_PREVIOUSFOLDER', $case[0]))
+        [void]$session.GetType().InvokeMember('Property', 'SetProperty', $null, $session, @('INSTALLFOLDER', $case[1]))
+        if ($session.EvaluateCondition($restore[0][0]) -eq 1) {
+            Assert ($session.DoAction('AIRestoreInstallFolder') -eq 1) 'Directory restore property action failed'
+        }
+        $folder = $session.GetType().InvokeMember('Property', 'GetProperty', $null, $session, @('INSTALLFOLDER'))
+        Assert ($folder -eq $case[2]) 'Remembered directory must survive uninstall/repair and preserve explicit overrides'
+    }
+} finally { [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($session) }
 $shortcut = @(Rows 'SELECT `Target` FROM `Shortcut`' 1)
 Assert ($shortcut.Count -eq 1 -and $shortcut[0][0] -eq '[#AIExe]') 'Expected one direct Start menu shortcut'
 if ($PortablePath) {

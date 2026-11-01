@@ -1063,7 +1063,7 @@ mod tests {
     #[test]
     fn the_windows_beta_has_an_independent_window_identity() {
         let options = super::native_options(false);
-        assert_eq!(options.viewport.app_id.as_deref(), Some("io.github.BLEZZ0102.photocraft-ai"));
+        assert_eq!(options.viewport.app_id.as_deref(), Some("io.github.blezz0102.photocraft-ai"));
         assert_ne!(options.viewport.app_id.as_deref(), Some("ai.storyteller.photocraft"));
     }
 }

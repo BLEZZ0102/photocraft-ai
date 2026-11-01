@@ -1,3 +1,5 @@
+**Unofficial PhotoCraft AI Beta community build.** This Windows distribution adds Codex subscription editing and user-configured Gemini, Seedream and FLUX image APIs. [Installation and usage](docs/ai-beta.md) · [AI project downloads](https://github.com/BLEZZ0102/photocraft-ai/releases). Codex and account credentials are not bundled. Upstream PhotoCraft authors and licenses are retained.
+
 <p align="center">
   <a href="https://getartcraft.com/">
     <picture>

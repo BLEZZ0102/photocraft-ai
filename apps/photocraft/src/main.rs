@@ -149,7 +149,7 @@ fn native_options(custom_titlebar: bool) -> eframe::NativeOptions {
     eframe::NativeOptions {
         viewport: viewport
             .with_app_id(APP_ID)
-            .with_title("PhotoCraft")
+            .with_title("PhotoCraft AI Beta")
             .with_inner_size([1440.0, 900.0])
             .with_min_inner_size([760.0, 480.0])
             .with_drag_and_drop(true)
@@ -490,7 +490,7 @@ fn main() -> eframe::Result {
     let created_in_callback = app_created.clone();
     let started_sentinel = sentinel.clone();
     let result = eframe::run_native(
-        "PhotoCraft",
+        "PhotoCraft AI Beta",
         options,
         Box::new(move |cc| {
             created_in_callback.store(true, std::sync::atomic::Ordering::Relaxed);
@@ -1051,10 +1051,19 @@ mod tests {
 
     /// X11 startup notification and docks match a window to its launcher by `StartupWMClass`,
     /// so it has to be the class the window carries: the app id, on Wayland and X11 alike.
+    #[cfg(not(windows))]
     #[test]
     fn the_desktop_entry_names_the_window_class() {
         let entry = include_str!("../../../packaging/linux/ai.storyteller.photocraft.desktop");
         let class = entry.lines().find_map(|line| line.strip_prefix("StartupWMClass="));
         assert_eq!(class, Some(super::APP_ID));
+    }
+
+    #[cfg(windows)]
+    #[test]
+    fn the_windows_beta_has_an_independent_window_identity() {
+        let options = super::native_options(false);
+        assert_eq!(options.viewport.app_id.as_deref(), Some("io.github.BLEZZ0102.photocraft-ai"));
+        assert_ne!(options.viewport.app_id.as_deref(), Some("ai.storyteller.photocraft"));
     }
 }

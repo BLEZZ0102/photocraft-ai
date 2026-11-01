@@ -4,12 +4,12 @@
 //! cross-compile from macOS or Linux still links, unless `PHOTOCRAFT_REQUIRE_WINRES=1` (set by the
 //! release workflow) turns it into an error.
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=../../assets/app-icon/photocraft.ico");
     println!("cargo:rerun-if-env-changed=PHOTOCRAFT_REQUIRE_WINRES");
     if std::env::var("CARGO_CFG_TARGET_OS").as_deref() != Ok("windows") {
-        return;
+        return Ok(());
     }
     // Printing to PDF (winprint's `PdfCreateRenderer`) imports Windows.Data.Pdf.dll, which
     // stripped Windows images (NTLite, some N/LTSC builds) lack. A load-time import stops the exe
@@ -21,16 +21,17 @@ fn main() {
     }
     let mut res = winresource::WindowsResource::new();
     res.set_icon("../../assets/app-icon/photocraft.ico")
-        .set("ProductName", "PhotoCraft")
-        .set("FileDescription", "PhotoCraft image editor")
-        .set("CompanyName", "Learning Machines LLC")
+        .set("ProductName", "PhotoCraft AI Beta")
+        .set("FileDescription", "PhotoCraft AI Beta - unofficial community build")
+        .set("CompanyName", "BLEZZ0102")
         .set("LegalCopyright", "Copyright (c) the PhotoCraft authors. MIT OR Apache-2.0.")
         .set("OriginalFilename", "photocraft.exe")
         .set("InternalName", "photocraft");
     if let Err(e) = res.compile() {
         if std::env::var_os("PHOTOCRAFT_REQUIRE_WINRES").is_some() {
-            panic!("embedding Windows resources failed: {e}");
+            return Err(format!("embedding Windows resources failed: {e}").into());
         }
         println!("cargo:warning=photocraft.exe built without icon/version resources: {e}");
     }
+    Ok(())
 }

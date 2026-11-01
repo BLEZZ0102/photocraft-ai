@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="PhotoCraft AI Beta" Manufacturer="BLEZZ0102" Version="$(var.Version)"
+           UpgradeCode="8E0C7BE0-745A-4D87-B77C-4A4315D4EC62" Scope="perUser" Language="1033" Compressed="yes">
+    <SummaryInformation Description="PhotoCraft AI Beta — unofficial community build" Manufacturer="BLEZZ0102" />
+    <MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A newer PhotoCraft AI Beta is already installed." />
+    <Launch Condition="NOT ALLUSERS" Message="PhotoCraft AI Beta supports installation for the current user only." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+    <Icon Id="PhotoCraftAI.exe" SourceFile="$(var.IconPath)" />
+    <Property Id="ARPPRODUCTICON" Value="PhotoCraftAI.exe" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/BLEZZ0102/photocraft-ai" />
+    <Property Id="ARPURLUPDATEINFO" Value="https://github.com/BLEZZ0102/photocraft-ai/releases" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/BLEZZ0102/photocraft-ai/issues" />
+    <Property Id="INSTALLFOLDER" Secure="yes" />
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="ProgramsFolder" Name="Programs">
+        <Directory Id="INSTALLFOLDER" Name="PhotoCraftAI">
+          <Directory Id="AIDocsFolder" Name="docs" />
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="AIStartMenu" Name="PhotoCraft AI Beta" />
+    </StandardDirectory>
+    <Feature Id="Main" Title="PhotoCraft AI Beta" Level="1">
+      <ComponentGroupRef Id="AIApplication" />
+      <ComponentGroupRef Id="AIDocumentation" />
+    </Feature>
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+    <UI>
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg" Order="2" Condition="NOT Installed" />
+      <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2" />
+    </UI>
+    <Property Id="WIXUI_EXITDIALOGOPTIONALTEXT" Value="PhotoCraft AI Beta $(var.DisplayVersion) is installed. Start it from the Start menu. This is an unofficial community build; install Codex separately or configure your own image API." />
+  </Package>
+  <Fragment>
+    <ComponentGroup Id="AIApplication" Directory="INSTALLFOLDER">
+      <Component Id="AIBinaries" Guid="F4760927-43C3-44E5-B69B-AB4D2382AC73">
+        <File Id="AIExe" Source="$(var.Payload)\photocraft.exe" />
+        <File Id="AICli" Source="$(var.Payload)\photocraft-cli.exe" />
+        <RegistryValue Root="HKCU" Key="Software\BLEZZ0102\PhotoCraftAI" Name="BinaryVersion" Value="$(var.DisplayVersion)" Type="string" KeyPath="yes" />
+        <Shortcut Id="AIStart" Directory="AIStartMenu" Name="PhotoCraft AI Beta" Target="[#AIExe]" WorkingDirectory="INSTALLFOLDER" Icon="PhotoCraftAI.exe" />
+        <!-- RemoveFolder removes empty directories only; no recursive data cleanup. -->
+        <RemoveFolder Id="RemoveAIMenu" Directory="AIStartMenu" On="uninstall" />
+        <RemoveFolder Id="RemoveAIInstall" Directory="INSTALLFOLDER" On="uninstall" />
+        <RemoveFolder Id="RemoveEmptyPrograms" Directory="ProgramsFolder" On="uninstall" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="AIDocumentation" Directory="AIDocsFolder">
+      <Component Id="AILicenses" Guid="FD21406B-118E-41C4-84C5-A29E94BD6EBE">
+        <File Source="$(var.Payload)\docs\LICENSE" />
+        <File Source="$(var.Payload)\docs\LICENSE-MIT" />
+        <File Source="$(var.Payload)\docs\LICENSE-APACHE" />
+        <File Source="$(var.Payload)\docs\NOTICE" />
+        <File Source="$(var.Payload)\docs\ATTRIBUTION.md" />
+        <File Source="$(var.Payload)\docs\README.md" />
+        <File Source="$(var.Payload)\docs\LICENSE-app-icon.txt" />
+        <File Source="$(var.Payload)\docs\LICENSE-WiX.txt" />
+        <File Source="$(var.Payload)\docs\THIRD-PARTY-NOTICES.txt" />
+        <File Source="$(var.Payload)\docs\BUILD.txt" />
+        <RegistryValue Root="HKCU" Key="Software\BLEZZ0102\PhotoCraftAI" Name="DocsVersion" Value="$(var.DisplayVersion)" Type="string" KeyPath="yes" />
+        <RemoveFolder Id="RemoveAIDocs" On="uninstall" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

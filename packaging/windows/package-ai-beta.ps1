@@ -46,9 +46,10 @@ try {
     if ($LASTEXITCODE -ne 0 -or -not $binaryVersion.Contains($version)) { throw 'The executable does not match this beta version' }
     $resource = (Get-Item -LiteralPath (Join-Path $bin 'photocraft.exe')).VersionInfo
     if ($resource.ProductName -ne 'PhotoCraft AI Beta' -or $resource.CompanyName -ne 'BLEZZ0102') { throw 'The executable is not the independent AI distribution' }
-    foreach ($name in @('LICENSE', 'LICENSE-MIT', 'LICENSE-APACHE', 'NOTICE', 'ATTRIBUTION.md')) {
+    foreach ($name in @('LICENSE-MIT', 'LICENSE-APACHE', 'NOTICE', 'ATTRIBUTION.md')) {
         Copy-Item -LiteralPath (Join-Path $root $name) -Destination $docs
     }
+    [IO.File]::WriteAllText((Join-Path $docs 'LICENSE'), "PhotoCraft AI Beta and the PhotoCraft core are licensed under MIT OR Apache-2.0, at your option. See LICENSE-MIT, LICENSE-APACHE, NOTICE and ATTRIBUTION.md. Bundled third-party components retain their own licenses; see THIRD-PARTY-NOTICES.txt and LICENSE-WiX.txt.`n", $utf8)
     Copy-Item -LiteralPath (Join-Path $root 'docs/ai-beta.md') -Destination (Join-Path $docs 'README.md')
     Copy-Item -LiteralPath (Join-Path $root 'assets/app-icon/LICENSE.txt') -Destination (Join-Path $docs 'LICENSE-app-icon.txt')
     # Include license texts from the resolved dependency sources, never their local paths.

@@ -5170,12 +5170,14 @@ dependencies = [
  "tempfile",
  "thiserror 2.0.21",
  "winit",
+ "winreg",
  "winresource",
  "winsafe",
  "wl-clipboard-rs",
  "x11rb",
  "xcap",
  "zbus 5.19.0",
+ "zip",
 ]
 
 [[package]]

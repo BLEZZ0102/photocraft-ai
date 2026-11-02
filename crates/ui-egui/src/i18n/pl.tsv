@@ -4180,9 +4180,6 @@ curves	Smooth	Wygładź
 	Codex was not found. Install and open the Codex desktop app, then check the connection again.	Nie znaleziono Codex. Zainstaluj i otwórz aplikację komputerową Codex, a następnie ponownie sprawdź połączenie.
 	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Użyj pełnej instalacji Codex; skopiowanie wyłącznie codex.exe może pominąć składniki edycji obrazów.
 	PhotoCraft AI Updates	Aktualizacje PhotoCraft AI
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	Ta wersja z AI informuje o wydaniach projektu źródłowego. Oficjalne instalatory nie zawierają dodanych funkcji AI. Aktualizacje wersji z AI pobieraj z projektu AI.
-	Upstream PhotoCraft {version} is available.	PhotoCraft {version} jest dostępny w projekcie źródłowym.
-	The upstream base is up to date. AI build updates are managed separately.	Wersja bazowa jest aktualna względem projektu źródłowego. Aktualizacje wersji z AI są zarządzane oddzielnie.
 	AI Project Page	Strona projektu AI
 	Release Notes	Informacje o wydaniu
 	AI edit did not pass the service's content review	Edycja z AI nie przeszła kontroli treści usługi
@@ -4210,3 +4207,10 @@ curves	Smooth	Wygładź
 	Codex Account	Konto Codex
 	AI Provider Settings	Ustawienia dostawcy AI
 	API settings	Ustawienia API
+	Updates are offered only after a new AI package is published.	Aktualizacje są oferowane dopiero po opublikowaniu nowego pakietu AI.
+	PhotoCraft AI {version} is available.	Dostępny jest PhotoCraft AI {version}.
+	No newer AI package is available.	Brak nowszego pakietu AI.
+	Downloading and verifying update…	Pobieranie i weryfikacja aktualizacji…
+	Could not install the update.	Nie udało się zainstalować aktualizacji.
+	Save your documents and wait for background tasks before updating.	Zapisz dokumenty i poczekaj na zakończenie zadań przed aktualizacją.
+	Update and Restart	Aktualizuj i uruchom ponownie

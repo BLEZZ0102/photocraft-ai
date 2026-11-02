@@ -4598,9 +4598,6 @@ shape	Appearance	Apparence
 	Codex was not found. Install and open the Codex desktop app, then check the connection again.	Codex est introuvable. Installez et ouvrez l’application de bureau Codex, puis vérifiez à nouveau la connexion.
 	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Utilisez l’installation complète de Codex ; copier uniquement codex.exe peut omettre des composants de retouche d’images.
 	PhotoCraft AI Updates	Mises à jour de PhotoCraft AI
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	Cette version IA signale les publications du projet d’origine. Les installateurs officiels n’incluent pas ses ajouts IA. Obtenez les mises à jour IA sur le projet IA.
-	Upstream PhotoCraft {version} is available.	PhotoCraft {version} est disponible dans le projet d’origine.
-	The upstream base is up to date. AI build updates are managed separately.	La base est à jour par rapport au projet d’origine. Les mises à jour IA sont gérées séparément.
 	AI Project Page	Page du projet IA
 	Release Notes	Notes de version
 	AI edit did not pass the service's content review	La retouche IA n’a pas passé la modération du service
@@ -4628,3 +4625,10 @@ shape	Appearance	Apparence
 	Codex Account	Compte Codex
 	AI Provider Settings	Paramètres du fournisseur IA
 	API settings	Paramètres API
+	Updates are offered only after a new AI package is published.	Les mises à jour sont proposées après la publication d’un nouveau paquet IA.
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} est disponible.
+	No newer AI package is available.	Aucun nouveau paquet IA disponible.
+	Downloading and verifying update…	Téléchargement et vérification de la mise à jour…
+	Could not install the update.	Impossible d’installer la mise à jour.
+	Save your documents and wait for background tasks before updating.	Enregistrez vos documents et attendez la fin des tâches avant la mise à jour.
+	Update and Restart	Mettre à jour et redémarrer

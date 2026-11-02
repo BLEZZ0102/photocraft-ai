@@ -4474,9 +4474,6 @@ navigator	Zoom	Zoom
 	Codex was not found. Install and open the Codex desktop app, then check the connection again.	No se encontró Codex. Instala y abre la aplicación de escritorio Codex y vuelve a comprobar la conexión.
 	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Utiliza la instalación completa de Codex; copiar solo codex.exe puede omitir componentes de edición de imágenes.
 	PhotoCraft AI Updates	Actualizaciones de PhotoCraft AI
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	Esta versión con IA informa de las versiones del proyecto original. Los instaladores oficiales no incluyen sus funciones de IA añadidas. Obtén las actualizaciones de IA en el proyecto de IA.
-	Upstream PhotoCraft {version} is available.	PhotoCraft {version} está disponible en el proyecto original.
-	The upstream base is up to date. AI build updates are managed separately.	La base está actualizada con el proyecto original. Las actualizaciones de la versión con IA se gestionan por separado.
 	AI Project Page	Página del proyecto de IA
 	Release Notes	Notas de la versión
 	AI edit did not pass the service's content review	La edición con IA no superó la revisión de contenido del servicio
@@ -4504,3 +4501,10 @@ navigator	Zoom	Zoom
 	Codex Account	Cuenta de Codex
 	AI Provider Settings	Configuración del proveedor de IA
 	API settings	Configuración de API
+	Updates are offered only after a new AI package is published.	Las actualizaciones se ofrecen tras publicar un nuevo paquete de IA.
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} está disponible.
+	No newer AI package is available.	No hay un paquete de IA más reciente.
+	Downloading and verifying update…	Descargando y verificando la actualización…
+	Could not install the update.	No se pudo instalar la actualización.
+	Save your documents and wait for background tasks before updating.	Guarda tus documentos y espera a que terminen las tareas antes de actualizar.
+	Update and Restart	Actualizar y reiniciar

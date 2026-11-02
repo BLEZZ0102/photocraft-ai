@@ -3582,9 +3582,6 @@ curves	Smooth	Haluskan
 	Codex was not found. Install and open the Codex desktop app, then check the connection again.	Codex tidak ditemukan. Instal dan buka aplikasi desktop Codex, lalu periksa koneksi kembali.
 	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Gunakan instalasi Codex yang lengkap; menyalin codex.exe saja dapat melewatkan komponen pengeditan gambar.
 	PhotoCraft AI Updates	Pembaruan PhotoCraft AI
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	Versi AI ini melaporkan rilis proyek asal. Penginstal resmi tidak menyertakan fitur AI tambahannya. Dapatkan pembaruan versi AI dari proyek AI.
-	Upstream PhotoCraft {version} is available.	PhotoCraft {version} tersedia di proyek asal.
-	The upstream base is up to date. AI build updates are managed separately.	Versi dasar sudah mengikuti rilis terbaru proyek asal. Pembaruan versi AI dikelola terpisah.
 	AI Project Page	Halaman proyek AI
 	Release Notes	Catatan rilis
 	AI edit did not pass the service's content review	Pengeditan AI tidak lolos peninjauan konten layanan
@@ -3612,3 +3609,10 @@ curves	Smooth	Haluskan
 	Codex Account	Akun Codex
 	AI Provider Settings	Pengaturan penyedia AI
 	API settings	Pengaturan API
+	Updates are offered only after a new AI package is published.	Pembaruan ditawarkan hanya setelah paket AI baru diterbitkan.
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} tersedia.
+	No newer AI package is available.	Tidak ada paket AI yang lebih baru.
+	Downloading and verifying update…	Mengunduh dan memverifikasi pembaruan…
+	Could not install the update.	Tidak dapat memasang pembaruan.
+	Save your documents and wait for background tasks before updating.	Simpan dokumen dan tunggu tugas latar belakang selesai sebelum memperbarui.
+	Update and Restart	Perbarui dan mulai ulang

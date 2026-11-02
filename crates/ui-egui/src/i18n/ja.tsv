@@ -4238,9 +4238,6 @@ curves	Smooth	スムーズ
 	Codex was not found. Install and open the Codex desktop app, then check the connection again.	Codex が見つかりません。Codex デスクトップアプリをインストールして起動し、再度接続を確認してください。
 	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Codex のインストール全体を使用してください。codex.exe のみをコピーすると、画像編集コンポーネントが不足する場合があります。
 	PhotoCraft AI Updates	PhotoCraft AI の更新
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	この AI 版は上流のリリースを通知します。公式インストーラーには AI 機能の追加部分が含まれません。AI 版の更新は AI プロジェクトから入手してください。
-	Upstream PhotoCraft {version} is available.	上流の PhotoCraft {version} が利用可能です。
-	The upstream base is up to date. AI build updates are managed separately.	ベースは最新の上流版です。AI 版の更新は別に管理されます。
 	AI Project Page	AI プロジェクトページ
 	Release Notes	リリースノート
 	AI edit did not pass the service's content review	AI 編集はサービスのコンテンツ審査に通りませんでした
@@ -4268,3 +4265,10 @@ curves	Smooth	スムーズ
 	Codex Account	Codex アカウント
 	AI Provider Settings	AI プロバイダー設定
 	API settings	API 設定
+	Updates are offered only after a new AI package is published.	新しい AI 版パッケージが公開された場合のみ更新を通知します。
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} が利用できます。
+	No newer AI package is available.	新しい AI 版パッケージはありません。
+	Downloading and verifying update…	更新をダウンロードして検証中…
+	Could not install the update.	更新をインストールできませんでした。
+	Save your documents and wait for background tasks before updating.	更新前に文書を保存し、バックグラウンド処理の完了をお待ちください。
+	Update and Restart	更新して再起動

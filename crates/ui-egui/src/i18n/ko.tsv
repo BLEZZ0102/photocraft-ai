@@ -3781,9 +3781,6 @@ curves	Smooth	매끄럽게
 	Codex was not found. Install and open the Codex desktop app, then check the connection again.	Codex를 찾을 수 없습니다. Codex 데스크톱 앱을 설치하고 연 다음 연결을 다시 확인하세요.
 	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Codex 설치 전체를 사용하세요. codex.exe만 복사하면 이미지 편집 구성 요소가 누락될 수 있습니다.
 	PhotoCraft AI Updates	PhotoCraft AI 업데이트
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	이 AI 버전은 상위 프로젝트의 릴리스를 알려 줍니다. 공식 설치 프로그램에는 추가 AI 기능이 포함되지 않습니다. AI 버전 업데이트는 AI 프로젝트에서 받으세요.
-	Upstream PhotoCraft {version} is available.	상위 프로젝트의 PhotoCraft {version}을 사용할 수 있습니다.
-	The upstream base is up to date. AI build updates are managed separately.	기반 버전은 최신입니다. AI 버전 업데이트는 별도로 관리됩니다.
 	AI Project Page	AI 프로젝트 페이지
 	Release Notes	릴리스 노트
 	AI edit did not pass the service's content review	AI 편집이 서비스의 콘텐츠 심사를 통과하지 못했습니다
@@ -3811,3 +3808,10 @@ curves	Smooth	매끄럽게
 	Codex Account	Codex 계정
 	AI Provider Settings	AI 제공업체 설정
 	API settings	API 설정
+	Updates are offered only after a new AI package is published.	새 AI 패키지가 게시된 경우에만 업데이트를 알립니다.
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version}을 사용할 수 있습니다.
+	No newer AI package is available.	새 AI 패키지가 없습니다.
+	Downloading and verifying update…	업데이트 다운로드 및 확인 중…
+	Could not install the update.	업데이트를 설치할 수 없습니다.
+	Save your documents and wait for background tasks before updating.	업데이트 전에 문서를 저장하고 백그라운드 작업이 끝날 때까지 기다리세요.
+	Update and Restart	업데이트 후 다시 시작

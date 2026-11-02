@@ -341,6 +341,13 @@ fn main() -> eframe::Result {
     // First, so the panic hook and every start-up warning are recorded (`logging`).
     let logger = logging::install();
     crash_guard::install_hook();
+    if let Some(done) = updates::finish() {
+        if let Err(e) = done {
+            eprintln!("PhotoCraft AI update failed: {e}");
+            std::process::exit(1);
+        }
+        return Ok(());
+    }
     #[cfg(not(target_arch = "wasm32"))]
     if let Some(done) = craft_update::self_update::finish(&photocraft_ui_egui::UPDATE_APP, &std::env::args_os().skip(1).collect::<Vec<_>>()) {
         if let Err(e) = done {

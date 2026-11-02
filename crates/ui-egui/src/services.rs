@@ -370,6 +370,9 @@ pub struct Services {
     pub beep: Option<fn()>,
     /// Starts a background check for published releases (desktop, outside Flatpak).
     pub check_updates: Option<photocraft_engine::updates_cmds::CheckFn>,
+    /// Downloads and verifies an AI update, without replacing this running app.
+    pub prepare_update: Option<photocraft_engine::updates_cmds::PrepareFn>,
+    pub update_error: Option<String>,
     /// Files delivered asynchronously (web drag-and-drop): drained every frame and opened as
     /// documents.
     pub inbox: Option<Inbox>,

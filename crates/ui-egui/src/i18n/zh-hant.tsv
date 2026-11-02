@@ -3199,9 +3199,6 @@ curves	Smooth	平滑
 	Drag to move the selected path	拖曳以移動選取的路徑
 	Edit Brush…	編輯筆刷…
 	PhotoCraft AI Updates	PhotoCraft AI 更新
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	此 AI 版僅提示官方更新。官方安裝包不含本版 AI 功能，請透過 AI 專案取得本版更新。
-	Upstream PhotoCraft {version} is available.	官方 PhotoCraft {version} 已發布。
-	The upstream base is up to date. AI build updates are managed separately.	基礎版本已是最新官方發布。AI 版更新另行提供。
 	AI Project Page	AI 專案頁面
 	Release Notes	版本說明
 	AI edit did not pass the service's content review	AI 編輯未通過服務商審核
@@ -3230,3 +3227,10 @@ curves	Smooth	平滑
 	Codex Account	Codex 帳戶
 	AI Provider Settings	AI 服務設定
 	API settings	API 設定
+	Updates are offered only after a new AI package is published.	僅在新的 AI 版安裝包發佈後提示更新。
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} 已發佈。
+	No newer AI package is available.	暫無更新的 AI 版安裝包。
+	Downloading and verifying update…	正在下載並驗證更新…
+	Could not install the update.	無法安裝更新。
+	Save your documents and wait for background tasks before updating.	更新前請儲存所有文件，並等待背景工作完成。
+	Update and Restart	更新並重新啟動

@@ -4734,7 +4734,6 @@ shape	Appearance	Udseende
 	Tile Horizontally	Side om side vandret
 	Tile Vertically	Side om side lodret
 	Uncached Refresh	Opdatering uden cache
-	Update and Restart	Opdatér og genstart
 	Warming Filter (81)	Opvarmningsfilter (81)
 	Warming Filter (LBA)	Opvarmningsfilter (LBA)
 @plural	{n} document|{n} documents	{n} dokument|{n} dokumenter
@@ -4828,9 +4827,6 @@ cameraRaw	White Balance: As Shot	Hvidbalance: Som fotograferet
 	Codex was not found. Install and open the Codex desktop app, then check the connection again.	Codex blev ikke fundet. Installer og åbn Codex-computerappen, og kontroller derefter forbindelsen igen.
 	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Brug den komplette Codex-installation; hvis kun codex.exe kopieres, kan billedredigeringskomponenter mangle.
 	PhotoCraft AI Updates	PhotoCraft AI-opdateringer
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	Denne AI-version viser udgivelser fra det oprindelige projekt. Officielle installationsprogrammer indeholder ikke dens AI-tilføjelser. Hent AI-opdateringer fra AI-projektet.
-	Upstream PhotoCraft {version} is available.	PhotoCraft {version} er tilgængelig fra det oprindelige projekt.
-	The upstream base is up to date. AI build updates are managed separately.	Grundlaget svarer til den nyeste udgivelse fra det oprindelige projekt. Opdateringer til AI-versionen håndteres separat.
 	AI Project Page	AI-projektets side
 	AI edit did not pass the service's content review	AI-redigeringen bestod ikke tjenestens indholdskontrol
 	The image service's content review is unavailable	Billedtjenestens indholdskontrol er ikke tilgængelig
@@ -4857,3 +4853,10 @@ cameraRaw	White Balance: As Shot	Hvidbalance: Som fotograferet
 	Codex Account	Codex-konto
 	AI Provider Settings	Indstillinger for AI-udbyder
 	API settings	API-indstillinger
+	Updates are offered only after a new AI package is published.	Opdateringer tilbydes først, når en ny AI-pakke er udgivet.
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} er tilgængelig.
+	No newer AI package is available.	Ingen nyere AI-pakke er tilgængelig.
+	Downloading and verifying update…	Henter og kontrollerer opdatering…
+	Could not install the update.	Opdateringen kunne ikke installeres.
+	Save your documents and wait for background tasks before updating.	Gem dokumenterne, og vent på baggrundsopgaverne før opdatering.
+	Update and Restart	Opdater og genstart

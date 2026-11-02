@@ -633,9 +633,6 @@ cameraRaw	Yellow	पीला
 	Codex was not found. Install and open the Codex desktop app, then check the connection again.	Codex नहीं मिला। Codex डेस्कटॉप ऐप इंस्टॉल करके खोलें, फिर कनेक्शन दोबारा जाँचें।
 	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Codex की पूरी स्थापना का उपयोग करें; केवल codex.exe कॉपी करने से चित्र-संपादन घटक छूट सकते हैं।
 	PhotoCraft AI Updates	PhotoCraft AI अपडेट
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	यह AI संस्करण मूल परियोजना की नई रिलीज़ बताता है। आधिकारिक इंस्टॉलर में इसके जोड़े गए AI फ़ीचर नहीं हैं। AI संस्करण के अपडेट AI परियोजना से लें।
-	Upstream PhotoCraft {version} is available.	मूल परियोजना में PhotoCraft {version} उपलब्ध है।
-	The upstream base is up to date. AI build updates are managed separately.	आधार संस्करण मूल परियोजना की नवीनतम रिलीज़ के अनुसार है। AI संस्करण के अपडेट अलग से प्रबंधित होते हैं।
 	AI Project Page	AI परियोजना पेज
 	Release Notes	रिलीज़ नोट्स
 	AI edit did not pass the service's content review	AI संपादन सेवा की सामग्री समीक्षा में स्वीकार नहीं हुआ
@@ -663,3 +660,10 @@ cameraRaw	Yellow	पीला
 	Codex Account	Codex खाता
 	AI Provider Settings	AI प्रदाता सेटिंग
 	API settings	API सेटिंग
+	Updates are offered only after a new AI package is published.	नया AI पैकेज प्रकाशित होने के बाद ही अपडेट दिया जाता है।
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} उपलब्ध है।
+	No newer AI package is available.	कोई नया AI पैकेज उपलब्ध नहीं है।
+	Downloading and verifying update…	अपडेट डाउनलोड और सत्यापित हो रहा है…
+	Could not install the update.	अपडेट इंस्टॉल नहीं हो सका।
+	Save your documents and wait for background tasks before updating.	अपडेट से पहले दस्तावेज़ सहेजें और पृष्ठभूमि कार्य पूरे होने की प्रतीक्षा करें।
+	Update and Restart	अपडेट करके पुनः शुरू करें

@@ -6,6 +6,12 @@ use super::{
 impl PhotocraftApp {
     /// Run an engine command, reporting errors in the status bar.
     pub fn run(&mut self, id: &str, params: Value) -> Result<Value, String> {
+        if matches!(self.session.updates.install_status, photocraft_engine::updates_cmds::InstallStatus::Restarting) && id != "updates.status" {
+            return Err("PhotoCraft is restarting to install an update".into());
+        }
+        if matches!(id, "updates.install" | "updates.restart") && !crate::updates_ui::safe_to_restart(self) {
+            return Err(tl!("Save your documents and wait for background tasks before updating.").into());
+        }
         if let Some(result) = delete_layer_prompt::intercept(self, id, &params) {
             return result;
         }

@@ -40,6 +40,7 @@ thiserror = { workspace = true }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 craft-update = { workspace = true }
+tempfile = "3"
 rfd = { workspace = true }
 arboard = { version = "3.7", features = ["wayland-data-control"] }
 open = "5"
@@ -73,7 +74,6 @@ dispatch2 = { version = "=0.3.1", default-features = false, features = ["std"] }
 [target.'cfg(target_os = "linux")'.dependencies]
 photocraft-cms = { workspace = true }
 # The print portal's PDF: a private (0600) temporary file, removed when the dialog is done.
-tempfile = "3"
 x11rb = { version = "=0.13.2", default-features = false, features = ["image", "randr", "xkb"] }
 # Clipboard images in types other than PNG on Wayland (`services.rs`, #2546): arboard asks for
 # image/png only. Already in Cargo.lock (arboard's wayland-data-control); pinned exactly.
@@ -97,6 +97,7 @@ winit = { version = "=0.30.13", default-features = false, features = ["x11"] }
 # Safe Windows screen-capture bindings; Linux uses the pure-Rust X11 client/portal.
 xcap = "=0.9.8"
 winsafe = { version = "=0.0.29", default-features = false, features = ["user"] }
+winreg = "=0.55.0"
 
 # tests/mac_menu_appkit.rs: reads AppKit's menu bar back and sends it real key events.
 [target.'cfg(target_os = "macos")'.dev-dependencies]
@@ -110,3 +111,6 @@ harness = false
 [build-dependencies]
 # Icon + VERSIONINFO for photocraft.exe; build.rs only uses it when targeting Windows.
 winresource = "0.1"
+
+[dev-dependencies]
+zip = { version = "9", default-features = false, features = ["deflate"] }

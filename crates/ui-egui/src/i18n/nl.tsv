@@ -4319,9 +4319,6 @@ curves	Smooth	Vloeiend maken
 	Codex was not found. Install and open the Codex desktop app, then check the connection again.	Codex is niet gevonden. Installeer en open de Codex-desktopapp en controleer daarna de verbinding opnieuw.
 	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Gebruik de volledige Codex-installatie; als je alleen codex.exe kopieert, kunnen beeldbewerkingsonderdelen ontbreken.
 	PhotoCraft AI Updates	PhotoCraft AI-updates
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	Deze AI-versie meldt uitgaven van het oorspronkelijke project. Officiële installatieprogramma’s bevatten de toegevoegde AI-functies niet. Haal AI-updates op bij het AI-project.
-	Upstream PhotoCraft {version} is available.	PhotoCraft {version} is beschikbaar in het oorspronkelijke project.
-	The upstream base is up to date. AI build updates are managed separately.	De basis is bijgewerkt naar de laatste oorspronkelijke uitgave. Updates van de AI-versie worden apart beheerd.
 	AI Project Page	AI-projectpagina
 	Release Notes	Uitgaveopmerkingen
 	AI edit did not pass the service's content review	De AI-bewerking is afgewezen door de inhoudscontrole van de dienst
@@ -4349,3 +4346,10 @@ curves	Smooth	Vloeiend maken
 	Codex Account	Codex-account
 	AI Provider Settings	Instellingen van AI-aanbieder
 	API settings	API-instellingen
+	Updates are offered only after a new AI package is published.	Updates worden pas aangeboden na publicatie van een nieuw AI-pakket.
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} is beschikbaar.
+	No newer AI package is available.	Geen nieuwer AI-pakket beschikbaar.
+	Downloading and verifying update…	Update downloaden en controleren…
+	Could not install the update.	De update kon niet worden geïnstalleerd.
+	Save your documents and wait for background tasks before updating.	Sla uw documenten op en wacht op achtergrondtaken voordat u bijwerkt.
+	Update and Restart	Bijwerken en herstarten

@@ -11,6 +11,10 @@ and ids stay lowercase (`photocraft-<version>-<platform>-<arch>.<ext>`, `ai.stor
 
 ## In-app update checks
 
+**AI fork:** the current fork uses its independent, package-gated update channel described in
+[AI update publishing](ai-updates.md). The upstream release procedure below is retained for
+reference; its feed and installer identities do not apply to AI distributions.
+
 The native desktop app checks the public GitHub latest-release endpoint in a background
 thread once at launch, with no periodic checks or automatic retries. Preferences › General › Automatically
 Check for Updates disables the startup check; Help › Check for Updates runs one manually.

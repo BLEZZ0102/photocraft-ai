@@ -4489,9 +4489,6 @@ layerLabel	No Color	Sem cor
 	Codex was not found. Install and open the Codex desktop app, then check the connection again.	Codex não encontrado. Instale e abra o aplicativo Codex para desktop e verifique a conexão novamente.
 	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Use a instalação completa do Codex; copiar apenas codex.exe pode deixar de fora componentes de edição de imagens.
 	PhotoCraft AI Updates	Atualizações do PhotoCraft AI
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	Esta versão com IA informa sobre versões do projeto original. Os instaladores oficiais não incluem seus recursos adicionais de IA. Obtenha as atualizações de IA no projeto de IA.
-	Upstream PhotoCraft {version} is available.	O PhotoCraft {version} está disponível no projeto original.
-	The upstream base is up to date. AI build updates are managed separately.	A base está atualizada com o projeto original. As atualizações da versão com IA são gerenciadas separadamente.
 	AI Project Page	Página do projeto de IA
 	Release Notes	Notas da versão
 	AI edit did not pass the service's content review	A edição com IA não passou pela análise de conteúdo do serviço
@@ -4519,3 +4516,10 @@ layerLabel	No Color	Sem cor
 	Codex Account	Conta do Codex
 	AI Provider Settings	Configurações do provedor de IA
 	API settings	Configurações da API
+	Updates are offered only after a new AI package is published.	As atualizações são oferecidas após a publicação de um novo pacote de IA.
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} está disponível.
+	No newer AI package is available.	Nenhum pacote de IA mais recente disponível.
+	Downloading and verifying update…	Baixando e verificando a atualização…
+	Could not install the update.	Não foi possível instalar a atualização.
+	Save your documents and wait for background tasks before updating.	Salve seus documentos e aguarde as tarefas em segundo plano antes de atualizar.
+	Update and Restart	Atualizar e reiniciar

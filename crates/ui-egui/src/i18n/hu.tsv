@@ -4473,9 +4473,6 @@ cameraRaw	Yellow	Sárga
 	Codex was not found. Install and open the Codex desktop app, then check the connection again.	A Codex nem található. Telepítse és nyissa meg a Codex asztali alkalmazást, majd ellenőrizze újra a kapcsolatot.
 	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Használja a teljes Codex-telepítést; csak a codex.exe másolásakor hiányozhatnak a képszerkesztési összetevők.
 	PhotoCraft AI Updates	PhotoCraft AI-frissítések
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	Ez az AI-verzió jelzi az eredeti projekt kiadásait. A hivatalos telepítők nem tartalmazzák a hozzáadott AI-funkciókat. Az AI-verzió frissítéseit az AI-projektből szerezheti be.
-	Upstream PhotoCraft {version} is available.	Az eredeti projektben elérhető a PhotoCraft {version}.
-	The upstream base is up to date. AI build updates are managed separately.	Az alap az eredeti projekt legújabb kiadásának felel meg. Az AI-verzió frissítéseit külön kezeljük.
 	AI Project Page	AI-projekt oldala
 	Release Notes	Kiadási megjegyzések
 	AI edit did not pass the service's content review	Az AI-szerkesztés nem ment át a szolgáltatás tartalomellenőrzésén
@@ -4503,3 +4500,10 @@ cameraRaw	Yellow	Sárga
 	Codex Account	Codex-fiók
 	AI Provider Settings	AI-szolgáltató beállításai
 	API settings	API-beállítások
+	Updates are offered only after a new AI package is published.	Frissítés csak az új AI-csomag közzététele után érhető el.
+	PhotoCraft AI {version} is available.	Elérhető a PhotoCraft AI {version}.
+	No newer AI package is available.	Nincs újabb AI-csomag.
+	Downloading and verifying update…	Frissítés letöltése és ellenőrzése…
+	Could not install the update.	A frissítés nem telepíthető.
+	Save your documents and wait for background tasks before updating.	Frissítés előtt mentse a dokumentumokat, és várja meg a háttérfeladatok végét.
+	Update and Restart	Frissítés és újraindítás

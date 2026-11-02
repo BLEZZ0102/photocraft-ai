@@ -87,13 +87,16 @@ fn main() {
         PhotocraftApp::setup_context(&cc.egui_ctx, Default::default());
         let mut services = services;
         services.is_wayland = wayland_notice;
+        if update_notice {
+            services.prepare_update = Some(Box::new(|_| Err("Visual fixture: installation is disabled".into())));
+        }
         services.xwayland_command = wayland_notice.then(|| "WAYLAND_DISPLAY= photocraft".into());
         let mut app = PhotocraftApp::new(photocraft_engine::Session::new(), services);
         if update_notice {
             app.session.updates.status = photocraft_engine::updates_cmds::Status::Available {
                 release: photocraft_engine::updates_cmds::Release {
                     version: "99.0.0".into(),
-                    url: "https://github.com/storytold/photocraft/releases/tag/v99.0.0".into(),
+                    url: "https://github.com/BLEZZ0102/photocraft-ai/releases/tag/v99.0.0".into(),
                 },
             };
         }

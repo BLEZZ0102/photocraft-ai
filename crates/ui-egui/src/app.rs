@@ -34,9 +34,14 @@ pub use thumbs::surface_fingerprint;
 impl PhotocraftApp {
     pub fn new(mut session: Session, mut services: Services) -> Self {
         session.updates.check = services.check_updates.take();
+        session.updates.prepare = services.prepare_update.take();
+        let update_error = services.update_error.take();
+        if let Some(message) = &update_error {
+            session.updates.install_status = photocraft_engine::updates_cmds::InstallStatus::Failed { message: message.clone() };
+        }
         let mut app = Self {
             session,
-            ui: UiState::default(),
+            ui: UiState { updates_open: update_error.is_some(), ..Default::default() },
             services,
             canvases: HashMap::new(),
             navigator_textures: HashMap::new(),

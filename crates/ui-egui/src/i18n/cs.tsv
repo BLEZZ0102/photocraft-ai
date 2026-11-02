@@ -4308,9 +4308,6 @@ cameraRaw	Dehaze	Odstranění oparu
 	Codex was not found. Install and open the Codex desktop app, then check the connection again.	Codex nebyl nalezen. Nainstalujte a otevřete desktopovou aplikaci Codex a znovu ověřte připojení.
 	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Použijte úplnou instalaci Codexu; při zkopírování samotného codex.exe mohou chybět součásti pro úpravu obrázků.
 	PhotoCraft AI Updates	Aktualizace PhotoCraft AI
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	Tato verze s AI oznamuje vydání původního projektu. Oficiální instalátory neobsahují její přidané funkce AI. Aktualizace verze s AI získáte v projektu AI.
-	Upstream PhotoCraft {version} is available.	V původním projektu je k dispozici PhotoCraft {version}.
-	The upstream base is up to date. AI build updates are managed separately.	Základ odpovídá aktuálnímu vydání původního projektu. Aktualizace verze s AI se spravují samostatně.
 	AI Project Page	Stránka projektu AI
 	Release Notes	Poznámky k vydání
 	AI edit did not pass the service's content review	Úprava pomocí AI neprošla kontrolou obsahu služby
@@ -4338,3 +4335,10 @@ cameraRaw	Dehaze	Odstranění oparu
 	Codex Account	Účet Codex
 	AI Provider Settings	Nastavení poskytovatele AI
 	API settings	Nastavení API
+	Updates are offered only after a new AI package is published.	Aktualizace se nabízí až po zveřejnění nového balíčku AI.
+	PhotoCraft AI {version} is available.	Je dostupný PhotoCraft AI {version}.
+	No newer AI package is available.	Novější balíček AI není dostupný.
+	Downloading and verifying update…	Stahování a ověřování aktualizace…
+	Could not install the update.	Aktualizaci nelze nainstalovat.
+	Save your documents and wait for background tasks before updating.	Před aktualizací uložte dokumenty a počkejte na dokončení úloh na pozadí.
+	Update and Restart	Aktualizovat a restartovat

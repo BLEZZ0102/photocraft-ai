@@ -4735,7 +4735,6 @@ shape	Appearance	Ulkoasu
 	Tile Horizontally	Allekkain
 	Tile Vertically	Rinnakkain
 	Uncached Refresh	Päivitä ilman välimuistia
-	Update and Restart	Päivitä ja käynnistä uudelleen
 	Warming Filter (81)	Lämmityssuodatin (81)
 	Warming Filter (LBA)	Lämmityssuodatin (LBA)
 @plural	{n} document|{n} documents	{n} asiakirja|{n} asiakirjaa
@@ -4829,9 +4828,6 @@ cameraRaw	White Balance: As Shot	Valkotasapaino: kuvauksen mukainen
 	Codex was not found. Install and open the Codex desktop app, then check the connection again.	Codexia ei löytynyt. Asenna ja avaa Codex-työpöytäsovellus ja tarkista yhteys uudelleen.
 	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Käytä koko Codex-asennusta; pelkän codex.exe-tiedoston kopiointi voi jättää kuvanmuokkausosia pois.
 	PhotoCraft AI Updates	PhotoCraft AI -päivitykset
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	Tämä tekoälyversio ilmoittaa alkuperäisen projektin julkaisuista. Viralliset asennusohjelmat eivät sisällä sen tekoälylisäyksiä. Hae tekoälyversion päivitykset tekoälyprojektista.
-	Upstream PhotoCraft {version} is available.	PhotoCraft {version} on saatavilla alkuperäisessä projektissa.
-	The upstream base is up to date. AI build updates are managed separately.	Pohja vastaa alkuperäisen projektin uusinta julkaisua. Tekoälyversion päivityksiä hallitaan erikseen.
 	AI Project Page	Tekoälyprojektin sivu
 	AI edit did not pass the service's content review	Tekoälymuokkaus ei läpäissyt palvelun sisältötarkistusta
 	The image service's content review is unavailable	Kuvapalvelun sisältötarkistus ei ole käytettävissä
@@ -4858,3 +4854,10 @@ cameraRaw	White Balance: As Shot	Valkotasapaino: kuvauksen mukainen
 	Codex Account	Codex-tili
 	AI Provider Settings	Tekoälypalveluntarjoajan asetukset
 	API settings	API-asetukset
+	Updates are offered only after a new AI package is published.	Päivityksiä tarjotaan vasta uuden tekoälypaketin julkaisun jälkeen.
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} on saatavilla.
+	No newer AI package is available.	Uudempaa tekoälypakettia ei ole saatavilla.
+	Downloading and verifying update…	Ladataan ja tarkistetaan päivitystä…
+	Could not install the update.	Päivitystä ei voitu asentaa.
+	Save your documents and wait for background tasks before updating.	Tallenna asiakirjat ja odota taustatehtävien valmistumista ennen päivitystä.
+	Update and Restart	Päivitä ja käynnistä uudelleen

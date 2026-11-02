@@ -4632,9 +4632,6 @@ shape	Appearance	Izgled
 	Codex was not found. Install and open the Codex desktop app, then check the connection again.	Codex nije pronađen. Instalirajte i otvorite Codex aplikaciju za računar, pa ponovo proverite vezu.
 	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Koristite celu Codex instalaciju; kopiranje samo datoteke codex.exe može izostaviti komponente za uređivanje slika.
 	PhotoCraft AI Updates	PhotoCraft AI ažuriranja
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	Ova AI verzija obaveštava o izdanjima izvornog projekta. Zvanični instalacioni programi ne uključuju njene AI dodatke. AI ažuriranja preuzmite sa AI projekta.
-	Upstream PhotoCraft {version} is available.	PhotoCraft {version} je dostupan u izvornom projektu.
-	The upstream base is up to date. AI build updates are managed separately.	Osnova je ažurna u odnosu na izvorni projekat. Ažuriranja AI verzije vode se odvojeno.
 	AI Project Page	Stranica AI projekta
 	Release Notes	Beleške o izdanju
 	AI edit did not pass the service's content review	AI izmena nije prošla proveru sadržaja usluge
@@ -4662,3 +4659,10 @@ shape	Appearance	Izgled
 	Codex Account	Codex nalog
 	AI Provider Settings	Podešavanja AI pružaoca
 	API settings	API podešavanja
+	Updates are offered only after a new AI package is published.	Ažuriranja se nude tek nakon objavljivanja novog AI paketa.
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} je dostupan.
+	No newer AI package is available.	Nema novijeg AI paketa.
+	Downloading and verifying update…	Preuzimanje i provera ažuriranja…
+	Could not install the update.	Nije moguće instalirati ažuriranje.
+	Save your documents and wait for background tasks before updating.	Sačuvajte dokumente i sačekajte završetak pozadinskih zadataka pre ažuriranja.
+	Update and Restart	Ažuriraj i ponovo pokreni

@@ -3547,7 +3547,6 @@ curves	Smooth	تنعيم
 	Show Statistics	عرض الإحصائيات
 	Source:	المصدر:
 	Uncached Refresh	تحديث دون ذاكرة التخزين المؤقت
-	Update and Restart	التحديث وإعادة التشغيل
 	X	X
 	Y	Y
 
@@ -3604,9 +3603,6 @@ curves	Smooth	تنعيم
 	Codex was not found. Install and open the Codex desktop app, then check the connection again.	لم يُعثر على Codex. ثبّت تطبيق Codex لسطح المكتب وافتحه، ثم افحص الاتصال مجددًا.
 	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	استخدم تثبيت Codex الكامل؛ فقد يؤدي نسخ codex.exe وحده إلى فقدان مكوّنات تحرير الصور.
 	PhotoCraft AI Updates	تحديثات PhotoCraft AI
-	This AI build reports upstream releases. Official installers do not include its AI additions. Get AI build updates from the AI project.	يُبلغ إصدار الذكاء الاصطناعي هذا عن إصدارات المشروع الأصلي. لا تتضمن برامج التثبيت الرسمية إضافات الذكاء الاصطناعي الخاصة به. احصل على تحديثاته من مشروع الذكاء الاصطناعي.
-	Upstream PhotoCraft {version} is available.	يتوفر PhotoCraft {version} في المشروع الأصلي.
-	The upstream base is up to date. AI build updates are managed separately.	الإصدار الأساسي مواكب لأحدث إصدار من المشروع الأصلي. تُدار تحديثات إصدار الذكاء الاصطناعي بشكل منفصل.
 	AI Project Page	صفحة مشروع الذكاء الاصطناعي
 	AI edit did not pass the service's content review	لم يجتز تعديل الذكاء الاصطناعي مراجعة المحتوى لدى الخدمة
 	The image service's content review is unavailable	مراجعة المحتوى لدى خدمة الصور غير متاحة
@@ -3633,3 +3629,10 @@ curves	Smooth	تنعيم
 	Codex Account	حساب Codex
 	AI Provider Settings	إعدادات مزوّد الذكاء الاصطناعي
 	API settings	إعدادات API
+	Updates are offered only after a new AI package is published.	تُعرض التحديثات فقط بعد نشر حزمة ذكاء اصطناعي جديدة.
+	PhotoCraft AI {version} is available.	يتوفر PhotoCraft AI {version}.
+	No newer AI package is available.	لا تتوفر حزمة ذكاء اصطناعي أحدث.
+	Downloading and verifying update…	جارٍ تنزيل التحديث والتحقق منه…
+	Could not install the update.	تعذر تثبيت التحديث.
+	Save your documents and wait for background tasks before updating.	احفظ المستندات وانتظر اكتمال المهام في الخلفية قبل التحديث.
+	Update and Restart	تحديث وإعادة التشغيل

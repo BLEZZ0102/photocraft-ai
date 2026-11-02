@@ -3281,3 +3281,8 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Could not install the update.	无法安装更新。
 	Save your documents and wait for background tasks before updating.	更新前请保存所有文档，并等待后台任务完成。
 	Update and Restart	更新并重启
+	Checking for updates…	正在检查更新…
+	Could not check for updates.	无法检查更新。
+	Updates have not been checked yet.	尚未检查更新。
+	Check Again	重新检查
+	Installed version: {version}	已安装版本：{version}

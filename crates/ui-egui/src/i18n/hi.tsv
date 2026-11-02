@@ -671,3 +671,8 @@ cameraRaw	Yellow	पीला
 	Could not install the update.	अपडेट इंस्टॉल नहीं हो सका।
 	Save your documents and wait for background tasks before updating.	अपडेट से पहले दस्तावेज़ सहेजें और पृष्ठभूमि कार्य पूरे होने की प्रतीक्षा करें।
 	Update and Restart	अपडेट करके पुनः शुरू करें
+	Installed version: {version}	इंस्टॉल किया गया संस्करण: {version}
+	Checking for updates…	अपडेट की जाँच हो रही है…
+	Could not check for updates.	अपडेट की जाँच नहीं हो सकी।
+	Updates have not been checked yet.	अभी तक अपडेट की जाँच नहीं की गई है।
+	Check Again	फिर से जाँचें

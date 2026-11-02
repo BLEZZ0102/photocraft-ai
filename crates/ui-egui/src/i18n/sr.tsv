@@ -4675,3 +4675,8 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Could not install the update.	Nije moguće instalirati ažuriranje.
 	Save your documents and wait for background tasks before updating.	Sačuvajte dokumente i sačekajte završetak pozadinskih zadataka pre ažuriranja.
 	Update and Restart	Ažuriraj i ponovo pokreni
+	Checking for updates…	Provera ažuriranja…
+	Could not check for updates.	Nije moguće proveriti ažuriranja.
+	Updates have not been checked yet.	Ažuriranja još nisu proverena.
+	Check Again	Proveri ponovo
+	Installed version: {version}	Instalirana verzija: {version}

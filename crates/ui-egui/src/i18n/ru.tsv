@@ -4793,3 +4793,8 @@ shape	Appearance	Оформление
 	Could not install the update.	Не удалось установить обновление.
 	Save your documents and wait for background tasks before updating.	Сохраните документы и дождитесь завершения фоновых задач перед обновлением.
 	Update and Restart	Обновить и перезапустить
+	Checking for updates…	Проверка обновлений…
+	Could not check for updates.	Не удалось проверить обновления.
+	Updates have not been checked yet.	Обновления ещё не проверялись.
+	Check Again	Проверить снова
+	Installed version: {version}	Установленная версия: {version}

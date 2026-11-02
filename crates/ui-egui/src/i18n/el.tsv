@@ -4296,3 +4296,8 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Could not install the update.	Δεν ήταν δυνατή η εγκατάσταση της ενημέρωσης.
 	Save your documents and wait for background tasks before updating.	Αποθηκεύστε τα έγγραφα και περιμένετε να ολοκληρωθούν οι εργασίες παρασκηνίου πριν την ενημέρωση.
 	Update and Restart	Ενημέρωση και επανεκκίνηση
+	Checking for updates…	Έλεγχος για ενημερώσεις…
+	Could not check for updates.	Δεν ήταν δυνατός ο έλεγχος ενημερώσεων.
+	Updates have not been checked yet.	Δεν έχει γίνει ακόμη έλεγχος ενημερώσεων.
+	Check Again	Νέος έλεγχος
+	Installed version: {version}	Εγκατεστημένη έκδοση: {version}

@@ -4632,3 +4632,8 @@ shape	Appearance	Apparence
 	Could not install the update.	Impossible d’installer la mise à jour.
 	Save your documents and wait for background tasks before updating.	Enregistrez vos documents et attendez la fin des tâches avant la mise à jour.
 	Update and Restart	Mettre à jour et redémarrer
+	Checking for updates…	Recherche de mises à jour…
+	Could not check for updates.	Impossible de rechercher des mises à jour.
+	Updates have not been checked yet.	Les mises à jour n’ont pas encore été vérifiées.
+	Check Again	Vérifier à nouveau
+	Installed version: {version}	Version installée : {version}

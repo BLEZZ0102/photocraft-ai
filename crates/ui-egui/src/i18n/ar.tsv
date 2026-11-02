@@ -3626,3 +3626,9 @@ curves	Smooth	تنعيم
 	Could not install the update.	تعذر تثبيت التحديث.
 	Save your documents and wait for background tasks before updating.	احفظ المستندات وانتظر اكتمال المهام في الخلفية قبل التحديث.
 	Update and Restart	تحديث وإعادة التشغيل
+	Checking for updates…	جارٍ التحقق من وجود تحديثات…
+	Could not check for updates.	تعذر التحقق من وجود تحديثات.
+	Updates have not been checked yet.	لم يتم التحقق من التحديثات بعد.
+	Check Again	التحقق مرة أخرى
+	Installed version: {version}	الإصدار المثبت: {version}
+	Release Notes	ملاحظات الإصدار

@@ -4516,3 +4516,8 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Could not install the update.	A frissítés nem telepíthető.
 	Save your documents and wait for background tasks before updating.	Frissítés előtt mentse a dokumentumokat, és várja meg a háttérfeladatok végét.
 	Update and Restart	Frissítés és újraindítás
+	Checking for updates…	Frissítések keresése…
+	Could not check for updates.	Nem sikerült ellenőrizni a frissítéseket.
+	Updates have not been checked yet.	A frissítések még nem lettek ellenőrizve.
+	Check Again	Újraellenőrzés
+	Installed version: {version}	Telepített verzió: {version}

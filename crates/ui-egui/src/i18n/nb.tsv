@@ -4850,3 +4850,9 @@ cameraRaw	White Balance: As Shot	Hvitbalanse: som fotografert
 	Could not install the update.	Kunne ikke installere oppdateringen.
 	Save your documents and wait for background tasks before updating.	Lagre dokumentene og vent til bakgrunnsoppgavene er ferdige før oppdatering.
 	Update and Restart	Oppdater og start på nytt
+	Checking for updates…	Ser etter oppdateringer…
+	Could not check for updates.	Kunne ikke se etter oppdateringer.
+	Updates have not been checked yet.	Oppdateringer er ikke sjekket ennå.
+	Check Again	Sjekk igjen
+	Installed version: {version}	Installert versjon: {version}
+	Release Notes	Versjonsmerknader

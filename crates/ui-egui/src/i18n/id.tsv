@@ -3619,3 +3619,8 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Could not install the update.	Tidak dapat memasang pembaruan.
 	Save your documents and wait for background tasks before updating.	Simpan dokumen dan tunggu tugas latar belakang selesai sebelum memperbarui.
 	Update and Restart	Perbarui dan mulai ulang
+	Checking for updates…	Memeriksa pembaruan…
+	Could not check for updates.	Tidak dapat memeriksa pembaruan.
+	Updates have not been checked yet.	Pembaruan belum diperiksa.
+	Check Again	Periksa Lagi
+	Installed version: {version}	Versi terpasang: {version}

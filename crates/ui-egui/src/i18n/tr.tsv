@@ -4330,3 +4330,8 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Could not install the update.	Güncelleme yüklenemedi.
 	Save your documents and wait for background tasks before updating.	Güncellemeden önce belgelerinizi kaydedin ve arka plan görevlerinin bitmesini bekleyin.
 	Update and Restart	Güncelle ve yeniden başlat
+	Checking for updates…	Güncellemeler denetleniyor…
+	Could not check for updates.	Güncellemeler denetlenemedi.
+	Updates have not been checked yet.	Güncellemeler henüz denetlenmedi.
+	Check Again	Yeniden Denetle
+	Installed version: {version}	Yüklü sürüm: {version}

@@ -4848,3 +4848,9 @@ cameraRaw	White Balance: As Shot	Vitbalans: som tagen
 	Could not install the update.	Det gick inte att installera uppdateringen.
 	Save your documents and wait for background tasks before updating.	Spara dokumenten och vänta tills bakgrundsaktiviteterna är klara före uppdatering.
 	Update and Restart	Uppdatera och starta om
+	Checking for updates…	Söker efter uppdateringar…
+	Could not check for updates.	Det gick inte att söka efter uppdateringar.
+	Updates have not been checked yet.	Ingen sökning efter uppdateringar har gjorts ännu.
+	Check Again	Sök igen
+	Installed version: {version}	Installerad version: {version}
+	Release Notes	Versionsinformation

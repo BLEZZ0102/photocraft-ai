@@ -4103,3 +4103,8 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Could not install the update.	Không thể cài đặt bản cập nhật.
 	Save your documents and wait for background tasks before updating.	Lưu tài liệu và chờ tác vụ nền hoàn tất trước khi cập nhật.
 	Update and Restart	Cập nhật và khởi động lại
+	Checking for updates…	Đang kiểm tra bản cập nhật…
+	Could not check for updates.	Không thể kiểm tra bản cập nhật.
+	Updates have not been checked yet.	Chưa kiểm tra bản cập nhật.
+	Check Again	Kiểm tra lại
+	Installed version: {version}	Phiên bản đã cài: {version}

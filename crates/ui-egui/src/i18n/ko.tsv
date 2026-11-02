@@ -3816,3 +3816,8 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Could not install the update.	업데이트를 설치할 수 없습니다.
 	Save your documents and wait for background tasks before updating.	업데이트 전에 문서를 저장하고 백그라운드 작업이 끝날 때까지 기다리세요.
 	Update and Restart	업데이트 후 다시 시작
+	Checking for updates…	업데이트 확인 중…
+	Could not check for updates.	업데이트를 확인할 수 없습니다.
+	Updates have not been checked yet.	아직 업데이트를 확인하지 않았습니다.
+	Check Again	다시 확인
+	Installed version: {version}	설치된 버전: {version}

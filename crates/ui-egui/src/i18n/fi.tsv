@@ -4851,3 +4851,9 @@ cameraRaw	White Balance: As Shot	Valkotasapaino: kuvauksen mukainen
 	Could not install the update.	Päivitystä ei voitu asentaa.
 	Save your documents and wait for background tasks before updating.	Tallenna asiakirjat ja odota taustatehtävien valmistumista ennen päivitystä.
 	Update and Restart	Päivitä ja käynnistä uudelleen
+	Checking for updates…	Tarkistetaan päivityksiä…
+	Could not check for updates.	Päivityksiä ei voitu tarkistaa.
+	Updates have not been checked yet.	Päivityksiä ei ole vielä tarkistettu.
+	Check Again	Tarkista uudelleen
+	Installed version: {version}	Asennettu versio: {version}
+	Release Notes	Julkaisutiedot

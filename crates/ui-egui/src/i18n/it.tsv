@@ -4708,3 +4708,8 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Could not install the update.	Impossibile installare l’aggiornamento.
 	Save your documents and wait for background tasks before updating.	Salva i documenti e attendi la fine delle attività prima di aggiornare.
 	Update and Restart	Aggiorna e riavvia
+	Checking for updates…	Ricerca aggiornamenti…
+	Could not check for updates.	Impossibile cercare aggiornamenti.
+	Updates have not been checked yet.	Gli aggiornamenti non sono ancora stati verificati.
+	Check Again	Controlla di nuovo
+	Installed version: {version}	Versione installata: {version}

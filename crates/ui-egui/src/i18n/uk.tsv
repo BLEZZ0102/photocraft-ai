@@ -4307,3 +4307,8 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Could not install the update.	Не вдалося встановити оновлення.
 	Save your documents and wait for background tasks before updating.	Збережіть документи й дочекайтеся завершення фонових завдань перед оновленням.
 	Update and Restart	Оновити та перезапустити
+	Checking for updates…	Перевірка оновлень…
+	Could not check for updates.	Не вдалося перевірити оновлення.
+	Updates have not been checked yet.	Оновлення ще не перевірялися.
+	Check Again	Перевірити знову
+	Installed version: {version}	Встановлена версія: {version}

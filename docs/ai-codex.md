@@ -19,6 +19,18 @@
 - 结果经 PNG 大小与宽高比检查、解码后，同宽高比但像素尺寸不同的图片通过现有 Bicubic 重采样适配原画布。随后转换为目标文档色彩/位深，新增一个顶层图层，并产生一个“AI Edit”撤销步骤。命令结果包含 `resizedToCanvas` 和原始输出尺寸。现有图层不变。
 - 后台任务使用引擎的文档锁、快照校验及取消机制，取消/失败不会回填。
 
+Install and open the complete Codex desktop runtime. In desktop PhotoCraft, open a document
+and choose **Edit > AI Edit...**, or the sparkle button at the top of the left toolbar.
+The form shows the Codex account state. Existing ChatGPT sign-in can be reused; otherwise
+**Sign in with ChatGPT** opens the browser through PhotoCraft's native URL service.
+Checking the connection or opening the form does not generate an image. Enter an instruction
+and confirm to submit the visible canvas. Success adds an **AI Edit (Codex)** top-level layer;
+Undo removes it and Redo restores it. Existing layers are preserved.
+Enter in the focused instruction field inserts a newline; use **OK** to submit.
+Reopening the form while a cancelled sign-in is stopping automatically rechecks the
+connection once that worker finishes. Confirmation through the UI or control channel
+requires a connected account, no pending account operation and a nonempty instruction.
+
 ## 在 Windows 本机测试
 
 ### AI 版的更新方式
@@ -67,6 +79,27 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\ai-local.ps1 L
 ```
 
 `Launch` 使用已构建的桌面程序，不等待正在运行的 Cargo 检查；尚未构建时先用 `Run`。`-CodexHome` 只给本次 PhotoCraft 启动的 Codex 子进程设置独立配置目录和文件凭据存储；同一目录同时用于账户检查、登录和图片编辑，不更改主 Codex 的登录。凭据由 Codex 保存在该目录，整个 `.tools` 不提交。
+
+### Review follow-up (Windows, 2026-11-02)
+
+The six findings from the first automated review are addressed. Offline regression tests
+cover Enter as a newline, confirmation during sign-in and with a stale connection display,
+the allowed confirmation path, reopening during cancellation, closing a deferred refresh,
+a missing native browser service, and creating a missing evidence directory. The UI
+harness forbids image commands even if confirmation regresses.
+
+The full UI run passed 4611 library tests and 146 graphical integration tests (21 and one
+ignored respectively), plus the then-current 13 AI form tests. After adding two more
+confirmation checks and the offline command gate, all 15 AI form tests passed separately.
+The offline evidence-file test passed; the opt-in subscription test remained ignored.
+Both conflicting snapshot-flag orders exited with code 2 before opening a missing input
+file. Fresh English/Chinese synthetic multiline-form captures were inspected. Formatting,
+32-crate layering and wasm's 25 crates plus HEIF passed. Strict Clippy remains blocked at
+the same unchanged upstream IO and UI sites described above; no allowances were added.
+The full engine run passed 2896 tests with 23 standard-run ignores; the ignored full-registry
+`panic_hunt` passed separately (19.46 s). Both UI and engine documentation compiled.
+
+### UI captures
 
 1. 打开测试图片并点击左侧星光按钮。应显示“需要登录 ChatGPT”，生成确认按钮置灰。
 2. 点击“使用 ChatGPT 登录”，应通过 PhotoCraft 的系统浏览器服务打开 Codex 返回的官方登录页面；完成后回到 PhotoCraft，应显示“已连接 ChatGPT”及可用的订阅类型。浏览器已有会话时可能省略部分交互，不要求每次输入密码。系统浏览器打开失败会明确提示，可点击“打开登录页面”重试，或“复制登录链接”后自行粘贴到浏览器。

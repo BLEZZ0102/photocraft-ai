@@ -43,7 +43,6 @@ thiserror = { workspace = true }
 tempfile = "=3.27.0"
 roxmltree = "0.21"
 craft-update = { workspace = true }
-tempfile = "3"
 rfd = { workspace = true }
 arboard = { version = "3.7", features = ["wayland-data-control"] }
 open = "5"

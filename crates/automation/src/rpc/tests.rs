@@ -946,6 +946,11 @@ fn tcp_connections_must_authenticate_before_the_deadline_whatever_they_send() {
     line.clear();
     reader.read_line(&mut line).unwrap();
     assert_eq!(serde_json::from_str::<Value>(&line).unwrap()["id"], "a");
+    // End the authenticated client with FIN, rather than relying on duplicated socket
+    // handles being dropped: Windows may otherwise reset the connection under load.
+    s.shutdown(std::net::Shutdown::Write).unwrap();
+    line.clear();
+    assert_eq!(reader.read_line(&mut line).unwrap(), 0, "the server closed after the client finished sending");
     drop(reader);
     drop(s);
 

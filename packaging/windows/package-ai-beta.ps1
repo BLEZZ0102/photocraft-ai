@@ -65,6 +65,12 @@ try {
             [void]$notices.AppendLine([IO.File]::ReadAllText($license.FullName))
         }
     }
+    # Embedded repository assets also need their complete notices, alongside crate licences.
+    foreach ($license in (Get-ChildItem -LiteralPath (Join-Path $root 'assets') -Recurse -File | Where-Object { $_.Name -match '^(LICENSE|OFL-)' } | Sort-Object FullName)) {
+        $relative = [IO.Path]::GetRelativePath($root, $license.FullName).Replace('\', '/')
+        [void]$notices.AppendLine("`n=== $relative ===")
+        [void]$notices.AppendLine([IO.File]::ReadAllText($license.FullName))
+    }
     [IO.File]::WriteAllText((Join-Path $docs 'THIRD-PARTY-NOTICES.txt'), $notices.ToString(), $utf8)
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'LICENSE-WiX.txt') -Destination $docs
     $stamp = "PhotoCraft AI Beta $version`nSource snapshot commit: $((& git rev-parse HEAD).Trim())`nEmbedded base build: $binaryVersion`nArchitecture: Windows x64`nUnsigned community build. Codex runtime and credentials are not bundled.`n"

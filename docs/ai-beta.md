@@ -1,4 +1,6 @@
-# PhotoCraft AI Beta 0.18.0-ai-beta.1
+# PhotoCraft AI Beta 0.19.0-ai-beta.2
+
+本版本为待验证、未发布的 0.19.0 整合包；公开下载仍是先前的 beta.1。
 
 这是基于 PhotoCraft 的非官方社区测试版，由 BLEZZ0102 分发。它包含 Codex 订阅图片编辑和
 Gemini、豆包 / Seedream、FLUX API 接入。编辑结果作为可撤销的新图层加入文档。

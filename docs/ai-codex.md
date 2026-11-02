@@ -1,4 +1,8 @@
-# PhotoCraft AI 本地原型
+# PhotoCraft AI 开发与验证
+
+## 当前整合状态（2026-11-02）
+
+AI 打包分支 `codex/package-ai-beta` 已整合 Fork main `fab871dad` 的 0.19.0、一键更新，以及 PR #10593 的 `17e5ee10f` 修复。预备版本为 `0.19.0-ai-beta.2`，MSI 版本为 `0.19.2`。下文 v0.17/v0.18 和 PR 分支记录是历史验证，不能代替本次整合验收。尚未发布此新版本；公开 beta.1 包保持不变。
 
 开发分支：`feat/ai-provider-codex`，起点为上游 main `5f9b439`。
 现已合入官方 `v0.18.0`（`8a87a457abb43ac344deeb3fdb67541b91a72ff1`），继续在该分支保留 AI 功能。

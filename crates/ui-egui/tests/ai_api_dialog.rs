@@ -21,6 +21,39 @@ fn harness() -> Harness<'static, PhotocraftApp> {
 }
 
 #[test]
+fn saved_api_confirmation_remains_independent_of_codex_sign_in() {
+    let mut h = harness();
+    h.state_mut()
+        .session
+        .execute(
+            "ai.provider.settings",
+            json!({
+                "action":"save", "provider":"flux", "profile":photocraft_engine::cmd::ai_provider_cmds::preset("flux"),
+                "apiKey":"synthetic-integration-key", "rememberKey":false
+            }),
+        )
+        .unwrap();
+    h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("flux"));
+    h.state_mut().ui.dialogs[0].fields.insert("prompt".into(), json!("Make the circle yellow"));
+    h.run_steps(4);
+    assert!(!h.get_by_label("OK").accesskit_node().is_disabled());
+    h.state_mut().session.authorize = Some(|command, _| {
+        if command == "edit.ai.api" {
+            Err(photocraft_engine::EngineError::Other("Offline API integration gate".into()))
+        } else if command == "edit.ai.codex" {
+            Err(photocraft_engine::EngineError::Other("Unexpected Codex fallback".into()))
+        } else {
+            Ok(())
+        }
+    });
+    let id = h.state().ui.dialogs[0].id;
+    let error = photocraft_ui_egui::dialogs::confirm(h.state_mut(), id).unwrap_err();
+    assert!(error.contains("Offline API integration gate"), "{error}");
+    assert!(h.state().ui.dialogs.is_empty());
+    assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 1);
+}
+
+#[test]
 fn selector_exposes_all_services_and_opens_no_browser_or_generation() {
     let mut h = harness();
     h.get_by_label("Image service").click();

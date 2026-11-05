@@ -141,6 +141,23 @@ pub fn form_body(ui: &mut egui::Ui, f: &mut Map<String, Value>) {
     if f.get("__command").and_then(Value::as_str) == Some("edit.ai.codex") {
         if crate::ai_api_ui::selected(f) == "codex" {
             ui.label(crate::i18n::t("The visible canvas and instruction will be sent to Codex using your ChatGPT sign-in. The result is fitted to the canvas and added as a new layer."));
+            let mut layers = f.get("sendLayerContext").and_then(Value::as_bool).unwrap_or(true);
+            let mut hidden = f.get("includeHiddenLayers").and_then(Value::as_bool).unwrap_or(false);
+            crate::widgets::checkbox(ui, &mut layers, tl!("Include individual layer images, names and structure"));
+            ui.add_enabled_ui(layers, |ui| {
+                crate::widgets::checkbox(ui, &mut hidden, tl!("Also send hidden layers"));
+            });
+            if !layers {
+                hidden = false;
+            }
+            if layers {
+                ui.weak(tl!("Up to 15 layer images."));
+                ui.add(
+                    egui::Label::new(egui::RichText::new(tl!("Isolated previews may reveal content covered by other layers or group masks.")).weak()).wrap(),
+                );
+            }
+            f.insert("sendLayerContext".into(), json!(layers));
+            f.insert("includeHiddenLayers".into(), json!(hidden));
         } else {
             ui.label(tl!("The result is fitted to the canvas and added as a new layer. Your existing layers are preserved."));
         }
@@ -320,7 +337,7 @@ pub(super) fn front(app: &mut PhotocraftApp, ctx: &egui::Context, id: &str, para
     let label = photocraft_engine::commands::find(id).map_or(id, |c| c.label);
     let dialog = |app: &mut PhotocraftApp, fields: Value, choices: Value| Some(Ok(json!({"dialog": form(app, id, label, fields, choices)})));
     match id {
-        "edit.ai.codex" => dialog(app, json!({"prompt":""}), json!({})),
+        "edit.ai.codex" => dialog(app, json!({"prompt":"","sendLayerContext":true,"includeHiddenLayers":false}), json!({})),
         "file.openAs" => Some(app.open_dialog_file()),
         "file.openExrParts" => open_exr_parts_dialog(app),
         "file.saveACopy" => Some(save_a_copy(app)),

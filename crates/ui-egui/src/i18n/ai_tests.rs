@@ -1,4 +1,19 @@
 // AI view vocabulary, including dynamic form, job and notice templates.
+#[test]
+fn layer_sharing_notices_are_translated_in_chinese() {
+    for code in ["zh-hans", "zh-hant"] {
+        let lang = super::Lang::from_code(code).unwrap();
+        for text in [
+            "Include individual layer images, names and structure",
+            "Also send hidden layers",
+            "Up to 15 layer images.",
+            "Isolated previews may reveal content covered by other layers or group masks.",
+        ] {
+            assert_ne!(super::tr(lang, text), text);
+        }
+    }
+}
+
 const AI_KEYS: &[(&str, &str)] = &[
     ("", "API settings"),
     (r#""#, r#"AI Edit…"#),

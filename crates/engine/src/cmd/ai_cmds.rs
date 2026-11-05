@@ -2,7 +2,7 @@
 use crate::commands::CommandSpec;
 use crate::{EngineError, Result, Session};
 #[cfg(not(target_arch = "wasm32"))]
-use photocraft_doc::{Document, Layer, LayerContent};
+use photocraft_doc::{Layer, LayerContent};
 #[cfg(not(target_arch = "wasm32"))]
 use photocraft_gen::{Error as ProviderError, ImageProvider};
 use serde_json::Value;
@@ -12,7 +12,39 @@ use serde_json::json;
 use std::sync::Arc;
 
 pub const COMMAND: &str = "edit.ai.codex";
+#[cfg(not(target_arch = "wasm32"))]
+mod layer_context;
 mod png;
+
+/// Sharing choices apply to one edit, never to a saved account or document preference.
+#[derive(Clone, Copy, Debug)]
+pub struct LayerSharing {
+    pub send_layer_context: bool,
+    pub include_hidden_layers: bool,
+}
+
+impl Default for LayerSharing {
+    fn default() -> Self {
+        Self { send_layer_context: true, include_hidden_layers: false }
+    }
+}
+
+impl LayerSharing {
+    fn parse(params: &Value) -> Result<Self> {
+        let boolean = |key: &str, default: bool| -> Result<bool> {
+            match params.get(key) {
+                None => Ok(default),
+                Some(Value::Bool(value)) => Ok(*value),
+                _ => Err(EngineError::BadParams { cmd: COMMAND.into(), msg: format!("{key} must be a boolean") }),
+            }
+        };
+        let sharing = Self { send_layer_context: boolean("sendLayerContext", true)?, include_hidden_layers: boolean("includeHiddenLayers", false)? };
+        if sharing.include_hidden_layers && !sharing.send_layer_context {
+            return Err(EngineError::BadParams { cmd: COMMAND.into(), msg: "includeHiddenLayers requires sendLayerContext".into() });
+        }
+        Ok(sharing)
+    }
+}
 
 fn enabled(s: &Session) -> std::result::Result<(), String> {
     if cfg!(target_arch = "wasm32") {
@@ -32,6 +64,7 @@ fn enabled(s: &Session) -> std::result::Result<(), String> {
 }
 
 fn run(s: &mut Session, p: &Value) -> Result<Value> {
+    let sharing = LayerSharing::parse(p)?;
     let prompt = p
         .get("prompt")
         .and_then(Value::as_str)
@@ -40,11 +73,11 @@ fn run(s: &mut Session, p: &Value) -> Result<Value> {
         .to_string();
     #[cfg(not(target_arch = "wasm32"))]
     {
-        edit_with_provider(s, prompt, Arc::new(photocraft_gen::codex::CodexProvider::default()))
+        edit_with_layer_context(s, prompt, Arc::new(photocraft_gen::codex::CodexProvider::default()), sharing)
     }
     #[cfg(target_arch = "wasm32")]
     {
-        let _ = (s, prompt);
+        let _ = (s, prompt, sharing);
         Err(EngineError::Other("AI editing requires the desktop Codex runtime".into()))
     }
 }
@@ -81,10 +114,30 @@ pub fn edit_with_provider(s: &mut Session, prompt: String, provider: Arc<dyn Ima
 
 #[cfg(not(target_arch = "wasm32"))]
 pub fn edit_named_provider(s: &mut Session, prompt: String, provider: Arc<dyn ImageProvider>, name: String) -> Result<Value> {
+    edit_job(s, prompt, provider, name, None)
+}
+
+/// Codex image editing with explicit reference sharing; injected providers support offline tests.
+#[cfg(not(target_arch = "wasm32"))]
+pub fn edit_with_layer_context(s: &mut Session, prompt: String, provider: Arc<dyn ImageProvider>, sharing: LayerSharing) -> Result<Value> {
+    if sharing.include_hidden_layers && !sharing.send_layer_context {
+        return Err(EngineError::BadParams { cmd: COMMAND.into(), msg: "includeHiddenLayers requires sendLayerContext".into() });
+    }
+    edit_job(s, prompt, provider, "codex".into(), Some(sharing))
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn edit_job(s: &mut Session, prompt: String, provider: Arc<dyn ImageProvider>, name: String, sharing: Option<LayerSharing>) -> Result<Value> {
     if prompt.trim().is_empty() || prompt.len() > 16_000 {
         return Err(EngineError::BadParams { cmd: COMMAND.into(), msg: "prompt must contain 1–16000 bytes of text".into() });
     }
     enabled(s).map_err(EngineError::Other)?;
+    let active = s.active().ok_or(EngineError::NoDocument)?;
+    layer_context::validate_tree(&active.doc.layers)?;
+    let plan = sharing
+        .filter(|sharing| sharing.send_layer_context)
+        .map(|sharing| layer_context::prepare(&active.doc, active.active_layer, sharing.include_hidden_layers))
+        .transpose()?;
     let snapshot = s.active().ok_or(EngineError::NoDocument)?.doc.clone();
     let intent = s.color.settings.intent();
     let bpc = s.color.settings.bpc;
@@ -104,27 +157,24 @@ pub fn edit_named_provider(s: &mut Session, prompt: String, provider: Arc<dyn Im
             }
             ctx.progress(0.05, "Preparing visible canvas");
             let work = tempfile::Builder::new().prefix("photocraft-ai-").tempdir().map_err(|e| EngineError::Other(e.to_string()))?;
-            // A fresh document deliberately omits EXIF, XMP, hidden layers and document names.
-            let mut input = Document::new("Canvas", snapshot.size, snapshot.mode, snapshot.depth);
-            input.icc_profile = snapshot.icc_profile.clone();
-            let surface = photocraft_compose::flatten_to_surface(&snapshot, snapshot.pixel_format(), None);
-            input.layers.push(Layer::new("Canvas", LayerContent::Raster(surface)));
-            crate::color_cmds::convert_document(&mut input, photocraft_cms::builtin::srgb(), intent, bpc)?;
-            crate::image_cmds::for_each_surface(&mut input.layers, true, &mut |surface, _| {
-                *surface = surface.convert(surface.format().with_sample(photocraft_color::SampleType::U8));
-            });
-            input.depth = photocraft_color::SampleType::U8;
-            let opts = photocraft_io::ExportOptions { xmp: photocraft_io::XmpEmbed::None, ..Default::default() };
-            let png = photocraft_io::export(&input, "png", &opts).map_err(|e| EngineError::Other(e.to_string()))?;
+            let png = layer_context::png_bytes(&snapshot, intent, bpc)?;
+            let canvas_bytes = png.len();
             let image = work.path().join("canvas.png");
-            std::fs::write(&image, png.bytes).map_err(|e| EngineError::Other(e.to_string()))?;
+            std::fs::write(&image, png).map_err(|e| EngineError::Other(e.to_string()))?;
+            let layers = plan.map(|plan| layer_context::export(&snapshot, plan, work.path(), canvas_bytes, intent, bpc, &|| ctx.cancelled())).transpose()?;
+            if ctx.cancelled() {
+                return Err(EngineError::Cancelled);
+            }
             ctx.progress(0.15, &format!("Editing through {label}"));
-            let result = provider.edit(&photocraft_gen::EditRequest { image: &image, prompt: &prompt, workspace: work.path() }, &|| ctx.cancelled()).map_err(
-                |e| match e {
-                    ProviderError::Cancelled => EngineError::Cancelled,
-                    e => EngineError::Other(e.to_string()),
-                },
-            )?;
+            let request = photocraft_gen::EditRequest { image: &image, prompt: &prompt, workspace: work.path() };
+            let result = match &layers {
+                Some(layers) => provider.edit_with_layers(&request, layers, &|| ctx.cancelled()),
+                None => provider.edit(&request, &|| ctx.cancelled()),
+            }
+            .map_err(|e| match e {
+                ProviderError::Cancelled => EngineError::Cancelled,
+                e => EngineError::Other(e.to_string()),
+            })?;
             if ctx.cancelled() {
                 return Err(EngineError::Cancelled);
             }
@@ -182,7 +232,7 @@ pub fn specs() -> Vec<CommandSpec> {
             label: "AI Edit…",
             menu: &["Edit"],
             shortcut: None,
-            params: r#"{"prompt":"instruction"} -> {layer,provider}; sends visible canvas to installed Codex using ChatGPT sign-in; desktop only, no API fallback"#,
+            params: r#"{"prompt":"instruction","sendLayerContext":bool=true,"includeHiddenLayers":bool=false} -> {layer,provider}; sends visible canvas plus isolated layer images and names/structure; hidden layers require explicit opt-in; 15 layer images maximum; desktop Codex/ChatGPT only, no API fallback"#,
             enabled,
             run,
             journal: true,
@@ -204,6 +254,69 @@ pub fn specs() -> Vec<CommandSpec> {
 mod tests {
     use super::*;
     struct Echo;
+
+    struct LayerEcho;
+    impl ImageProvider for LayerEcho {
+        fn edit(&self, _: &photocraft_gen::EditRequest<'_>, _: &dyn Fn() -> bool) -> std::result::Result<photocraft_gen::EditResult, ProviderError> {
+            Err(ProviderError::Provider("References were unexpectedly omitted".into()))
+        }
+        fn edit_with_layers(
+            &self,
+            request: &photocraft_gen::EditRequest<'_>,
+            layers: &photocraft_gen::LayerContext,
+            _: &dyn Fn() -> bool,
+        ) -> std::result::Result<photocraft_gen::EditResult, ProviderError> {
+            layers.validate()?;
+            assert_eq!(layers.images.len(), 1);
+            assert!(!layers.manifest.contains("PRIVATE"));
+            assert!(layers.images[0].image.is_file());
+            assert_eq!(std::fs::read_dir(request.workspace)?.count(), 2);
+            Ok(photocraft_gen::EditResult { saved_path: request.image.to_path_buf() })
+        }
+    }
+
+    #[test]
+    fn layer_context_job_preserves_original_layers_and_has_one_undo_step() {
+        let mut s = Session::new();
+        s.execute("file.new", json!({"width":8,"height":6,"depth":16})).unwrap();
+        s.edit("fixture", |doc, _| {
+            let mut hidden = Layer::new("PRIVATE hidden", LayerContent::Raster(doc.layers[0].surface().unwrap().clone()));
+            hidden.visible = false;
+            doc.layers.push(hidden);
+            Ok(())
+        })
+        .unwrap();
+        let before = s.active().unwrap().doc.clone();
+        let result = edit_with_layer_context(&mut s, "Edit layer 1".into(), Arc::new(LayerEcho), LayerSharing::default()).unwrap();
+        assert_eq!(result["provider"], "codex");
+        let doc = &s.active().unwrap().doc;
+        assert_eq!(&doc.layers[..2], before.layers.as_slice());
+        assert_eq!(doc.layers.len(), 3);
+        assert_eq!(doc.layers[2].surface().unwrap().format().sample, before.depth);
+        let generated = doc.layers[2].clone();
+        s.execute("edit.undo", json!({})).unwrap();
+        assert_eq!(s.active().unwrap().doc, before);
+        s.execute("edit.redo", json!({})).unwrap();
+        assert_eq!(s.active().unwrap().doc.layers[2], generated);
+    }
+
+    #[test]
+    fn layer_sharing_is_strict_and_flattened_mode_remains_available() {
+        let sharing = LayerSharing::parse(&json!({})).unwrap();
+        assert!(sharing.send_layer_context);
+        assert!(!sharing.include_hidden_layers);
+        let mut s = Session::new();
+        s.execute("file.new", json!({"width":8,"height":6})).unwrap();
+        for params in [json!({"sendLayerContext":"yes"}), json!({"includeHiddenLayers":null}), json!({"sendLayerContext":false,"includeHiddenLayers":true})] {
+            assert!(matches!(s.execute(COMMAND, params), Err(EngineError::BadParams { .. })));
+        }
+        let before = s.active().unwrap().doc.clone();
+        // A legacy provider must fail explicitly, never silently discard requested references.
+        assert!(edit_with_layer_context(&mut s, "test edit".into(), Arc::new(Echo), LayerSharing::default()).is_err());
+        assert_eq!(s.active().unwrap().doc, before);
+        let sharing = LayerSharing { send_layer_context: false, include_hidden_layers: false };
+        assert!(edit_with_layer_context(&mut s, "test edit".into(), Arc::new(Echo), sharing).is_ok());
+    }
 
     #[test]
     fn flux_result_is_one_named_layer_with_undo_and_redo() {

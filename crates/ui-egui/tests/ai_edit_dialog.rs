@@ -131,6 +131,29 @@ mod account_flow {
     }
 
     #[test]
+    fn hidden_layer_sharing_requires_a_click_and_resets_for_a_new_edit() {
+        let (mut h, _) = harness(AccountInfo::ChatGpt { plan: None });
+        wait(&mut h, State::Connected);
+        assert_eq!(h.state().ui.dialogs[0].fields["sendLayerContext"], true);
+        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], false);
+        h.get_by_label("Also send hidden layers").click();
+        h.run_steps(2);
+        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], true);
+        h.get_by_label("Include individual layer images, names and structure").click();
+        h.run_steps(2);
+        assert_eq!(h.state().ui.dialogs[0].fields["sendLayerContext"], false);
+        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], false);
+        assert!(h.get_by_label("Also send hidden layers").accesskit_node().is_disabled());
+        h.get_by_label("Cancel").click();
+        h.run_steps(2);
+        let ctx = h.ctx.clone();
+        photocraft_ui_egui::menus::invoke(h.state_mut(), &ctx, "edit.ai.codex", json!({})).unwrap();
+        h.run_steps(3);
+        assert_eq!(h.state().ui.dialogs[0].fields["sendLayerContext"], true);
+        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], false);
+    }
+
+    #[test]
     fn signed_out_login_opens_browser_only_after_click_and_cancel_preserves_canvas() {
         let (mut h, fake) = harness(AccountInfo::SignedOut);
         assert!(!wait(&mut h, State::SignedOut), "checking must not open a browser");

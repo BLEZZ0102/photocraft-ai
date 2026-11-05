@@ -115,9 +115,15 @@ fn flux_configuration_routes_only_to_the_explicit_flux_provider() {
     h.state_mut().session.execute("ai.provider.settings", json!({"action":"save","provider":"flux","profile":photocraft_engine::cmd::ai_provider_cmds::preset("flux"),"apiKey":"synthetic-flux-key","rememberKey":false})).unwrap();
     h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("flux"));
     h.state_mut().ui.dialogs[0].fields.insert("prompt".into(), json!("make yellow"));
+    h.state_mut().ui.dialogs[0].fields.insert("sendLayerContext".into(), json!(true));
+    h.state_mut().ui.dialogs[0].fields.insert("includeHiddenLayers".into(), json!(true));
     h.run_steps(4);
     assert!(!h.get_by_label("OK").accesskit_node().is_disabled());
-    let (command, params) = photocraft_ui_egui::ai_api_ui::edit_command(&h.state().ui.dialogs[0].fields, "edit.ai.codex".into(), json!({}));
+    let (command, params) = photocraft_ui_egui::ai_api_ui::edit_command(
+        &h.state().ui.dialogs[0].fields,
+        "edit.ai.codex".into(),
+        json!({"sendLayerContext":true,"includeHiddenLayers":true}),
+    );
     assert_eq!(command, "edit.ai.api");
     assert_eq!(params, json!({"provider":"flux","prompt":"make yellow"}));
     assert!(!serde_json::to_string(&h.state().ui).unwrap().contains("synthetic-flux-key"));

@@ -1,5 +1,7 @@
 # PhotoCraft AI 开发与验证
 
+单独图层输入的分享选项、限制与验证方式见 [Layer references for Codex image editing](ai-layer-context.md)。
+
 ## 当前整合状态（2026-11-02）
 
 AI 打包分支 `codex/package-ai-beta` 已整合 Fork main `fab871dad` 的 0.19.0、一键更新，以及 PR #10593 的 `17e5ee10f` 修复。本次打包版本为 `0.19.0-ai-beta.2`，MSI 版本为 `0.19.2`。下文 v0.17/v0.18 和 PR 分支记录是历史验证，不能代替本次整合验收。实际公开资产与安装包验收结果以 [AI Releases](https://github.com/BLEZZ0102/photocraft-ai/releases) 的对应版本说明为准。

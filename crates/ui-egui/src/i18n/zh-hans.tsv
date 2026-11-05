@@ -3269,6 +3269,10 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	This edit did not change existing layers or add a new layer.	本次未改动已有图层，也未添加新图层。
 	Error code: {code}	错误码：{code}
 # AI editing, account, API and review notices (original translations).
+	Include individual layer images, names and structure	发送单独图层图像、名称和结构
+	Also send hidden layers	同时发送隐藏图层
+	Up to 15 layer images.	最多发送 15 张图层图像。
+	Isolated previews may reveal content covered by other layers or group masks.	单独预览可能显示被其他图层或分组蒙版遮住的内容。
 	AI Edit	AI 编辑
 	AI Edit via API	通过 API 进行 AI 编辑
 	Codex Account	Codex 账户

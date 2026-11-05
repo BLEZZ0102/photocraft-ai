@@ -38,7 +38,37 @@ pub struct EditResult {
     pub saved_path: PathBuf,
 }
 
+/// A rendered layer reference; paths point only into the current private job workspace.
+pub struct LayerReference {
+    pub label: String,
+    pub image: PathBuf,
+}
+
+/// Explicitly selected document context, separate from the user's instructions.
+pub struct LayerContext {
+    pub manifest: String,
+    pub images: Vec<LayerReference>,
+}
+
+/// PhotoCraft's own bounded reference budget, not a service/model limit.
+pub const MAX_LAYER_IMAGES: usize = 15;
+pub const MAX_LAYER_MANIFEST_BYTES: usize = 64 * 1024;
+
+impl LayerContext {
+    /// Reject oversized context before opening a service connection.
+    pub fn validate(&self) -> Result<(), Error> {
+        if self.images.len() > MAX_LAYER_IMAGES || self.manifest.len() > MAX_LAYER_MANIFEST_BYTES || self.images.iter().any(|image| image.label.len() > 128) {
+            return Err(Error::Provider("Layer context exceeds PhotoCraft's reference budget".into()));
+        }
+        Ok(())
+    }
+}
+
 /// Providers own transport/authentication; the engine owns import, colour conversion and undo.
 pub trait ImageProvider: Send + Sync {
     fn edit(&self, request: &EditRequest<'_>, cancelled: &dyn Fn() -> bool) -> Result<EditResult, Error>;
+
+    fn edit_with_layers(&self, _request: &EditRequest<'_>, _layers: &LayerContext, _cancelled: &dyn Fn() -> bool) -> Result<EditResult, Error> {
+        Err(Error::Provider("This provider does not support individual layer references".into()))
+    }
 }

@@ -8,9 +8,9 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
-$version = '0.19.0-ai-beta.2'
+$version = '0.20.1-ai-beta.3'
 # Increment the third MSI field for every beta; prerelease suffixes are not MSI versions.
-$msiVersion = '0.19.2'
+$msiVersion = '0.20.3'
 $target = 'x86_64-pc-windows-msvc'
 $targetDir = if ($env:CARGO_TARGET_DIR) { [IO.Path]::GetFullPath($env:CARGO_TARGET_DIR) } else { Join-Path $root 'target' }
 $out = if ($OutputDirectory) { [IO.Path]::GetFullPath($OutputDirectory) } else { Join-Path $root 'dist/ai-beta' }

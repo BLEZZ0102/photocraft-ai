@@ -131,26 +131,20 @@ mod account_flow {
     }
 
     #[test]
-    fn hidden_layer_sharing_requires_a_click_and_resets_for_a_new_edit() {
-        let (mut h, _) = harness(AccountInfo::ChatGpt { plan: None });
+    fn closing_one_ai_dialog_keeps_the_other_dialogs_sign_in_running() {
+        let (mut h, fake) = harness(AccountInfo::SignedOut);
+        wait(&mut h, State::SignedOut);
+        h.get_by_label("Sign in with ChatGPT").click();
+        wait(&mut h, State::WaitingForBrowser);
+        let first = h.state().ui.dialogs[0].id;
+        let fields = h.state().ui.dialogs[0].fields.clone();
+        let second = h.state_mut().ui.open_dialog(photocraft_ui_egui::state::DialogKind::Command, fields);
+        photocraft_ui_egui::dialogs::cancel(h.state_mut(), first).unwrap();
+        assert!(h.state().session.ai_account.pending());
+        assert!(h.state().ui.dialogs.iter().any(|d| d.id == second));
+        fake.finish.store(true, Ordering::Release);
         wait(&mut h, State::Connected);
-        assert_eq!(h.state().ui.dialogs[0].fields["sendLayerContext"], true);
-        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], false);
-        h.get_by_label("Also send hidden layers").click();
-        h.run_steps(2);
-        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], true);
-        h.get_by_label("Include individual layer images, names and structure").click();
-        h.run_steps(2);
-        assert_eq!(h.state().ui.dialogs[0].fields["sendLayerContext"], false);
-        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], false);
-        assert!(h.get_by_label("Also send hidden layers").accesskit_node().is_disabled());
-        h.get_by_label("Cancel").click();
-        h.run_steps(2);
-        let ctx = h.ctx.clone();
-        photocraft_ui_egui::menus::invoke(h.state_mut(), &ctx, "edit.ai.codex", json!({})).unwrap();
-        h.run_steps(3);
-        assert_eq!(h.state().ui.dialogs[0].fields["sendLayerContext"], true);
-        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], false);
+        assert_eq!(h.state().ui.ai_account.status.state, State::Connected);
     }
 
     #[test]
@@ -274,6 +268,38 @@ mod account_flow {
     }
 
     #[test]
+    fn reopening_during_uncancelled_login_keeps_its_success_without_refreshing() {
+        let (mut h, fake) = harness(AccountInfo::SignedOut);
+        wait(&mut h, State::SignedOut);
+        h.get_by_label("Sign in with ChatGPT").click();
+        wait(&mut h, State::WaitingForBrowser);
+        photocraft_ui_egui::ai_account_ui::opened(h.state_mut());
+        *fake.info.lock().unwrap_or_else(PoisonError::into_inner) = None;
+        fake.finish.store(true, Ordering::Release);
+        wait(&mut h, State::Connected);
+        h.run_steps(4);
+        assert_eq!(h.state().ui.ai_account.status.state, State::Connected);
+        assert_eq!(fake.checks.load(Ordering::Acquire), 1, "successful pending login needs no extra check");
+    }
+
+    #[test]
+    fn oversized_prompt_reports_byte_limit_and_keeps_dialog_and_document() {
+        let (mut h, _) = harness(AccountInfo::ChatGpt { plan: None });
+        wait(&mut h, State::Connected);
+        let id = h.state().ui.dialogs[0].id;
+        for prompt in ["x".repeat(16_001), "字".repeat(5_334)] {
+            h.state_mut().ui.dialog_mut(id).unwrap().fields.insert("prompt".into(), json!(prompt));
+            let error = photocraft_ui_egui::dialogs::confirm(h.state_mut(), id).unwrap_err();
+            assert_eq!(error, "prompt must contain 1–16000 bytes of text");
+            assert!(h.state().ui.dialogs.iter().any(|dialog| dialog.id == id));
+            assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 1);
+        }
+        h.state_mut().ui.dialog_mut(id).unwrap().fields.insert("prompt".into(), json!("x".repeat(16_000)));
+        let error = photocraft_ui_egui::dialogs::confirm(h.state_mut(), id).unwrap_err();
+        assert!(error.contains("Offline UI test: image requests are forbidden"), "boundary prompt reaches command authorization");
+    }
+
+    #[test]
     fn reopening_during_cancel_rechecks_once_when_worker_finishes() {
         let (mut h, fake) = harness(AccountInfo::SignedOut);
         wait(&mut h, State::SignedOut);
@@ -366,5 +392,27 @@ mod account_flow {
         assert!(error.contains("Offline UI test: image requests are forbidden"));
         assert!(!h.state().ui.dialogs.iter().any(|dialog| dialog.id == id));
         assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 1);
+    }
+    #[test]
+    fn hidden_layer_sharing_requires_a_click_and_resets_for_a_new_edit() {
+        let (mut h, _) = harness(AccountInfo::ChatGpt { plan: None });
+        wait(&mut h, State::Connected);
+        assert_eq!(h.state().ui.dialogs[0].fields["sendLayerContext"], true);
+        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], false);
+        h.get_by_label("Also send hidden layers").click();
+        h.run_steps(2);
+        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], true);
+        h.get_by_label("Include individual layer images, names and structure").click();
+        h.run_steps(2);
+        assert_eq!(h.state().ui.dialogs[0].fields["sendLayerContext"], false);
+        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], false);
+        assert!(h.get_by_label("Also send hidden layers").accesskit_node().is_disabled());
+        h.get_by_label("Cancel").click();
+        h.run_steps(2);
+        let ctx = h.ctx.clone();
+        photocraft_ui_egui::menus::invoke(h.state_mut(), &ctx, "edit.ai.codex", json!({})).unwrap();
+        h.run_steps(3);
+        assert_eq!(h.state().ui.dialogs[0].fields["sendLayerContext"], true);
+        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], false);
     }
 }

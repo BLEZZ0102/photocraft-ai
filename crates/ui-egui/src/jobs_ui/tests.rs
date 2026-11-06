@@ -37,6 +37,7 @@ fn ai_review_failure_uses_localized_notice_and_preserves_document_history() {
                 label: "AI Edit".into(),
                 document: Some(doc_id),
                 outcome: JobOutcome::Failed(error.into()),
+                error: None,
             },
         );
         let notice = app.ui.notices.last().unwrap();
@@ -71,7 +72,7 @@ fn ai_job_completion_and_cancellation_use_localized_labels() {
                 super::on_event(
                     &mut app,
                     &egui::Context::default(),
-                    JobEvent { id: JobId(901), command: "edit.ai.api".into(), label: "AI Edit".into(), document: None, outcome },
+                    JobEvent { id: JobId(901), command: "edit.ai.api".into(), label: "AI Edit".into(), document: None, outcome, error: None },
                 );
                 assert_eq!(app.ui.status, expected, "{}", lang.code());
             }

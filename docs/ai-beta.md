@@ -1,61 +1,42 @@
-# PhotoCraft AI Beta 0.19.0-ai-beta.2
+# PhotoCraft AI Beta 0.20.1-ai-beta.3
 
-本版本基于 PhotoCraft 0.19.0，整合 PR #10593 的登录与多行指令修复，并加入独立 AI 版的一键更新。
-发布验收还修复了 Windows FXC 在发行优化设置下拒绝混合模式着色器的问题。
-旧 beta.1 用户须手动安装本包一次，后续才可一键更新。下载入口仍为本项目的 Releases 页面。
+An unofficial community build of PhotoCraft, distributed by BLEZZ0102 under MIT OR Apache-2.0. Original PhotoCraft contributors retain their credits.
 
-更新提示只在新的 AI 安装包正式公开且文件与校验信息完整后出现。请先保存文档并等待后台任务结束，再点击“更新并重启”。
+This version integrates upstream PhotoCraft through a25999311 (November 6, 2026), adds layer-aware Codex input, and retains the independent AI update channel. Keep backups of important documents while using this beta.
 
-本 Beta 保留已知显卡测试限制：本机显卡计时的一项断言未通过，批量故障模拟曾导致测试进程异常退出；
-同一故障用例单独通过，Windows 绘图精度组 77 项通过。遇到显卡问题时，可使用
-`photocraft.exe --safe-gpu` 启动 CPU 渲染。完整验证范围见源代码中的 `docs/ai-codex.md`。
+## Installation
 
-这是基于 PhotoCraft 的非官方社区测试版，由 BLEZZ0102 分发。它包含 Codex 订阅图片编辑和
-Gemini、豆包 / Seedream、FLUX API 接入。编辑结果作为可撤销的新图层加入文档。
-This is an unofficial community build of PhotoCraft, distributed by BLEZZ0102.
-It is not an official ArtCraft release. PhotoCraft and its original contributors retain their credits.
+Windows 10/11 x64. Run the MSI or extract the portable ZIP and run photocraft.exe. Rust, Visual Studio and .NET are not required.
 
-## 安装与使用 / Installation
+- MSI: per-user, normally in %LOCALAPPDATA%\Programs\PhotoCraftAI.
+- Settings: %APPDATA%\PhotoCraftAI. Recovery: %LOCALAPPDATA%\PhotoCraftAI\Recovery.
+- Portable settings: the adjacent PhotoCraftData folder.
+- The AI distribution has a separate installer identity and does not replace official PhotoCraft or claim default file associations.
+- Community packages are unsigned. Verify the repository and SHA-256 checksums and follow your device's application-control policy.
 
-- 适用于 Windows 10/11 64 位。下载 `.msi` 并双击安装，无需 Rust、Visual Studio 或 .NET。
-- 默认只为当前用户安装到 `%LOCALAPPDATA%\Programs\PhotoCraftAI`，开始菜单名称为
-  **PhotoCraft AI Beta**。官方 PhotoCraft 可以同时保留；此安装包不会注册或接管文件默认打开方式。
-- 设置位于 `%APPDATA%\PhotoCraftAI`，恢复文件位于 `%LOCALAPPDATA%\PhotoCraftAI\Recovery`。
-  不会复制官方版的设置、恢复文件、API 密钥或本项目的开发配置。
-- 便携 ZIP 解压后运行 `photocraft.exe`，数据保存在程序旁的 `PhotoCraftData` 中。
-- 本测试包尚未进行代码签名，Windows 可能显示未知发布者。请核对发布仓库与 SHA256，
-  遵循设备的安全策略；不要关闭系统安全功能来安装。
+## AI editing
 
-Windows x64, per-user installation. Use the MSI, or extract the portable ZIP and run
-`photocraft.exe`. No development tools are required. The unsigned package is independent
-of official PhotoCraft. The uninstaller removes program files and leaves user settings
-and documents in place. It does not sign out a separately installed Codex application.
+Open a document and choose Edit > AI Edit, or the sparkle toolbar button.
 
-## AI 编辑 / AI editing
+For Codex, install the complete Codex desktop runtime separately and sign in with your own ChatGPT account. Image editing availability depends on your account and runtime. No runtime, subscription, model or credentials are bundled.
 
-1. 打开或新建文档，点击左侧星光按钮或“编辑 → AI 编辑”。
-2. **Codex**：先自行安装完整的 Codex 桌面运行时，再在 AI 编辑中检查连接或使用 ChatGPT 登录。
-   必须由你的账号支持相应图片能力。安装包不附带 Codex、ChatGPT 账号、订阅或任何密钥。
-3. **API**：选择 Gemini、豆包 / Seedream 或 FLUX，填写自己的模型、服务地址与密钥，
-   点击保存，再输入指令确认。调用费用由服务商收取；保存配置不会生成图片。
-4. 等待结果，成功后可撤销新图层。审核拒绝会显示对应提示；失败不会添加图层。
+Codex receives individual visible layer previews, names and structure by default. Hidden layers and children of hidden groups are excluded unless Also send hidden layers is explicitly enabled for that edit. Isolated previews may reveal content covered by other layers or group masks. Up to 15 leaf images plus the canvas can be sent; oversized contexts fail explicitly. Turn off individual references to send only the visible canvas.
 
-Install the complete Codex runtime separately for subscription-based editing and sign in
-with your own ChatGPT account. Alternatively configure your own supported image API.
-Provider usage can incur charges. There is no automatic fallback to a paid API or automatic
-generation retry. No models, credentials, personal images or generated results are bundled.
+Groups and adjustments provide metadata; leaf layers provide rendered previews, not raw editable PSD data. Interpretation is model-dependent. The result is one full-canvas image added as a new undoable layer. Original layers remain intact; this does not return an editable AI layer stack.
 
-Codex 和豆包已在开发版中由用户实测；Gemini、FLUX 通过协议模拟测试，仍需真实账号验收。
-这属于 Beta：请保留文档备份。新版 AI 安装包从此项目下载，不使用官方安装包覆盖。
+Gemini, Doubao/Seedream and FLUX use explicitly configured APIs and continue to receive flattened canvas input. Configure your own supported endpoint, model and key, save, then submit a prompt. Saving does not generate an image. API usage may incur provider charges. There is no automatic fallback to a paid API or automatic generation retry.
 
-## 卸载、来源与许可证 / Uninstall and source
+## Updates
 
-通过 Windows“设置 → 应用 → 已安装的应用”卸载 PhotoCraft AI Beta。
-用户设置、恢复文件、个人文档和自行安装的 Codex 保留不动。
+Download AI builds from https://github.com/BLEZZ0102/photocraft-ai/releases.
+Beta 2 and later support in-app updates. Beta 1 users must manually install a newer AI package once. Updates are offered only after a newer AI release is published with a complete package and verified GitHub digest. Save your work and wait for background tasks before updating.
 
-- AI project: https://github.com/BLEZZ0102/photocraft-ai
-- AI downloads: https://github.com/BLEZZ0102/photocraft-ai/releases
-- Upstream PhotoCraft: https://github.com/storytold/photocraft
-- MIT OR Apache-2.0; see the bundled LICENSE files, NOTICE and ATTRIBUTION.md.
-- The app icon is separately MIT OR Apache-2.0 licensed in `LICENSE-app-icon.txt`.
-  Restricted ArtCraft brand artwork from `docs/brand/` is not included in the installer.
+## Troubleshooting and removal
+
+For a graphics driver problem, launch photocraft.exe --safe-gpu for CPU canvas rendering. Use --new-instance to run a second copy for testing.
+
+Uninstall through Windows Settings. User settings, recovery files, documents and the separately installed Codex runtime are retained. Uninstalling PhotoCraft AI does not sign out Codex.
+
+Source: https://github.com/BLEZZ0102/photocraft-ai
+Upstream: https://github.com/storytold/photocraft
+See LICENSE-MIT, LICENSE-APACHE, NOTICE, ATTRIBUTION.md and THIRD-PARTY-NOTICES.txt. The app icon has its own LICENSE-app-icon.txt. Restricted ArtCraft brand artwork is not included in the installer.

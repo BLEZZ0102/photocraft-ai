@@ -29,7 +29,9 @@ Gemini, Doubao/Seedream and FLUX use explicitly configured APIs and continue to 
 ## Updates
 
 Download AI builds from https://github.com/BLEZZ0102/photocraft-ai/releases.
-Beta 2 and later support in-app updates. Beta 1 users must manually install a newer AI package once. Updates are offered only after a newer AI release is published with a complete package and verified GitHub digest. Save your work and wait for background tasks before updating.
+Updates are offered only after a newer AI release is published with a complete package and verified GitHub digest. Save your work and wait for background tasks before updating.
+
+If the published Beta 2 or Beta 3 MSI build reports Windows Installer error 1619 during an in-app update, close PhotoCraft AI and run the newer AI MSI directly. The installer can upgrade the existing per-user installation without uninstalling it first. Beta 1 also requires a manual upgrade.
 
 ## Troubleshooting and removal
 

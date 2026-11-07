@@ -219,18 +219,13 @@ fn install(job: &Job, root: &Path) -> Result<(), String> {
     match job.kind {
         Kind::Msi => {
             let system = std::env::var_os("SystemRoot").ok_or("No Windows system folder")?;
-            let mut command = process::command(PathBuf::from(system).join("System32/msiexec.exe"));
-            command
-                .arg("/i")
-                .arg(&job.package)
-                .args(["/qn", "/norestart", "MSIINSTALLPERUSER=1", "MSIRESTARTMANAGERCONTROL=Disable"])
-                .arg(format!("INSTALLFOLDER={}", installer_folder(job.target.parent().ok_or("No installation folder")?)?))
-                .arg("/L*v")
-                .arg(root.join("install.log"));
-            let status = command.status().map_err(|e| format!("Could not start the AI installer: {e}"))?;
+            let log = root.join("install.log");
+            let status = msi_command(&PathBuf::from(system).join("System32/msiexec.exe"), &job.package, &log)?
+                .status()
+                .map_err(|e| format!("Could not start the AI installer: {e}"))?;
             match status.code() {
                 Some(0 | 3010) => Ok(()),
-                code => Err(format!("AI installation failed ({code:?}). Log: {}", root.join("install.log").display())),
+                code => Err(format!("AI installation failed ({code:?}). Log: {}", installer_path(&log)?)),
             }
         }
         Kind::Portable => {
@@ -245,9 +240,28 @@ fn install(job: &Job, root: &Path) -> Result<(), String> {
     }
 }
 
-fn installer_folder(folder: &Path) -> Result<String, String> {
-    let text = folder.to_str().ok_or("The installation folder is not valid Unicode")?;
-    Ok(if let Some(share) = text.strip_prefix(r"\\?\UNC\") { format!(r"\\{share}") } else { text.strip_prefix(r"\\?\").unwrap_or(text).to_string() })
+fn msi_command(exe: &Path, package: &Path, log: &Path) -> Result<std::process::Command, String> {
+    // Keep canonical paths for the helper's validation. Windows Installer's service needs
+    // ordinary paths for the package and log. The AI MSI restores the per-user install folder
+    // from the same registry entry the helper validates, including custom folders with spaces.
+    let mut command = process::command(exe);
+    command
+        .arg("/i")
+        .arg(installer_path(package)?)
+        .args(["/qn", "/norestart", "MSIINSTALLPERUSER=1", "MSIRESTARTMANAGERCONTROL=Disable"])
+        .arg("/L*v")
+        .arg(installer_path(log)?);
+    Ok(command)
+}
+
+fn installer_path(path: &Path) -> Result<String, String> {
+    let text = path.to_str().ok_or("The installer path is not valid Unicode")?;
+    let ordinary =
+        if let Some(share) = text.strip_prefix(r"\\?\UNC\") { format!(r"\\{share}") } else { text.strip_prefix(r"\\?\").unwrap_or(text).to_string() };
+    if !Path::new(&ordinary).is_absolute() {
+        return Err("The installer needs an absolute file path".into());
+    }
+    Ok(ordinary)
 }
 
 fn validate_location(helper: &Path, job: &Path, expected_cache: &Path) -> Result<(), String> {
@@ -297,7 +311,7 @@ mod tests {
     use std::io::Write;
 
     #[test]
-    fn canonical_helper_accepts_the_original_job_path_and_msi_uses_normal_paths() {
+    fn canonical_helper_accepts_the_original_job_path() {
         let dir = tempfile::tempdir().unwrap();
         let cache = dir.path().canonicalize().unwrap();
         let stage = tempfile::tempdir_in(&cache).unwrap();
@@ -305,11 +319,32 @@ mod tests {
         let job = stage.path().join("job.json");
         std::fs::write(&helper, "helper").unwrap();
         std::fs::write(&job, "{}").unwrap();
-        let normal_job = PathBuf::from(installer_folder(&job).unwrap());
+        let normal_job = PathBuf::from(installer_path(&job).unwrap());
         assert!(validate_location(&helper.canonicalize().unwrap(), &normal_job, &cache).is_ok());
         assert!(validate_location(&helper.canonicalize().unwrap(), &normal_job, stage.path()).is_err());
-        assert_eq!(installer_folder(Path::new(r"\\?\C:\Apps\PhotoCraftAI")).unwrap(), r"C:\Apps\PhotoCraftAI");
-        assert_eq!(installer_folder(Path::new(r"\\?\UNC\server\share\PhotoCraftAI")).unwrap(), r"\\server\share\PhotoCraftAI");
+    }
+
+    #[test]
+    fn msi_arguments_use_ordinary_paths_with_spaces_and_unicode() {
+        let package = Path::new(r"\\?\C:\更新 缓存\update.msi");
+        let log = Path::new(r"\\?\C:\更新 缓存\install.log");
+        let command = msi_command(Path::new("msiexec.exe"), package, log).unwrap();
+        let args: Vec<_> = command.get_args().map(|arg| arg.to_str().unwrap()).collect();
+        assert_eq!(
+            args,
+            [
+                "/i",
+                r"C:\更新 缓存\update.msi",
+                "/qn",
+                "/norestart",
+                "MSIINSTALLPERUSER=1",
+                "MSIRESTARTMANAGERCONTROL=Disable",
+                "/L*v",
+                r"C:\更新 缓存\install.log",
+            ]
+        );
+        assert_eq!(installer_path(Path::new(r"\\?\UNC\server\share\update.msi")).unwrap(), r"\\server\share\update.msi");
+        assert!(installer_path(Path::new(r"\\?\Volume{example}\update.msi")).is_err());
     }
 
     #[test]

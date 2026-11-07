@@ -57,19 +57,49 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Dependency notice inventory failed' }
     $metadata = $metadataText | ConvertFrom-Json
     $notices = [Text.StringBuilder]::new()
+    $includedLicenses = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    $cargoCacheRoot = if ($env:CARGO_HOME) { $env:CARGO_HOME } else { Join-Path ([Environment]::GetFolderPath('UserProfile')) '.cargo' }
+    $gitCheckoutRoot = [IO.Path]::GetFullPath((Join-Path $cargoCacheRoot 'git/checkouts')).TrimEnd('\', '/') + [IO.Path]::DirectorySeparatorChar
+    function Add-LicenseText([string]$Path) {
+        $full = [IO.Path]::GetFullPath($Path)
+        if ((Test-Path -LiteralPath $full -PathType Leaf) -and $includedLicenses.Add($full)) {
+            [void]$notices.AppendLine("--- $([IO.Path]::GetFileName($full)) ---")
+            [void]$notices.AppendLine([IO.File]::ReadAllText($full))
+        }
+    }
     foreach ($package in ($metadata.packages | Sort-Object name, version)) {
         [void]$notices.AppendLine("`n=== $($package.name) $($package.version) | $($package.license) ===")
         $dir = Split-Path -Parent $package.manifest_path
         foreach ($license in (Get-ChildItem -LiteralPath $dir -File | Where-Object { $_.Name -match '^(LICENSE|LICENCE|COPYING|NOTICE|UNLICENSE)([._-]|$)' })) {
-            [void]$notices.AppendLine("--- $($license.Name) ---")
-            [void]$notices.AppendLine([IO.File]::ReadAllText($license.FullName))
+            Add-LicenseText $license.FullName
+        }
+        if ($package.license_file) {
+            $declaredLicense = if ([IO.Path]::IsPathRooted($package.license_file)) { $package.license_file } else { Join-Path $dir $package.license_file }
+            Add-LicenseText $declaredLicense
+        }
+        # Git workspace crates commonly keep their licence and NOTICE in the repository root.
+        if ($package.source -like 'git+*') {
+            $ancestor = [IO.DirectoryInfo]::new($dir)
+            for ($depth = 0; $ancestor -and $depth -lt 8 -and $ancestor.FullName.StartsWith($gitCheckoutRoot, [StringComparison]::OrdinalIgnoreCase); $depth++) {
+                foreach ($license in (Get-ChildItem -LiteralPath $ancestor.FullName -File | Where-Object { $_.Name -match '^(LICENSE|LICENCE|COPYING|NOTICE|UNLICENSE)([._-]|$)' })) {
+                    Add-LicenseText $license.FullName
+                }
+                if (Test-Path -LiteralPath (Join-Path $ancestor.FullName '.git')) {
+                    $extra = Join-Path $ancestor.FullName 'licenses'
+                    if (Test-Path -LiteralPath $extra -PathType Container) {
+                        foreach ($license in (Get-ChildItem -LiteralPath $extra -Recurse -File | Where-Object { $_.Name -match '^(LICENSE|LICENCE|COPYING|NOTICE|UNLICENSE)([._-]|$)' })) { Add-LicenseText $license.FullName }
+                    }
+                    break
+                }
+                $ancestor = $ancestor.Parent
+            }
         }
     }
     # Embedded repository assets also need their complete notices, alongside crate licences.
-    foreach ($license in (Get-ChildItem -LiteralPath (Join-Path $root 'assets') -Recurse -File | Where-Object { $_.Name -match '^(LICENSE|OFL-)' } | Sort-Object FullName)) {
+    foreach ($license in (Get-ChildItem -LiteralPath (Join-Path $root 'assets'), (Join-Path $root 'crates') -Recurse -File | Where-Object { $_.Name -match '^(LICENSE|LICENCE|COPYING|NOTICE|OFL-)' } | Sort-Object FullName)) {
         $relative = [IO.Path]::GetRelativePath($root, $license.FullName).Replace('\', '/')
         [void]$notices.AppendLine("`n=== $relative ===")
-        [void]$notices.AppendLine([IO.File]::ReadAllText($license.FullName))
+        Add-LicenseText $license.FullName
     }
     [IO.File]::WriteAllText((Join-Path $docs 'THIRD-PARTY-NOTICES.txt'), $notices.ToString(), $utf8)
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'LICENSE-WiX.txt') -Destination $docs

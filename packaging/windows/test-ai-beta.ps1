@@ -28,7 +28,7 @@ Assert ($properties.Manufacturer -eq 'BLEZZ0102') 'Publisher must identify the f
 Assert ($properties.UpgradeCode -eq '{8E0C7BE0-745A-4D87-B77C-4A4315D4EC62}') 'Upgrade identity mismatch'
 Assert ($properties.UpgradeCode -ne '{D9660F32-2D0A-4ABE-B73D-17BE25F1542C}') 'Must never upgrade official PhotoCraft'
 Assert (-not $properties.ContainsKey('ALLUSERS')) 'The beta must be per-user'
-Assert ($properties.ProductVersion -eq '0.20.3') 'MSI beta upgrade version mismatch'
+Assert ($properties.ProductVersion -eq '0.20.4') 'MSI beta upgrade version mismatch'
 Assert ($properties.ARPURLUPDATEINFO -eq 'https://github.com/BLEZZ0102/photocraft-ai/releases') 'Update URL mismatch'
 $conditions = @((Rows 'SELECT `Condition` FROM `LaunchCondition`' 1) | ForEach-Object { $_[0] })
 Assert ($conditions -contains 'NOT ALLUSERS') 'Must refuse a forced per-machine installation'
@@ -46,6 +46,8 @@ foreach ($row in (Rows 'SELECT `Root`, `Key` FROM `Registry`' 2)) {
 }
 $savedFolder = @(Rows 'SELECT `Value` FROM `Registry` WHERE `Name` = ''InstallDir''' 1)
 Assert ($savedFolder.Count -eq 1 -and $savedFolder[0][0] -eq '[INSTALLFOLDER]') 'Maintenance must remember the exact installed directory'
+$binaryVersion = @(Rows 'SELECT `Value` FROM `Registry` WHERE `Name` = ''BinaryVersion''' 1)
+Assert ($binaryVersion.Count -eq 1 -and $binaryVersion[0][0] -eq '0.20.1-ai-beta.3.1.1') 'Public AI Beta version mismatch'
 $restore = @(Rows 'SELECT `Condition` FROM `InstallExecuteSequence` WHERE `Action` = ''AIRestoreInstallFolder''' 1)
 Assert ($restore.Count -eq 1) 'Missing directory restore action before maintenance costing'
 $session = $installer.OpenPackage($msi, 1)

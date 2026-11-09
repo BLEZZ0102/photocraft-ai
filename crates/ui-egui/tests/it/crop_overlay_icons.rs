@@ -147,7 +147,10 @@ fn row_glyph<State>(h: &Harness<'_, State>, label: &str) -> egui::TextureId {
 fn the_canvas_crop_menu_lists_a_glyph_per_overlay() {
     let mut h = Harness::builder().with_size(egui::vec2(1200.0, 800.0)).with_max_steps(64).with_accessibility_check(false).build_eframe(|cc| {
         photocraft_ui_egui::PhotocraftApp::setup_context(&cc.egui_ctx, Default::default());
-        let mut app = photocraft_ui_egui::PhotocraftApp::new(photocraft_engine::Session::new(), photocraft_ui_egui::Services::default());
+        let mut session = photocraft_engine::Session::new();
+        // The glyph queries below use English overlay labels on every host locale.
+        session.edit_prefs(|prefs| prefs.interface.language = "en".into());
+        let mut app = photocraft_ui_egui::PhotocraftApp::new(session, photocraft_ui_egui::Services::default());
         app.run("file.new", serde_json::json!({"name": "crop menu", "width": 400, "height": 300})).expect("new document");
         app.ui.tool = Tool::Crop;
         photocraft_ui_egui::crop_ui::ensure_frame(&mut app);

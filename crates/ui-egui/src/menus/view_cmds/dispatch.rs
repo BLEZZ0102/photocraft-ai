@@ -224,6 +224,7 @@ fn wraps(id: &str) -> bool {
         id,
         "edit.ai.codex"
             | "file.openAs"
+            | "file.openAsSmartObject"
             | "file.openExrParts"
             | "file.saveACopy"
             | "file.placeEmbedded"

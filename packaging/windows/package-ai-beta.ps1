@@ -8,10 +8,10 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
-$version = '0.20.1-ai-beta.3.1.1'
+$version = '0.20.1-ai-beta.3.1.2'
 # Windows Installer compares three numeric fields. Increment its build counter
 # independently of the public AI Beta suffix, including for small fixes.
-$msiVersion = '0.20.4'
+$msiVersion = '0.20.5'
 $target = 'x86_64-pc-windows-msvc'
 $targetDir = if ($env:CARGO_TARGET_DIR) { [IO.Path]::GetFullPath($env:CARGO_TARGET_DIR) } else { Join-Path $root 'target' }
 $out = if ($OutputDirectory) { [IO.Path]::GetFullPath($OutputDirectory) } else { Join-Path $root 'dist/ai-beta' }

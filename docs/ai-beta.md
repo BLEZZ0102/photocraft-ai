@@ -1,8 +1,8 @@
-# PhotoCraft AI Beta 0.20.1-ai-beta.3.1.1
+# PhotoCraft AI Beta 0.20.1-ai-beta.3.1.2
 
 An unofficial community build of PhotoCraft, distributed by BLEZZ0102 under MIT OR Apache-2.0. Original PhotoCraft contributors retain their credits.
 
-This version integrates upstream PhotoCraft through a25999311 (November 6, 2026), adds layer-aware Codex input, and retains the independent AI update channel. Keep backups of important documents while using this beta.
+This version integrates upstream PhotoCraft through a7dfcf510, synchronized on November 9, 2026. It retains layer-aware Codex input, the independent AI update channel and the Windows installer path fix from Beta 3.1.1. Keep backups of important documents while using this beta.
 
 ## Installation
 
@@ -31,7 +31,7 @@ Gemini, Doubao/Seedream and FLUX use explicitly configured APIs and continue to 
 Download AI builds from https://github.com/BLEZZ0102/photocraft-ai/releases.
 Updates are offered only after a newer AI release is published with a complete package and verified GitHub digest. Save your work and wait for background tasks before updating.
 
-Small fixes within this beta series increment the final number (for example, Beta 3.1.1 to Beta 3.1.2). The leading 0.20.1 identifies the upstream PhotoCraft baseline.
+This update is Beta 3.1.2. The leading 0.20.1 identifies the upstream PhotoCraft version. The source snapshot above identifies the integrated main revision.
 
 If the published Beta 2 or Beta 3 MSI build reports Windows Installer error 1619 during an in-app update, close PhotoCraft AI and run the newer AI MSI directly. The installer can upgrade the existing per-user installation without uninstalling it first. Beta 1 also requires a manual upgrade.
 

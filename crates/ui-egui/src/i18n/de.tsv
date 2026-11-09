@@ -3667,40 +3667,7 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Keep Relative Position During Layer Reordering	Relative Position beim Neuanordnen von Ebenen beibehalten
 	Shrinkwrap Canvas on Save	Zeichenfläche beim Speichern auf den Inhalt verkleinern
 
-# AI distribution controls, retained from the previous release.
-	Layer via Copy	Ebene durch Kopieren
-	Layer via Cut	Ebene durch Ausschneiden
-	Inverse Selection	Auswahl umkehren
-	Working CMY Plate	Arbeits-CMY-Druckplatte
-	Legacy Macintosh RGB	Legacy-Macintosh-RGB
-	Internet Standard RGB	Internet-Standard-RGB
-	Color Blindness — Protanopia-type	Farbenblindheit — Protanopie-Typ
-	Color Blindness — Deuteranopia-type	Farbenblindheit — Deuteranopie-Typ
-	New Window for Document	Neues Fenster für Dokument
-	Click to restore the current colour	Klicke, um die aktuelle Farbe wiederherzustellen
-	Default colours (D)	Standardfarben (D)
-	Open a document to select a colour range.	Öffne ein Dokument, um einen Farbbereich auszuwählen.
-	Quick Export As PNG	Schnellexport als PNG
-	Swap colours (X)	Farben tauschen (X)
-	Click to fill similar colours	Klicken, um ähnliche Farben zu füllen
-	Sample: foreground colour	Abtasten: Vordergrundfarbe
-	Uses the foreground and background colours.	Nutzt die Vordergrund- und Hintergrundfarben.
-	Enable animations	Animationen aktivieren
-	Click to sample the foreground colour  ·  {key}-click for background	Klicken nimmt die Vordergrundfarbe auf  ·  {key}-Klick für den Hintergrund
-	Centre the gradient (offset 0, 0)	Verlauf zentrieren (Versatz 0, 0)
-	Cancelled opening {name}	Öffnen von {name} abgebrochen
-	Cancelled {label}	{label} abgebrochen
-	{label} is writing the file and can no longer be cancelled	{label} schreibt die Datei und kann nicht mehr abgebrochen werden
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Freistellrahmen ziehen · innen ziehen verschiebt · Kanten skalieren ({ratio} Verhältnis, {centre} zentriert) · Leertaste verschiebt beim Zeichnen · Pfeiltasten verschieben · X tauscht Ausrichtung · {commit} übernimmt · Esc bricht ab
-	Save cancelled	Speichern abgebrochen
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	Ansicht drehen: im Bogen ziehen · Umschalt: 15°-Schritte
-	Out of gamut for printing: click for the nearest printable colour	Außerhalb des Druckfarbumfangs: Klicken für die nächstliegende druckbare Farbe
-	Not a web colour: click for the nearest web colour	Keine Webfarbe: Klicken für die nächstliegende Webfarbe
-	Remember to turn off the printer's own colour management in Print Settings…	Denke daran, die eigene Farbverwaltung des Druckers in den Druckeinstellungen auszuschalten…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Wie das Farbfiltermosaik der Kamera aufgefüllt wird. Es wird beim Öffnen der Datei angewendet; die Vorschau zeigt die Methode, mit der sie geöffnet wurde.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks: die saubersten Kanten und die wenigsten Farbsäume, am langsamsten.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Gradientenkorrigierte Interpolation: scharf und schnell, mit etwas Farbsäumen an feinen Details.
-	The fastest and the softest, with colour fringing on fine detail.	Am schnellsten und weichsten, mit Farbsäumen an feinen Details.
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	KI-Bearbeitung…
 @id	edit.ai.codex	KI-Bearbeitung…
 	Describe your edit	Beschreiben Sie die Bearbeitung

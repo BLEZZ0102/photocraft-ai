@@ -4204,36 +4204,7 @@ shape	Appearance	화면 모양
 	Keep Relative Position During Layer Reordering	레이어 순서 변경 시 상대 위치 유지
 	Shrinkwrap Canvas on Save	저장 시 캔버스를 내용에 맞게 축소
 
-# AI distribution controls, retained from the previous release.
-	Layer via Copy	복사하여 레이어 만들기
-	Layer via Cut	잘라내어 레이어 만들기
-	Inverse Selection	선택 영역 반전
-	Color Blindness — Protanopia-type	색각 이상 — 적색맹
-	Color Blindness — Deuteranopia-type	색각 이상 — 녹색맹
-	Click to restore the current colour	클릭하여 현재 색상 복원
-	Default colours (D)	기본 색상 (D)
-	Open a document to select a colour range.	색상 범위를 선택하려면 문서를 여세요.
-	Quick Export As PNG	PNG로 빠르게 내보내기
-	Swap colours (X)	색상 교환 (X)
-	Click to fill similar colours	클릭하여 유사한 색상 채우기
-	Sample: foreground colour	샘플: 전경색
-	Uses the foreground and background colours.	전경색과 배경색을 사용합니다.
-	Enable animations	애니메이션 사용
-	Click to sample the foreground colour  ·  {key}-click for background	클릭하여 전경색 샘플링 · {key} 키를 누른 채 클릭하여 배경색 샘플링
-	Centre the gradient (offset 0, 0)	그레이디언트를 중앙에 배치(오프셋 0, 0)
-	Cancelled opening {name}	{name} 열기를 취소했습니다
-	Cancelled {label}	{label} 작업을 취소했습니다
-	{label} is writing the file and can no longer be cancelled	{label}: 파일을 쓰는 중이므로 더 이상 취소할 수 없습니다
-	Save cancelled	저장이 취소되었습니다
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	중심 주위를 드래그해 보기 회전  ·  Shift로 15° 단위 제한
-	Out of gamut for printing: click for the nearest printable colour	인쇄 색역 밖: 클릭하면 가장 가까운 인쇄 가능한 색상으로 바뀝니다
-	Not a web colour: click for the nearest web colour	웹 색상이 아님: 클릭하면 가장 가까운 웹 색상으로 바뀝니다
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	드래그하여 자르기 상자 만들기 · 안쪽을 드래그하여 이동 · 가장자리로 크기 조절({ratio} 비율, {centre} 중심) · 그리는 중 Space로 이동 · 화살표로 미세 이동 · X로 방향 전환 · {commit} 적용 · Esc 취소
-	Remember to turn off the printer's own colour management in Print Settings…	인쇄 설정에서 프린터 자체의 색상 관리를 끄세요…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	카메라 컬러 필터 모자이크를 채우는 방법입니다. 파일을 열 때 적용되며, 미리 보기는 파일을 연 방식으로 표시됩니다.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks: 가장 깨끗한 가장자리와 가장 적은 색 번짐, 가장 느림.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	기울기 보정 보간: 선명하고 빠르지만 미세한 디테일에 약간의 색 번짐이 있음.
-	The fastest and the softest, with colour fringing on fine detail.	가장 빠르고 가장 부드러우며, 미세한 디테일에 색 번짐이 있음.
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	AI 편집…
 @id	edit.ai.codex	AI 편집…
 	Describe your edit	편집할 내용을 입력하세요

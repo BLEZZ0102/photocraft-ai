@@ -4342,41 +4342,7 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Keep Relative Position During Layer Reordering	Зберігати відносне положення під час зміни порядку шарів
 	Shrinkwrap Canvas on Save	Зменшувати полотно до вмісту під час збереження
 
-# AI distribution controls, retained from the previous release.
-	Quick Export As PNG	Швидкий експорт у PNG
-	Layer via Copy	Шар через копіювання
-	Layer via Cut	Шар через вирізання
-	Inverse Selection	Інвертувати виділення
-	New Window for Document	Нове вікно для документа
-	Swap colours (X)	Поміняти кольори місцями (X)
-	Default colours (D)	Типові кольори (D)
-	Internet Standard RGB	Стандартний RGB для інтернету
-	Legacy Macintosh RGB	Застарілий Macintosh RGB
-	Click to restore the current colour	Клацніть, щоб відновити поточний колір
-	Click to fill similar colours	Клацніть, щоб залити подібні кольори
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Намалюйте рамку кадрування · перетягування всередині переміщує · краї змінюють розмір ({ratio} пропорції, {centre} центр) · пробіл переміщує під час малювання · стрілки зсувають · X змінює орієнтацію · {commit} підтверджує · Esc скасовує
-	Uses the foreground and background colours.	Використовує кольори переднього плану та фону.
-	Open a document to select a colour range.	Відкрийте документ, щоб виділити колірний діапазон.
-	Color Blindness — Deuteranopia-type	Порушення сприйняття кольору — дейтеранопія
-	Color Blindness — Protanopia-type	Порушення сприйняття кольору — протанопія
-	Working CMY Plate	Робоча форма CMY
-	Centre the gradient (offset 0, 0)	Центрувати градієнт (зсув 0, 0)
-	Sample: foreground colour	Зразок: колір переднього плану
-	Enable animations	Увімкнути анімацію
-	Cancelled opening {name}	Відкриття {name} скасовано
-	Cancelled {label}	Скасовано: {label}
-	{label} is writing the file and can no longer be cancelled	{label}: триває запис файлу, скасувати вже не можна
-	Save cancelled	Збереження скасовано
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	Перетягніть навколо центру, щоб повернути перегляд  ·  Shift обмежує крок до 15°
-	Click to sample the foreground colour  ·  {key}-click for background	Клацання бере зразок переднього плану  ·  {key}+клацання для фону
-	Not a web colour: click for the nearest web colour	Колір поза вебпалітрою: клацніть, щоб вибрати найближчий колір із неї
-	Out of gamut for printing: click for the nearest printable colour	Колір поза колірним охопленням друку: клацніть, щоб вибрати найближчий колір, придатний для друку
-	Remember to turn off the printer's own colour management in Print Settings…	Не забудьте вимкнути керування кольором самого принтера в параметрах друку…
-	This Smart Object must be rasterized before proceeding. Its contents will no longer be editable. Rasterize the Smart Object?	Щоб продовжити, потрібно растеризувати цей смартоб’єкт. Після цього його вміст більше не можна буде редагувати. Растеризувати смартоб’єкт?
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Як відновлюється мозаїка кольорового фільтра камери. Застосовується під час відкриття файлу; попередній перегляд показує метод, з яким файл було відкрито.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Хіракава–Паркс: найчистіші краї й найменше кольорової облямівки, найповільніший.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Інтерполяція з корекцією градієнта: різка й швидка, з невеликою кольоровою облямівкою на дрібних деталях.
-	The fastest and the softest, with colour fringing on fine detail.	Найшвидший і найм'якший, з кольоровою облямівкою на дрібних деталях.
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	Редагування з ШІ…
 @id	edit.ai.codex	Редагування з ШІ…
 	Describe your edit	Опишіть зміну

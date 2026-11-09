@@ -4648,42 +4648,7 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Keep Relative Position During Layer Reordering	Zadrži relativni položaj pri promjeni redoslijeda slojeva
 	Shrinkwrap Canvas on Save	Smanji platno na sadržaj pri sačuvanju
 
-# AI distribution controls, retained from the previous release.
-	Layer via Copy	Sloj kopiranjem
-	Layer via Cut	Sloj izrezivanjem
-	Inverse Selection	Obrnuti odabir
-	Working CMY Plate	Radna CMY ploča
-	Legacy Macintosh RGB	Naslijeđeni Macintosh RGB
-	Internet Standard RGB	Internet standardni RGB
-	Color Blindness — Protanopia-type	Daltonizam — tip protanopije
-	Color Blindness — Deuteranopia-type	Daltonizam — tip deuteranopije
-	New Window for Document	Novi prozor za dokument
-	Click to restore the current colour	Kliknite da vratite trenutnu boju
-	Default colours (D)	Zadane boje (D)
-	Open a document to select a colour range.	Otvorite dokument da odaberete raspon boja.
-	Quick Export As PNG	Brzi izvoz kao PNG
-	Swap colours (X)	Zamijeni boje (X)
-	Click to fill similar colours	Kliknite da ispunite slične boje
-	Sample: foreground colour	Uzorak: boja prednjeg plana
-	Uses the foreground and background colours.	Koristi boje prednjeg plana i pozadine.
-	Click to sample the foreground colour  ·  {key}-click for background	Kliknite da uzmete uzorak boje prednjeg plana  ·  {key}-klik za pozadinu
-	Centre the gradient (offset 0, 0)	Centriraj gradijent (pomak 0, 0)
-	Cancelled opening {name}	Otkazano otvaranje {name}
-	Cancelled {label}	Otkazano: {label}
-	{label} is writing the file and can no longer be cancelled	{label} zapisuje datoteku i više se ne može otkazati
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Prevucite okvir izrezivanja · prevucite unutra za pomjeranje · ivice mijenjaju veličinu ({ratio} omjer, {centre} središte) · Razmak pomjera tokom crtanja · strelice pomiču · X mijenja orijentaciju · {commit} potvrđuje · Esc otkazuje
-	Save cancelled	Čuvanje otkazano
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	Prevucite oko središta da rotirate prikaz  ·  Shift ograničava na 15°
-	Out of gamut for printing: click for the nearest printable colour	Izvan gamuta za štampu: kliknite za najbližu boju koja se može štampati
-	Not a web colour: click for the nearest web colour	Nije web boja: kliknite za najbližu web boju
-	This Smart Object must be rasterized before proceeding. Its contents will no longer be editable. Rasterize the Smart Object?	Ovaj pametni objekat mora se rasterizirati prije nastavka. Njegov sadržaj više neće biti moguće uređivati. Rasterizirati pametni objekat?
-	Remember to turn off the printer's own colour management in Print Settings…	Ne zaboravite isključiti vlastito upravljanje bojama štampača u Postavke štampanja…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Kako se popunjava mozaik filtera boja kamere. Primjenjuje se pri otvaranju datoteke; pregled prikazuje metodu kojom je otvorena.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks: najčišće ivice i najmanje obojenih rubova, najsporiji.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Interpolacija s korekcijom gradijenta: oštra i brza, uz nešto obojenih rubova na finim detaljima.
-	The fastest and the softest, with colour fringing on fine detail.	Najbrži i najmekši, uz obojene rubove na finim detaljima.
-cameraRaw	Cancelled opening {name}	Otkazano otvaranje {name}
-cameraRaw	Cancelled {label}	Otkazano: {label}
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	AI uređivanje…
 @id	edit.ai.codex	AI uređivanje…
 	Describe your edit	Opišite izmenu

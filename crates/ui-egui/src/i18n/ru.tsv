@@ -4816,41 +4816,7 @@ shape	Appearance	Оформление
 	Keep Relative Position During Layer Reordering	Сохранять относительное положение при изменении порядка слоев
 	Shrinkwrap Canvas on Save	Уменьшать холст до содержимого при сохранении
 
-# AI distribution controls, retained from the previous release.
-	Quick Export As PNG	Быстрый экспорт в PNG
-	Layer via Copy	Скопировать на новый слой
-	Layer via Cut	Вырезать на новый слой
-	Inverse Selection	Инвертировать выделение
-	New Window for Document	Новое окно документа
-	Swap colours (X)	Поменять цвета (X)
-	Default colours (D)	Цвета по умолчанию (D)
-	Internet Standard RGB	Стандартный RGB для Интернета
-	Legacy Macintosh RGB	Устаревший RGB Macintosh
-	Click to restore the current colour	Щёлкните, чтобы восстановить текущий цвет
-	Click to fill similar colours	Щёлкните, чтобы залить похожие цвета
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Выделите рамку кадрирования · перетащите внутри для перемещения · края меняют размер ({ratio} пропорции, {centre} центр) · Space двигает при рисовании · стрелки сдвигают · X меняет ориентацию · {commit} применить · Esc отмена
-	Uses the foreground and background colours.	Использует основной цвет и цвет фона.
-	Open a document to select a colour range.	Откройте документ, чтобы выбрать цветовой диапазон.
-	Color Blindness — Deuteranopia-type	Цветовая слепота — дейтеранопия
-	Color Blindness — Protanopia-type	Цветовая слепота — протанопия
-	Working CMY Plate	Рабочая голубая форма
-	Centre the gradient (offset 0, 0)	Центрировать градиент (смещение 0, 0)
-	Sample: foreground colour	Выборка: основной цвет
-	Enable animations	Включить анимацию
-	Cancelled opening {name}	Открытие {name} отменено
-	Cancelled {label}	{label}: отменено
-	{label} is writing the file and can no longer be cancelled	{label}: идёт запись файла, отменить уже нельзя
-	Save cancelled	Сохранение отменено
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	Перетащите вокруг центра, чтобы повернуть вид  ·  Shift фиксирует шаг 15°
-	Click to sample the foreground colour  ·  {key}-click for background	Клик — взять основной цвет  ·  {key}-клик — фоновый цвет
-	Out of gamut for printing: click for the nearest printable colour	Вне цветового охвата печати: щёлкните, чтобы выбрать ближайший печатаемый цвет
-	Not a web colour: click for the nearest web colour	Не веб-цвет: щёлкните, чтобы выбрать ближайший веб-цвет
-	Remember to turn off the printer's own colour management in Print Settings…	Не забудьте отключить управление цветом самого принтера в параметрах печати…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Как восстанавливается мозаика цветного фильтра камеры. Применяется при открытии файла; превью показывает метод, с которым файл был открыт.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Хиракава–Паркс: самые чистые края и меньше всего цветной каймы, самый медленный.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Интерполяция с коррекцией градиента: резкая и быстрая, с небольшой цветной каймой на мелких деталях.
-	The fastest and the softest, with colour fringing on fine detail.	Самый быстрый и самый мягкий, с цветной каймой на мелких деталях.
-	This Smart Object must be rasterized before proceeding. Its contents will no longer be editable. Rasterize the Smart Object?	Перед продолжением необходимо растрировать этот смарт-объект. Его содержимое перестанет быть редактируемым. Растрировать смарт-объект?
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	Редактирование с ИИ…
 @id	edit.ai.codex	Редактирование с ИИ…
 	Describe your edit	Опишите правку

@@ -4331,40 +4331,7 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Keep Relative Position During Layer Reordering	Διατήρηση σχετικής θέσης κατά την αναδιάταξη επιπέδων
 	Shrinkwrap Canvas on Save	Σμίκρυνση καμβά στο περιεχόμενο κατά την αποθήκευση
 
-# AI distribution controls, retained from the previous release.
-	Default colours (D)	Προεπιλεγμένα χρώματα (D)
-	Open a document to select a colour range.	Ανοίξτε ένα έγγραφο για να επιλέξετε εύρος χρωμάτων.
-	Quick Export As PNG	Γρήγορη εξαγωγή ως PNG
-	Sample: foreground colour	Δείγμα: χρώμα προσκηνίου
-	Save cancelled	Η αποθήκευση ακυρώθηκε
-	Enable animations	Ενεργοποίηση κινούμενων εφέ
-	Centre the gradient (offset 0, 0)	Κεντράρισμα διαβάθμισης (μετατόπιση 0, 0)
-	Cancelled opening {name}	Ακυρώθηκε το άνοιγμα του {name}
-	Cancelled {label}	Ακυρώθηκε: {label}
-	{label} is writing the file and can no longer be cancelled	{label}: γίνεται εγγραφή του αρχείου και δεν μπορεί πλέον να ακυρωθεί
-	Layer via Copy	Επίπεδο μέσω αντιγραφής
-	Layer via Cut	Επίπεδο μέσω αποκοπής
-	Click to fill similar colours	Κάντε κλικ για γέμισμα παρόμοιων χρωμάτων
-	Click to restore the current colour	Κάντε κλικ για επαναφορά του τρέχοντος χρώματος
-	Click to sample the foreground colour  ·  {key}-click for background	Κλικ για δειγματοληψία χρώματος προσκηνίου · {key}-κλικ για φόντο
-	Color Blindness — Deuteranopia-type	Αχρωματοψία — τύπος δευτερανωπίας
-	Color Blindness — Protanopia-type	Αχρωματοψία — τύπος πρωτανωπίας
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Σύρετε για περιοχή περικοπής · σύρετε στο εσωτερικό για μετακίνηση · από τα άκρα αλλάζει μέγεθος ({ratio} αναλογία, {centre} κέντρο) · Space για μετακίνηση κατά τη σχεδίαση · βέλη για μετακίνηση · X εναλλαγή προσανατολισμού · {commit} εφαρμογή · Esc ακύρωση
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	Σύρετε γύρω από το κέντρο για να περιστρέψετε την προβολή  ·  Shift περιορίζει στις 15°
-	Internet Standard RGB	Τυπικό RGB διαδικτύου
-	Inverse Selection	Αντιστροφή επιλογής
-	Legacy Macintosh RGB	Παλαιό Macintosh RGB
-	New Window for Document	Νέο παράθυρο για το έγγραφο
-	Swap colours (X)	Εναλλαγή χρωμάτων (X)
-	Uses the foreground and background colours.	Χρησιμοποιεί τα χρώματα προσκηνίου και φόντου.
-	Working CMY Plate	Κανάλια CMY εργασίας
-	Out of gamut for printing: click for the nearest printable colour	Εκτός γκάμας εκτύπωσης: κάντε κλικ για το πλησιέστερο εκτυπώσιμο χρώμα
-	Not a web colour: click for the nearest web colour	Δεν είναι χρώμα web: κάντε κλικ για το πλησιέστερο χρώμα web
-	Remember to turn off the printer's own colour management in Print Settings…	Θυμηθείτε να απενεργοποιήσετε τη διαχείριση χρωμάτων του εκτυπωτή στις ρυθμίσεις εκτύπωσης…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Πώς συμπληρώνεται το ψηφιδωτό του χρωματικού φίλτρου της κάμερας. Εφαρμόζεται όταν ανοίγει το αρχείο· η προεπισκόπηση δείχνει τη μέθοδο με την οποία άνοιξε.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks: οι πιο καθαρές ακμές και τα λιγότερα χρωματικά περιθώρια, η πιο αργή.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Παρεμβολή με διόρθωση κλίσης: ευκρινής και γρήγορη, με λίγα χρωματικά περιθώρια στις λεπτές λεπτομέρειες.
-	The fastest and the softest, with colour fringing on fine detail.	Η πιο γρήγορη και η πιο μαλακή, με χρωματικά περιθώρια στις λεπτές λεπτομέρειες.
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	Επεξεργασία με ΤΝ…
 @id	edit.ai.codex	Επεξεργασία με ΤΝ…
 	Describe your edit	Περιγράψτε την αλλαγή

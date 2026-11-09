@@ -4718,9 +4718,7 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	A picked document is no longer open.	ერთ-ერთი არჩეული დოკუმენტი აღარ არის გახსნილი.
 	A picked document is no longer a grayscale document of the same size.	ერთ-ერთი არჩეული დოკუმენტი აღარ არის იმავე ზომის ნაცრისფერი ტონების დოკუმენტი.
 
-# AI controls: machine-assisted translations of the public English labels. Native review pending.
-	Layer via Copy	ფენა კოპირების საშუალებით
-	Layer via Cut	ფენა ჭრის საშუალებით
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	AI რედაქტირება…
 @id	edit.ai.codex	AI რედაქტირება…
 	Describe your edit	აღწერეთ თქვენი რედაქტირება

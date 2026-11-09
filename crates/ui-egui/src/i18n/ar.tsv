@@ -3620,40 +3620,7 @@ curves	Smooth	تنعيم
 	Keep Relative Position During Layer Reordering	الإبقاء على الموضع النسبي عند إعادة ترتيب الطبقات
 	Shrinkwrap Canvas on Save	تقليص مساحة الرسم إلى المحتوى عند الحفظ
 
-# AI distribution controls, retained from the previous release.
-	Layer via Copy	طبقة عبر النسخ
-	Layer via Cut	طبقة عبر القص
-	Inverse Selection	عكس التحديد
-	Working CMY Plate	لوح CMY العامل
-	Legacy Macintosh RGB	RGB القديم لنظام Macintosh
-	Internet Standard RGB	RGB القياسي للإنترنت
-	Color Blindness — Protanopia-type	عمى الألوان — نوع بروتانوبيا
-	Color Blindness — Deuteranopia-type	عمى الألوان — نوع ديوتيرانوبيا
-	New Window for Document	نافذة جديدة للمستند
-	Click to restore the current colour	انقر لاستعادة اللون الحالي
-	Default colours (D)	الألوان الافتراضية (D)
-	Open a document to select a colour range.	افتح مستندًا لتحديد نطاق ألوان.
-	Quick Export As PNG	تصدير سريع بتنسيق PNG
-	Swap colours (X)	تبديل الألوان (X)
-	Click to fill similar colours	انقر لتعبئة الألوان المتشابهة
-	Sample: foreground colour	العينة: لون المقدمة
-	Uses the foreground and background colours.	يستخدم لوني المقدمة والخلفية.
-	Enable animations	تمكين الحركات
-	Click to sample the foreground colour  ·  {key}-click for background	انقر لأخذ عينة من لون المقدمة  ·  {key}+نقر للون الخلفية
-	Centre the gradient (offset 0, 0)	توسيط التدرج (إزاحة 0، 0)
-	Cancelled opening {name}	تم إلغاء فتح {name}
-	Cancelled {label}	تم إلغاء {label}
-	{label} is writing the file and can no longer be cancelled	{label} يكتب الملف ولم يعد بالإمكان إلغاؤه
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	اسحب مربع اقتصاص · اسحب من الداخل للتحريك · الحواف لتغيير الحجم ({ratio} للنسبة، {centre} للمركز) · Space للتحريك أثناء الرسم · الأسهم للدفع الدقيق · X لتبديل الاتجاه · {commit} للتأكيد · Esc للإلغاء
-	Save cancelled	تم إلغاء الحفظ
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	اسحب حول المركز لتدوير العرض  ·  Shift يقيّد الزاوية بخطوات 15°
-	Out of gamut for printing: click for the nearest printable colour	خارج النطاق اللوني للطباعة: انقر لأقرب لون قابل للطباعة
-	Not a web colour: click for the nearest web colour	ليس لون ويب: انقر لأقرب لون ويب
-	Remember to turn off the printer's own colour management in Print Settings…	تذكر إيقاف إدارة الألوان الخاصة بالطابعة في إعدادات الطباعة…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	طريقة ملء فسيفساء مرشح الألوان في الكاميرا. تُطبَّق عند فتح الملف؛ وتعرض المعاينة الطريقة التي فُتح بها.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks: أنظف الحواف وأقل هالات لونية، والأبطأ.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	استيفاء مصحح بالتدرج: حاد وسريع، مع بعض الهالات اللونية في التفاصيل الدقيقة.
-	The fastest and the softest, with colour fringing on fine detail.	الأسرع والأنعم، مع هالات لونية في التفاصيل الدقيقة.
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	تحرير بالذكاء الاصطناعي…
 @id	edit.ai.codex	تحرير بالذكاء الاصطناعي…
 	Describe your edit	صِف التعديل

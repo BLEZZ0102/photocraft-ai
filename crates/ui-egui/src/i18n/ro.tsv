@@ -4615,21 +4615,19 @@ navigator	Zoom	Zoom
 @plural	{n} file could not be loaded: {errors}|{n} files could not be loaded: {errors}	{n} fișier nu a putut fi încărcat: {errors}|{n} fișiere nu au putut fi încărcate: {errors}|{n} de fișiere nu au putut fi încărcate: {errors}
 @plural	{what}: {n} Image Assets output failed|{what}: {n} Image Assets outputs failed	{what}: {n} ieșire Resurse imagine a eșuat|{what}: {n} ieșiri Resurse imagine au eșuat|{what}: {n} de ieșiri Resurse imagine au eșuat
 
-# AI controls: machine-assisted translations of the public English labels. Native review pending.
-	Layer via Copy	Strat prin Copiere
-	Layer via Cut	Strat prin Cut
-	AI Edit…	Editare AI...
-@id	edit.ai.codex	Editare AI...
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
+	AI Edit…	Editare AI…
+@id	edit.ai.codex	Editare AI…
 	Describe your edit	Descrieți editarea dvs
 	The visible canvas and instruction will be sent to Codex using your ChatGPT sign-in. The result is fitted to the canvas and added as a new layer.	Pânza vizibilă și instrucțiunile vor fi trimise către Codex utilizând conectarea dvs. ChatGPT. Rezultatul este fixat pe pânză și adăugat ca strat nou.
 	Codex account has not been checked	Contul Codex nu a fost verificat
-	Checking Codex connection…	Se verifică conexiunea Codex...
+	Checking Codex connection…	Se verifică conexiunea Codex…
 	Complete ChatGPT sign-in in your browser	Finalizați conectarea la ChatGPT în browser
 	Connected to ChatGPT	Conectat la ChatGPT
 	ChatGPT plan	Plan ChatGPT
 	ChatGPT sign-in is required	Conectarea ChatGPT este necesară
 	Codex is using another login method. Sign in with ChatGPT to use your subscription.	Codex folosește o altă metodă de conectare. Conectați-vă cu ChatGPT pentru a vă folosi abonamentul.
-	Cancelling sign-in…	Se anulează conectarea...
+	Cancelling sign-in…	Se anulează conectarea…
 	Sign-in cancelled	Conectarea a fost anulată
 	Could not verify the account. Check your connection or sign in again.	Nu s-a putut verifica contul. Verificați-vă conexiunea sau conectați-vă din nou.
 	Connection details	Detalii de conectare
@@ -4698,6 +4696,6 @@ navigator	Zoom	Zoom
 	Updates are offered only after a new AI package is published.	Actualizările sunt oferite numai după publicarea unui nou pachet AI.
 	PhotoCraft AI {version} is available.	PhotoCraft AI {version} este disponibil.
 	No newer AI package is available.	Nu este disponibil niciun pachet AI mai nou.
-	Downloading and verifying update…	Se descarcă și se verifică actualizarea...
+	Downloading and verifying update…	Se descarcă și se verifică actualizarea…
 	Could not install the update.	Nu s-a putut instala actualizarea.
 	Save your documents and wait for background tasks before updating.	Salvați documentele și așteptați activitățile de fundal înainte de a actualiza.

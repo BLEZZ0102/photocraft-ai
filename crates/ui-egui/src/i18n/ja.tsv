@@ -4302,40 +4302,7 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Keep Relative Position During Layer Reordering	レイヤーの並べ替え中も相対位置を保持
 	Shrinkwrap Canvas on Save	保存時にカンバスを内容に合わせて縮小
 
-# AI distribution controls, retained from the previous release.
-	Layer via Copy	コピーしたレイヤー
-	Layer via Cut	切り取ったレイヤー
-	Inverse Selection	選択範囲を反転
-	Working CMY Plate	作業用 CMY 版
-	Legacy Macintosh RGB	旧 Macintosh RGB
-	Internet Standard RGB	インターネット標準 RGB
-	Color Blindness — Protanopia-type	色覚特性 — 1 型(P 型)
-	Color Blindness — Deuteranopia-type	色覚特性 — 2 型(D 型)
-	New Window for Document	ドキュメントの新規ウィンドウ
-	Click to restore the current colour	クリックして現在の色に戻す
-	Default colours (D)	初期カラーに戻す(D)
-	Open a document to select a colour range.	色域を指定するには、ドキュメントを開いてください。
-	Quick Export As PNG	PNG としてクイック書き出し
-	Swap colours (X)	描画色と背景色を入れ替え(X)
-	Click to fill similar colours	クリックして近い色を塗りつぶし
-	Sample: foreground colour	サンプル: 描画色
-	Uses the foreground and background colours.	描画色と背景色を使用します。
-	Enable animations	アニメーションを有効にする
-	Click to sample the foreground colour  ·  {key}-click for background	クリックで描画色を取得 · {key}+クリックで背景色を取得
-	Centre the gradient (offset 0, 0)	グラデーションを中央に配置(オフセット 0, 0)
-	Cancelled opening {name}	{name} を開くのをキャンセルしました
-	Cancelled {label}	{label} をキャンセルしました
-	{label} is writing the file and can no longer be cancelled	{label} はファイルを書き込み中のため、キャンセルできません
-	Save cancelled	保存をキャンセルしました
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	中心の周りをドラッグして表示を回転  ·  Shift で 15° 単位
-	Out of gamut for printing: click for the nearest printable colour	印刷の色域外: クリックすると最も近い印刷可能な色になります
-	Not a web colour: click for the nearest web colour	Web カラーではありません: クリックすると最も近い Web カラーになります
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	切り抜きボックスをドラッグ · 内側をドラッグで移動 · 縁でサイズ変更 ({ratio} で比率、{centre} で中心) · 描画中は Space で移動 · 矢印キーで微調整 · X で縦横を切り替え · {commit} で確定 · Esc で取り消し
-	Remember to turn off the printer's own colour management in Print Settings…	印刷設定でプリンター独自のカラーマネジメントを無効にしてください…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	カメラのカラーフィルター配列をどのように補間するか。ファイルを開くときに適用されます。プレビューは開いたときの方式で表示されます。
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks：エッジが最もきれいで色にじみが最も少ないが、最も遅い。
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	勾配補正補間：シャープで高速だが、細部に多少の色にじみが出る。
-	The fastest and the softest, with colour fringing on fine detail.	最も高速で最も柔らかく、細部に色にじみが出る。
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	AI 編集…
 @id	edit.ai.codex	AI 編集…
 	Describe your edit	編集内容を入力

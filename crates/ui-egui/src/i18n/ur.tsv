@@ -4573,9 +4573,7 @@ navigator	Zoom	زوم
 @plural	{n} file could not be loaded: {errors}|{n} files could not be loaded: {errors}	{n} فائل لوڈ نہیں ہو سکی: {errors}|{n} فائلیں لوڈ نہیں ہو سکیں: {errors}
 @plural	{what}: {n} Image Assets output failed|{what}: {n} Image Assets outputs failed	{what}: {n} تصویری اثاثہ آؤٹ پٹ ناکام ہوا|{what}: {n} تصویری اثاثے آؤٹ پٹس ناکام ہوئے
 
-# AI controls: machine-assisted translations of the public English labels. Native review pending.
-	Layer via Copy	کاپی کے ذریعے پرت
-	Layer via Cut	کٹ کے ذریعے پرت
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	AI ترمیم…
 @id	edit.ai.codex	AI ترمیم…
 	Describe your edit	اپنی ترمیم کی وضاحت کریں۔

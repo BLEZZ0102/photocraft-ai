@@ -4372,41 +4372,7 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Keep Relative Position During Layer Reordering	Zachovat relativní polohu při změně pořadí vrstev
 	Shrinkwrap Canvas on Save	Při uložení zmenšit plátno na obsah
 
-# AI distribution controls, retained from the previous release.
-	Layer via Copy	Vrstva kopírováním
-	Layer via Cut	Vrstva vyjmutím
-	Inverse Selection	Invertovat výběr
-	Working CMY Plate	Pracovní výtažky CMY
-	Legacy Macintosh RGB	Starší Macintosh RGB
-	Internet Standard RGB	Internetový standard RGB
-	Color Blindness — Protanopia-type	Barvoslepost — protanopie
-	Color Blindness — Deuteranopia-type	Barvoslepost — deuteranopie
-	New Window for Document	Nové okno dokumentu
-	Click to restore the current colour	Kliknutím obnovíte aktuální barvu
-	Default colours (D)	Výchozí barvy (D)
-	Open a document to select a colour range.	Chcete-li vybrat rozsah barev, otevřete dokument.
-	Quick Export As PNG	Rychlý export do PNG
-	Swap colours (X)	Prohodit barvy (X)
-	Click to fill similar colours	Kliknutím vyplníte podobné barvy
-	Sample: foreground colour	Vzorek: barva popředí
-	Uses the foreground and background colours.	Používá barvy popředí a pozadí.
-	Enable animations	Povolit animace
-	Click to sample the foreground colour  ·  {key}-click for background	Kliknutím nasnímáte barvu popředí  ·  {key}+kliknutím barvu pozadí
-	Centre the gradient (offset 0, 0)	Vystředit přechod (posun 0, 0)
-	Cancelled opening {name}	Otevírání {name} zrušeno
-	Cancelled {label}	Zrušeno: {label}
-	{label} is writing the file and can no longer be cancelled	{label} zapisuje soubor a už ho nelze zrušit
-	Save cancelled	Ukládání zrušeno
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	Tažením kolem středu otočíte zobrazení  ·  Shift omezí na 15°
-	Out of gamut for printing: click for the nearest printable colour	Mimo gamut tisku: klepnutím zvolíte nejbližší tisknutelnou barvu
-	Not a web colour: click for the nearest web colour	Není webová barva: klepnutím zvolíte nejbližší webovou barvu
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Tažením nakreslete ořez · tažením uvnitř posunete · okraje mění velikost ({ratio} poměr, {centre} střed) · Mezerník posouvá při kreslení · šipky posunují · X prohodí orientaci · {commit} potvrdí · Esc zruší
-	This Smart Object must be rasterized before proceeding. Its contents will no longer be editable. Rasterize the Smart Object?	Před pokračováním je nutné tento chytrý objekt rastrovat. Jeho obsah už nebude možné upravovat. Rastrovat chytrý objekt?
-	Remember to turn off the printer's own colour management in Print Settings…	Nezapomeňte v nastavení tisku vypnout vlastní správu barev tiskárny…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Jak se doplňuje mozaika barevného filtru fotoaparátu. Použije se při otevření souboru; náhled ukazuje metodu, se kterou byl otevřen.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks: nejčistší hrany a nejméně barevných lemů, nejpomalejší.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Interpolace s korekcí gradientu: ostrá a rychlá, s mírnými barevnými lemy v jemných detailech.
-	The fastest and the softest, with colour fringing on fine detail.	Nejrychlejší a nejměkčí, s barevnými lemy v jemných detailech.
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	Úprava pomocí AI…
 @id	edit.ai.codex	Úprava pomocí AI…
 	Describe your edit	Popište úpravu

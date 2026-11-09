@@ -4833,43 +4833,7 @@ cameraRaw	White Balance: As Shot	Valkotasapaino: kuvauksen mukainen
 	Keep Relative Position During Layer Reordering	Säilytä suhteellinen sijainti tasojen järjestystä muutettaessa
 	Shrinkwrap Canvas on Save	Pienennä kangas sisältöön tallennettaessa
 
-# AI distribution controls, retained from the previous release.
-	Quick Export As PNG	Pikavienti PNG-muodossa
-	Layer via Copy	Taso kopioimalla
-	Layer via Cut	Taso leikkaamalla
-	Inverse Selection	Käänteinen valinta
-	New Window for Document	Uusi ikkuna asiakirjalle
-	Swap colours (X)	Vaihda värit (X)
-	Default colours (D)	Oletusvärit (D)
-	Internet Standard RGB	Internetin standardi-RGB
-	Legacy Macintosh RGB	Vanha Macintosh RGB
-	Click to restore the current colour	Palauta nykyinen väri napsauttamalla
-	Click to fill similar colours	Täytä samankaltaiset värit napsauttamalla
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Vedä rajauslaatikko · siirrä vetämällä sisältä · reunat muuttavat kokoa ({ratio} suhde, {centre} keskeltä) · Välilyönti siirtää piirrettäessä · nuolet siirtävät · X vaihtaa suunnan · {commit} vahvistaa · Esc peruuttaa
-	Uses the foreground and background colours.	Käyttää edusta- ja taustaväriä.
-	Open a document to select a colour range.	Avaa asiakirja valitaksesi värialueen.
-	Color Blindness — Deuteranopia-type	Värisokeus — deuteranopia
-	Color Blindness — Protanopia-type	Värisokeus — protanopia
-	Working CMY Plate	Työ-CMY-levy
-	Centre the gradient (offset 0, 0)	Keskitä liukuväri (siirtymä 0, 0)
-	Sample: foreground colour	Näyte: edustaväri
-	Enable animations	Ota animaatiot käyttöön
-	Cancelled opening {name}	Tiedoston {name} avaaminen peruutettu
-	Cancelled {label}	Peruutettu: {label}
-	{label} is writing the file and can no longer be cancelled	{label}: tiedostoa kirjoitetaan, eikä toimintoa voi enää peruuttaa
-	Save cancelled	Tallennus peruutettu
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	Kierrä näkymää vetämällä keskipisteen ympäri  ·  Shift rajoittaa 15°:n välein
-	Click to sample the foreground colour  ·  {key}-click for background	Ota edustavärin näyte napsauttamalla  ·  {key}-napsautus taustavärille
-	Out of gamut for printing: click for the nearest printable colour	Tulostusvärialueen ulkopuolella: napsauta valitaksesi lähimmän tulostettavan värin
-	Not a web colour: click for the nearest web colour	Ei verkkoväri: napsauta valitaksesi lähimmän verkkovärin
-	Remember to turn off the printer's own colour management in Print Settings…	Muista poistaa tulostimen oma värinhallinta käytöstä kohdassa Tulostusasetukset…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Miten kameran värisuodatinmosaiikki täydennetään. Menetelmä otetaan käyttöön tiedostoa avattaessa; esikatselu näyttää menetelmän, jolla tiedosto avattiin.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks: siisteimmät reunat ja vähiten värireunuksia, hitain.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Gradienttikorjattu interpolointi: terävä ja nopea, hienoissa yksityiskohdissa jonkin verran värireunuksia.
-	The fastest and the softest, with colour fringing on fine detail.	Nopein ja pehmein, hienoissa yksityiskohdissa värireunuksia.
-	This Smart Object must be rasterized before proceeding. Its contents will no longer be editable. Rasterize the Smart Object?	Tämä älykäs objekti on rasteroitava ennen jatkamista. Sen sisältöä ei voi enää muokata. Rasteroidaanko älykäs objekti?
-cameraRaw	Cancelled opening {name}	Tiedoston {name} avaaminen peruutettu
-cameraRaw	Cancelled {label}	Peruutettu: {label}
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	Tekoälymuokkaus…
 @id	edit.ai.codex	Tekoälymuokkaus…
 	Describe your edit	Kuvaile muokkaus

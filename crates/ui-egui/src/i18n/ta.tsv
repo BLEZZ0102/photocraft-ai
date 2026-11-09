@@ -4274,9 +4274,7 @@ navigator	Zoom	பெரிதாக்கல்
 	The path was kept as the Work Path	பாதை பணிப் பாதையாக வைக்கப்பட்டது
 	The path was discarded	பாதை நிராகரிக்கப்பட்டது
 
-# AI controls: machine-assisted translations of the public English labels. Native review pending.
-	Layer via Copy	நகல் வழியாக அடுக்கு
-	Layer via Cut	வெட்டு வழியாக அடுக்கு
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	AI திருத்தம்…
 @id	edit.ai.codex	AI திருத்தம்…
 	Describe your edit	உங்கள் திருத்தத்தை விவரிக்கவும்

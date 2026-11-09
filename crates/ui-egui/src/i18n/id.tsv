@@ -3654,40 +3654,7 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Keep Relative Position During Layer Reordering	Pertahankan posisi relatif saat mengurutkan ulang layer
 	Shrinkwrap Canvas on Save	Kecilkan kanvas sesuai konten saat menyimpan
 
-# AI distribution controls, retained from the previous release.
-	Layer via Copy	Layer via Salin
-	Layer via Cut	Layer via Potong
-	Inverse Selection	Balik Seleksi
-	Working CMY Plate	Pelat CMY Kerja
-	Legacy Macintosh RGB	RGB Macintosh Lawas
-	Internet Standard RGB	RGB Standar Internet
-	Color Blindness — Protanopia-type	Buta Warna — Tipe Protanopia
-	Color Blindness — Deuteranopia-type	Buta Warna — Tipe Deuteranopia
-	New Window for Document	Jendela Baru untuk Dokumen
-	Click to restore the current colour	Klik untuk memulihkan warna saat ini
-	Default colours (D)	Warna default (D)
-	Open a document to select a colour range.	Buka dokumen untuk memilih rentang warna.
-	Quick Export As PNG	Ekspor Cepat Sebagai PNG
-	Swap colours (X)	Tukar warna (X)
-	Click to fill similar colours	Klik untuk mengisi warna serupa
-	Sample: foreground colour	Sampel: warna foreground
-	Uses the foreground and background colours.	Memakai warna foreground dan background.
-	Enable animations	Aktifkan animasi
-	Click to sample the foreground colour  ·  {key}-click for background	Klik untuk mengambil sampel warna foreground  ·  {key}-klik untuk background
-	Centre the gradient (offset 0, 0)	Tengahkan gradien (offset 0, 0)
-	Cancelled opening {name}	Pembukaan {name} dibatalkan
-	Cancelled {label}	{label} dibatalkan
-	{label} is writing the file and can no longer be cancelled	{label} sedang menulis berkas dan tidak dapat dibatalkan lagi
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Seret kotak crop · seret di dalam untuk memindah · tepi mengubah ukuran (rasio {ratio}, tengah {centre}) · Space memindah saat menggambar · panah menggeser · X menukar orientasi · {commit} menerapkan · Esc batal
-	Save cancelled	Penyimpanan dibatalkan
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	Seret di sekitar pusat untuk memutar tampilan  ·  Shift membatasi ke 15°
-	Out of gamut for printing: click for the nearest printable colour	Di luar gamut cetak: klik untuk warna cetak terdekat
-	Not a web colour: click for the nearest web colour	Bukan warna web: klik untuk warna web terdekat
-	Remember to turn off the printer's own colour management in Print Settings…	Ingat untuk menonaktifkan pengelolaan warna milik printer di Pengaturan Cetak…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Cara mosaik filter warna kamera diisi. Diterapkan saat berkas dibuka; pratinjau menampilkan metode yang dipakai saat dibuka.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks: tepi paling bersih dan pinggiran warna paling sedikit, paling lambat.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Interpolasi terkoreksi gradien: tajam dan cepat, dengan sedikit pinggiran warna pada detail halus.
-	The fastest and the softest, with colour fringing on fine detail.	Paling cepat dan paling lembut, dengan pinggiran warna pada detail halus.
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	Edit AI…
 @id	edit.ai.codex	Edit AI…
 	Describe your edit	Jelaskan pengeditan

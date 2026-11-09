@@ -4654,41 +4654,7 @@ shape	Appearance	Apparence
 	Keep Relative Position During Layer Reordering	Conserver la position relative lors de la réorganisation des calques
 	Shrinkwrap Canvas on Save	Réduire le canevas au contenu à l'enregistrement
 
-# AI distribution controls, retained from the previous release.
-	Layer via Copy	Calque par copie
-	Layer via Cut	Calque par coupe
-	Inverse Selection	Inverser la sélection
-	Working CMY Plate	Plaque CMJ de travail
-	Legacy Macintosh RGB	RVB Macintosh (ancien)
-	Internet Standard RGB	RVB standard d'Internet
-	Color Blindness — Protanopia-type	Daltonisme — type protanopie
-	Color Blindness — Deuteranopia-type	Daltonisme — type deutéranopie
-	New Window for Document	Nouvelle fenêtre pour le document
-	Click to restore the current colour	Cliquez pour rétablir la couleur actuelle
-	Default colours (D)	Couleurs par défaut (D)
-	Open a document to select a colour range.	Ouvrez un document pour sélectionner une plage de couleurs.
-	Quick Export As PNG	Exportation rapide au format PNG
-	Swap colours (X)	Permuter les couleurs (X)
-	Click to fill similar colours	Cliquez pour remplir les couleurs similaires
-	Sample: foreground colour	Échantillon : couleur de premier plan
-	Uses the foreground and background colours.	Utilise les couleurs de premier plan et d'arrière-plan.
-	Enable animations	Activer les animations
-	Click to sample the foreground colour  ·  {key}-click for background	Cliquez pour prélever la couleur de premier plan  ·  {key}-clic pour l'arrière-plan
-	Centre the gradient (offset 0, 0)	Centrer le dégradé (décalage 0, 0)
-	Cancelled opening {name}	Ouverture de {name} annulée
-	Cancelled {label}	{label} : annulé
-	{label} is writing the file and can no longer be cancelled	{label} écrit le fichier et ne peut plus être annulé
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Tracez un cadre de recadrage · faites glisser à l'intérieur pour le déplacer · les bords le redimensionnent ({ratio} proportions, {centre} centre) · Espace le déplace pendant le tracé · flèches le décalent · X permute l'orientation · {commit} valide · Échap annule
-	Save cancelled	Enregistrement annulé
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	Faites glisser autour du centre pour tourner la vue  ·  Maj contraint à 15°
-	Out of gamut for printing: click for the nearest printable colour	Hors de la gamme d’impression : cliquez pour la couleur imprimable la plus proche
-	Not a web colour: click for the nearest web colour	Pas une couleur web : cliquez pour la couleur web la plus proche
-	Remember to turn off the printer's own colour management in Print Settings…	Pensez à désactiver la gestion des couleurs de l’imprimante dans les paramètres d’impression…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Comment la mosaïque du filtre couleur de l'appareil est complétée. Appliqué à l'ouverture du fichier ; l'aperçu montre la méthode avec laquelle il a été ouvert.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks : les bords les plus nets et le moins de franges colorées ; le plus lent.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Interpolation corrigée par gradient : nette et rapide, avec quelques franges colorées sur les détails fins.
-	The fastest and the softest, with colour fringing on fine detail.	Le plus rapide et le plus doux, avec des franges colorées sur les détails fins.
-	This Smart Object must be rasterized before proceeding. Its contents will no longer be editable. Rasterize the Smart Object?	Cet objet intelligent doit être rastérisé pour continuer. Son contenu ne sera plus modifiable. Rastériser l'objet intelligent ?
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	Retouche IA…
 @id	edit.ai.codex	Retouche IA…
 	Describe your edit	Décrivez la retouche

@@ -4136,40 +4136,7 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Keep Relative Position During Layer Reordering	Giữ vị trí tương đối khi sắp xếp lại lớp
 	Shrinkwrap Canvas on Save	Thu nhỏ vùng vẽ theo nội dung khi lưu
 
-# AI distribution controls, retained from the previous release.
-	Layer via Copy	Lớp bằng sao chép
-	Layer via Cut	Lớp bằng cắt
-	Inverse Selection	Đảo vùng chọn
-	Color Blindness — Deuteranopia-type	Mù màu — kiểu Deuteranopia
-	Color Blindness — Protanopia-type	Mù màu — kiểu Protanopia
-	Internet Standard RGB	RGB chuẩn Internet
-	Legacy Macintosh RGB	RGB Macintosh cũ
-	Working CMY Plate	Bản CMY làm việc
-	New Window for Document	Cửa sổ mới cho tài liệu
-	Swap colours (X)	Đổi màu (X)
-	Default colours (D)	Màu mặc định (D)
-	Click to fill similar colours	Bấm để tô các màu tương tự
-	Click to sample the foreground colour  ·  {key}-click for background	Bấm để lấy mẫu màu nền trước  ·  {key}-bấm cho nền
-	Quick Export As PNG	Xuất nhanh dạng PNG
-	Centre the gradient (offset 0, 0)	Căn giữa chuyển sắc (dịch lệch 0, 0)
-	Cancelled opening {name}	Đã hủy mở {name}
-	Cancelled {label}	Đã hủy {label}
-	Save cancelled	Đã hủy lưu
-	Sample: foreground colour	Mẫu: màu nền trước
-	Open a document to select a colour range.	Mở một tài liệu để chọn phạm vi màu.
-	Click to restore the current colour	Nhấp để khôi phục màu hiện tại
-	Not a web colour: click for the nearest web colour	Không phải màu web: nhấp để lấy màu web gần nhất
-	Out of gamut for printing: click for the nearest printable colour	Ngoài gamut in: nhấp để lấy màu in được gần nhất
-	Uses the foreground and background colours.	Dùng màu nền trước và màu nền sau.
-	{label} is writing the file and can no longer be cancelled	{label} đang ghi tệp và không thể hủy nữa
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	Kéo vòng quanh tâm để xoay khung nhìn  ·  Shift giới hạn ở 15°
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Kéo hộp cắt · kéo bên trong để di chuyển · cạnh để đổi kích thước ({ratio} tỉ lệ, {centre} giữa) · Space di chuyển khi đang vẽ · phím mũi tên dịch nhẹ · X đổi chiều · {commit} chốt · Esc huỷ
-	Enable animations	Bật hiệu ứng chuyển động
-	Remember to turn off the printer's own colour management in Print Settings…	Nhớ tắt quản lý màu riêng của máy in trong thiết lập in…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Cách lấp đầy khảm lọc màu của máy ảnh. Áp dụng khi mở tệp; bản xem trước hiển thị phương pháp đã dùng khi mở.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks: cạnh sạch nhất và ít viền màu nhất, chậm nhất.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Nội suy hiệu chỉnh gradient: sắc nét và nhanh, có chút viền màu ở chi tiết nhỏ.
-	The fastest and the softest, with colour fringing on fine detail.	Nhanh nhất và mềm nhất, có viền màu ở chi tiết nhỏ.
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	Chỉnh sửa bằng AI…
 @id	edit.ai.codex	Chỉnh sửa bằng AI…
 	Describe your edit	Mô tả chỉnh sửa

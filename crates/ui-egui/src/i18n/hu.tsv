@@ -4538,41 +4538,7 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Keep Relative Position During Layer Reordering	Relatív pozíció megtartása a rétegek átrendezésekor
 	Shrinkwrap Canvas on Save	Vászon összehúzása a tartalomra mentéskor
 
-# AI distribution controls, retained from the previous release.
-	Inverse Selection	Kijelölés megfordítása
-	Layer via Copy	Réteg másolással
-	Layer via Cut	Réteg kivágással
-	Color Blindness — Deuteranopia-type	Színtévesztés — deuteranópia típusú
-	Color Blindness — Protanopia-type	Színtévesztés — protanópia típusú
-	Internet Standard RGB	Internetes szabványos RGB
-	Legacy Macintosh RGB	Régi Macintosh RGB
-	New Window for Document	Új ablak a dokumentumhoz
-	Quick Export As PNG	Gyors exportálás PNG-be
-	Working CMY Plate	CMY munkalemezek
-	Centre the gradient (offset 0, 0)	Színátmenet középre helyezése (eltolás: 0, 0)
-	Click to sample the foreground colour  ·  {key}-click for background	Kattintás: mintavétel az előtérszínhez  ·  {key}+kattintás: a háttérszínhez
-	Click to fill similar colours	Kattintással kitöltheted a hasonló színeket
-	Default colours (D)	Alapértelmezett színek (D)
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Húzz egy körbevágási keretet · belül húzva mozgatod · az élekkel átméretezed ({ratio}: arány, {centre}: középről) · Space: mozgatás rajzolás közben · nyilak: léptetés · X: tájolás cseréje · {commit}: véglegesítés · Esc: megszakítás
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	A középpont körül húzva forgatod a nézetet  ·  Shift: 15°-os lépések
-	Swap colours (X)	Színek cseréje (X)
-	{label} is writing the file and can no longer be cancelled	{label}: a fájl írása folyamatban, már nem szakítható meg
-	Open a document to select a colour range.	Színtartomány kijelöléséhez nyiss meg egy dokumentumot.
-	Sample: foreground colour	Minta: előtérszín
-	Uses the foreground and background colours.	Az előtér- és a háttérszínt használja.
-	Cancelled opening {name}	Megnyitás megszakítva: {name}
-	Cancelled {label}	Megszakítva: {label}
-	Click to restore the current colour	Kattints a jelenlegi szín visszaállításához
-	Not a web colour: click for the nearest web colour	Nem webes szín: kattints a legközelebbi webes színért
-	Out of gamut for printing: click for the nearest printable colour	Nyomtatási színtartományon kívül: kattints a legközelebbi nyomtatható színért
-	Save cancelled	Mentés megszakítva
-	This Smart Object must be rasterized before proceeding. Its contents will no longer be editable. Rasterize the Smart Object?	A folytatáshoz az intelligens objektumot raszterizálni kell. A tartalma ezután nem lesz szerkeszthető. Raszterizálod az intelligens objektumot?
-	Enable animations	Animációk engedélyezése
-	Remember to turn off the printer's own colour management in Print Settings…	Ne felejtsd el kikapcsolni a nyomtató saját színkezelését a nyomtatási beállításokban…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Hogyan tölti ki a program a kamera színszűrő-mozaikját. A fájl megnyitásakor érvényesül; az előnézet a megnyitáskor használt módszert mutatja.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks: a legtisztább élek és a legkevesebb színes szegély, a leglassabb.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Gradienskorrigált interpoláció: éles és gyors, apró részleteken némi színes szegéllyel.
-	The fastest and the softest, with colour fringing on fine detail.	A leggyorsabb és a leglágyabb, apró részleteken színes szegéllyel.
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	AI-szerkesztés…
 @id	edit.ai.codex	AI-szerkesztés…
 	Describe your edit	Írja le a módosítást

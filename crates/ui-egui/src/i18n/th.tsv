@@ -4774,21 +4774,19 @@ cameraRaw	White Balance: As Shot	สมดุลแสงขาว: เท่า
 	The path was kept as the Work Path	เก็บเส้นทางไว้เป็นเส้นทางการทำงานแล้ว
 	The path was discarded	ทิ้งเส้นทางแล้ว
 
-# AI controls: machine-assisted translations of the public English labels. Native review pending.
-	Layer via Copy	เลเยอร์ผ่านการคัดลอก
-	Layer via Cut	เลเยอร์ผ่านการตัด
-	AI Edit…	เอไอ แก้ไข...
-@id	edit.ai.codex	เอไอ แก้ไข...
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
+	AI Edit…	เอไอ แก้ไข…
+@id	edit.ai.codex	เอไอ แก้ไข…
 	Describe your edit	อธิบายการแก้ไขของคุณ
 	The visible canvas and instruction will be sent to Codex using your ChatGPT sign-in. The result is fitted to the canvas and added as a new layer.	ผืนผ้าใบที่มองเห็นได้และคำแนะนำจะถูกส่งไปยัง Codex โดยใช้การลงชื่อเข้าใช้ ChatGPT ของคุณ ผลลัพธ์ที่ได้จะพอดีกับผืนผ้าใบและเพิ่มเป็นเลเยอร์ใหม่
 	Codex account has not been checked	บัญชี Codex ยังไม่ได้รับการตรวจสอบ
-	Checking Codex connection…	กำลังตรวจสอบการเชื่อมต่อ Codex...
+	Checking Codex connection…	กำลังตรวจสอบการเชื่อมต่อ Codex…
 	Complete ChatGPT sign-in in your browser	ลงชื่อเข้าใช้ ChatGPT ให้เสร็จสมบูรณ์ในเบราว์เซอร์ของคุณ
 	Connected to ChatGPT	เชื่อมต่อกับ ChatGPT แล้ว
 	ChatGPT plan	แผน ChatGPT
 	ChatGPT sign-in is required	ต้องลงชื่อเข้าใช้ ChatGPT
 	Codex is using another login method. Sign in with ChatGPT to use your subscription.	Codex กำลังใช้วิธีการเข้าสู่ระบบอื่น ลงชื่อเข้าใช้ด้วย ChatGPT เพื่อใช้การสมัครของคุณ
-	Cancelling sign-in…	กำลังยกเลิกการลงชื่อเข้าใช้...
+	Cancelling sign-in…	กำลังยกเลิกการลงชื่อเข้าใช้…
 	Sign-in cancelled	การลงชื่อเข้าใช้ถูกยกเลิก
 	Could not verify the account. Check your connection or sign in again.	ไม่สามารถยืนยันบัญชีได้ ตรวจสอบการเชื่อมต่อของคุณหรือลงชื่อเข้าใช้อีกครั้ง
 	Connection details	รายละเอียดการเชื่อมต่อ
@@ -4857,6 +4855,6 @@ cameraRaw	White Balance: As Shot	สมดุลแสงขาว: เท่า
 	Updates are offered only after a new AI package is published.	จะมีการเสนอการอัปเดตหลังจากเผยแพร่แพ็คเกจ AI ใหม่แล้วเท่านั้น
 	PhotoCraft AI {version} is available.	PhotoCraft AI {version} พร้อมใช้งานแล้ว
 	No newer AI package is available.	ไม่มีแพ็คเกจ AI รุ่นใหม่ให้เลือก
-	Downloading and verifying update…	กำลังดาวน์โหลดและยืนยันการอัปเดต...
+	Downloading and verifying update…	กำลังดาวน์โหลดและยืนยันการอัปเดต…
 	Could not install the update.	ไม่สามารถติดตั้งการอัปเดตได้
 	Save your documents and wait for background tasks before updating.	บันทึกเอกสารของคุณและรองานพื้นหลังก่อนที่จะอัปเดต

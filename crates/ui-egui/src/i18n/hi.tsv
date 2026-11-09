@@ -694,11 +694,7 @@ cameraRaw	Yellow	पीला
 	Keep Relative Position During Layer Reordering	लेयर्स का क्रम बदलते समय सापेक्ष स्थिति बनाए रखें
 	Shrinkwrap Canvas on Save	सहेजते समय कैनवास को सामग्री के अनुसार छोटा करें
 
-# AI distribution controls, retained from the previous release.
-cameraRaw	Cancelled opening {name}	{name} खोलना रद्द किया गया
-	Cancelled opening {name}	{name} खोलना रद्द किया गया
-cameraRaw	Cancelled {label}	{label} रद्द किया गया
-	Cancelled {label}	{label} रद्द किया गया
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	AI संपादन…
 @id	edit.ai.codex	AI संपादन…
 	Describe your edit	अपना संपादन बताएँ

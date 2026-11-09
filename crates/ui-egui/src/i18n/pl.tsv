@@ -4249,40 +4249,7 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Keep Relative Position During Layer Reordering	Zachowaj położenie względne przy zmianie kolejności warstw
 	Shrinkwrap Canvas on Save	Przytnij płótno do zawartości przy zapisie
 
-# AI distribution controls, retained from the previous release.
-	Layer via Copy	Warstwa przez kopiowanie
-	Layer via Cut	Warstwa przez wycięcie
-	Inverse Selection	Odwróć zaznaczenie
-	Working CMY Plate	Robocza płyta CMY
-	Legacy Macintosh RGB	Starszy Macintosh RGB
-	Internet Standard RGB	Standardowy RGB dla Internetu
-	Color Blindness — Protanopia-type	Ślepota barw — typ protanopii
-	Color Blindness — Deuteranopia-type	Ślepota barw — typ deuteranopii
-	New Window for Document	Nowe okno dla dokumentu
-	Click to restore the current colour	Kliknij, aby przywrócić bieżący kolor
-	Default colours (D)	Kolory domyślne (D)
-	Open a document to select a colour range.	Otwórz dokument, aby wybrać zakres kolorów.
-	Quick Export As PNG	Szybki eksport jako PNG
-	Swap colours (X)	Zamień kolory (X)
-	Click to fill similar colours	Kliknij, aby wypełnić podobne kolory
-	Sample: foreground colour	Próbka: kolor pierwszego planu
-	Uses the foreground and background colours.	Używa kolorów pierwszego planu i tła.
-	Enable animations	Włącz animacje
-	Click to sample the foreground colour  ·  {key}-click for background	Kliknij, aby pobrać kolor pierwszego planu  ·  kliknij z {key}, aby pobrać kolor tła
-	Centre the gradient (offset 0, 0)	Wyśrodkuj gradient (przesunięcie 0, 0)
-	Cancelled opening {name}	Anulowano otwieranie {name}
-	Cancelled {label}	Anulowano: {label}
-	{label} is writing the file and can no longer be cancelled	{label} zapisuje plik i nie można już tego anulować
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Przeciągnij ramkę przycinania · przeciągnij wewnątrz, aby przesunąć · krawędzie zmieniają rozmiar ({ratio} proporcje, {centre} od środka) · Spacja przesuwa podczas rysowania · strzałki przesuwają · X zamienia orientację · {commit} zatwierdza · Esc anuluje
-	Save cancelled	Anulowano zapis
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	Przeciągnij wokół środka, aby obrócić widok  ·  Shift ogranicza do 15°
-	Out of gamut for printing: click for the nearest printable colour	Poza gamą druku: kliknij, aby wybrać najbliższy kolor do druku
-	Not a web colour: click for the nearest web colour	To nie jest kolor internetowy: kliknij, aby wybrać najbliższy kolor internetowy
-	Remember to turn off the printer's own colour management in Print Settings…	Pamiętaj o wyłączeniu zarządzania kolorami drukarki w ustawieniach druku…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Sposób uzupełniania mozaiki filtra barwnego aparatu. Stosowany przy otwieraniu pliku; podgląd pokazuje metodę, z którą plik został otwarty.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks: najczystsze krawędzie i najmniej barwnych obwódek, najwolniejsza.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Interpolacja z korekcją gradientu: ostra i szybka, z niewielkimi barwnymi obwódkami na drobnych szczegółach.
-	The fastest and the softest, with colour fringing on fine detail.	Najszybsza i najmiększa, z barwnymi obwódkami na drobnych szczegółach.
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	Edycja z AI…
 @id	edit.ai.codex	Edycja z AI…
 	Describe your edit	Opisz zmianę

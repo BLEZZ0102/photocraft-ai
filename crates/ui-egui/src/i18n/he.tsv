@@ -4573,21 +4573,19 @@ navigator	Zoom	תקריב
 @plural	{n} file could not be loaded: {errors}|{n} files could not be loaded: {errors}	לא ניתן היה לטעון {n} קובץ: {errors}|לא ניתן היה לטעון {n} קבצים: {errors}
 @plural	{what}: {n} Image Assets output failed|{what}: {n} Image Assets outputs failed	{what}: {n} פלט נכסי תמונה נכשל|{what}: {n} פלטי נכסי תמונה נכשלו
 
-# AI controls: machine-assisted translations of the public English labels. Native review pending.
-	Layer via Copy	שכבה באמצעות העתקה
-	Layer via Cut	שכבה דרך Cut
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	עריכת AI…
 @id	edit.ai.codex	עריכת AI…
 	Describe your edit	תאר את העריכה שלך
 	The visible canvas and instruction will be sent to Codex using your ChatGPT sign-in. The result is fitted to the canvas and added as a new layer.	הקנבס הגלוי וההוראות יישלחו אל Codex באמצעות הכניסה שלך באמצעות ChatGPT. התוצאה מותאמת לקנבס ומתווספת כשכבה חדשה.
 	Codex account has not been checked	חשבון Codex לא נבדק
-	Checking Codex connection…	בודק חיבור Codex...
+	Checking Codex connection…	בודק חיבור Codex…
 	Complete ChatGPT sign-in in your browser	השלם את הכניסה של ChatGPT בדפדפן שלך
 	Connected to ChatGPT	מחובר ל-ChatGPT
 	ChatGPT plan	תוכנית ChatGPT
 	ChatGPT sign-in is required	נדרשת כניסה ל-ChatGPT
 	Codex is using another login method. Sign in with ChatGPT to use your subscription.	Codex משתמש בשיטת התחברות אחרת. היכנס באמצעות ChatGPT כדי להשתמש במנוי שלך.
-	Cancelling sign-in…	מבטל את הכניסה...
+	Cancelling sign-in…	מבטל את הכניסה…
 	Sign-in cancelled	הכניסה בוטלה
 	Could not verify the account. Check your connection or sign in again.	לא ניתן היה לאמת את החשבון. בדוק את החיבור שלך או היכנס שוב.
 	Connection details	פרטי חיבור
@@ -4656,6 +4654,6 @@ navigator	Zoom	תקריב
 	Updates are offered only after a new AI package is published.	עדכונים מוצעים רק לאחר פרסום חבילת AI חדשה.
 	PhotoCraft AI {version} is available.	PhotoCraft AI {version} זמין.
 	No newer AI package is available.	אין חבילת AI חדשה יותר זמינה.
-	Downloading and verifying update…	מוריד ומאמת עדכון...
+	Downloading and verifying update…	מוריד ומאמת עדכון…
 	Could not install the update.	לא ניתן היה להתקין את העדכון.
 	Save your documents and wait for background tasks before updating.	שמור את המסמכים שלך והמתן למשימות רקע לפני עדכון.

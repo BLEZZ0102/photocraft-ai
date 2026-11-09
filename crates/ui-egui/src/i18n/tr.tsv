@@ -4362,40 +4362,7 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Keep Relative Position During Layer Reordering	Katmanları Yeniden Sıralarken Göreli Konumu Koru
 	Shrinkwrap Canvas on Save	Kaydederken Tuvali İçeriğe Göre Küçült
 
-# AI distribution controls, retained from the previous release.
-	Layer via Copy	Kopyalama Yoluyla Katman
-	Layer via Cut	Kesim Yoluyla Katman
-	Inverse Selection	Ters Seçim
-	Working CMY Plate	Çalışma CMY Plakası
-	Legacy Macintosh RGB	Eski Macintosh RGB
-	Internet Standard RGB	İnternet Standardı RGB
-	Color Blindness — Protanopia-type	Renk Körlüğü — Protanopi tipi
-	Color Blindness — Deuteranopia-type	Renk Körlüğü — Döteranopi tipi
-	New Window for Document	Belge için Yeni Pencere
-	Click to restore the current colour	Geçerli rengi geri yüklemek için tıklayın
-	Default colours (D)	Varsayılan renkler (D)
-	Open a document to select a colour range.	Bir renk aralığı seçmek için bir belge açın.
-	Quick Export As PNG	PNG Olarak Hızlı Dışa Aktarma
-	Swap colours (X)	Renkleri değiştir (X)
-	Click to fill similar colours	Benzer renkleri doldurmak için tıklayın
-	Sample: foreground colour	Örnek: ön plan rengi
-	Uses the foreground and background colours.	Ön plan ve arka plan renklerini kullanır.
-	Click to sample the foreground colour  ·  {key}-click for background	Ön plan rengini örneklemek için tıklayın · arka plan için {key}-tıklayın
-	Centre the gradient (offset 0, 0)	Degradeyi ortalayın (kaydırma 0, 0)
-	Cancelled opening {name}	{name} açılışı iptal edildi
-	Cancelled {label}	{label} iptal edildi
-	{label} is writing the file and can no longer be cancelled	{label} dosyayı yazıyor ve artık iptal edilemez
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Kırpma kutusunu sürükleyin · taşımak için içeriye sürükleyin · kenarlar yeniden boyutlandırır ({ratio} oran, {centre} merkez) · çizerken Space taşır · ok tuşları hafifçe kaydırır · X yönü değiştirir · {commit} onaylar · Esc iptal eder
-	Save cancelled	Kaydetme iptal edildi
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	Görünümü döndürmek için merkez etrafında sürükleyin · Shift 15° ile sınırlar
-	Enable animations	Animasyonları etkinleştir
-	Out of gamut for printing: click for the nearest printable colour	Yazdırma için gamın dışında: yazdırılabilir en yakın renk için tıklayın
-	Not a web colour: click for the nearest web colour	Web rengi değil: en yakın web rengi için tıklayın
-	Remember to turn off the printer's own colour management in Print Settings…	Yazdırma Ayarlarında yazıcının kendi renk yönetimini kapatmayı unutmayın…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Kameranın renk filtresi mozaiğinin nasıl doldurulduğu. Dosya açılırken uygulanır; önizleme dosyanın açıldığı yöntemi gösterir.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks: en temiz kenarlar ve en az renk saçağı, en yavaş.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Gradyan düzeltmeli ara değerleme: keskin ve hızlı, ince ayrıntılarda biraz renk saçağı.
-	The fastest and the softest, with colour fringing on fine detail.	En hızlı ve en yumuşak, ince ayrıntılarda renk saçağı.
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	Yapay zekâ ile düzenle…
 @id	edit.ai.codex	Yapay zekâ ile düzenle…
 	Describe your edit	Düzenlemeyi açıklayın

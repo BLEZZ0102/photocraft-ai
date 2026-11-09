@@ -4545,41 +4545,7 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Keep Relative Position During Layer Reordering	Manter a posição relativa ao reordenar camadas
 	Shrinkwrap Canvas on Save	Reduzir a tela ao conteúdo ao salvar
 
-# AI distribution controls, retained from the previous release.
-	Layer via Copy	Camada via cópia
-	Layer via Cut	Camada via recorte
-	Inverse Selection	Inverter seleção
-	Working CMY Plate	Chapa CMY de trabalho
-	Legacy Macintosh RGB	RGB Macintosh legado
-	Internet Standard RGB	RGB padrão da Internet
-	Color Blindness — Protanopia-type	Daltonismo — tipo protanopia
-	Color Blindness — Deuteranopia-type	Daltonismo — tipo deuteranopia
-	New Window for Document	Nova janela para o documento
-	Click to restore the current colour	Clique para restaurar a cor atual
-	Default colours (D)	Cores padrão (D)
-	Open a document to select a colour range.	Abra um documento para selecionar um intervalo de cores.
-	Quick Export As PNG	Exportação rápida como PNG
-	Swap colours (X)	Trocar cores (X)
-	Click to fill similar colours	Clique para preencher cores semelhantes
-	Sample: foreground colour	Amostra: cor de primeiro plano
-	Uses the foreground and background colours.	Usa as cores de primeiro plano e de fundo.
-	Enable animations	Ativar animações
-	Click to sample the foreground colour  ·  {key}-click for background	Clique para obter a cor de primeiro plano  ·  {key}-clique para a cor de fundo
-	Centre the gradient (offset 0, 0)	Centralizar o degradê (deslocamento 0, 0)
-	Cancelled opening {name}	Abertura de {name} cancelada
-	Cancelled {label}	{label} cancelado
-	{label} is writing the file and can no longer be cancelled	{label} está gravando o arquivo e não pode mais ser cancelado
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Arraste uma caixa de corte · arraste dentro para mover · as bordas redimensionam ({ratio} proporção, {centre} centro) · Espaço move durante o desenho · setas deslocam · X troca a orientação · {commit} confirma · Esc cancela
-	Save cancelled	Salvamento cancelado
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	Arraste ao redor do centro para girar a visualização  ·  Shift restringe a 15°
-	Out of gamut for printing: click for the nearest printable colour	Fora da gama de impressão: clique para a cor imprimível mais próxima
-	Not a web colour: click for the nearest web colour	Não é uma cor da Web: clique para a cor da Web mais próxima
-	Remember to turn off the printer's own colour management in Print Settings…	Lembre-se de desativar o gerenciamento de cores da própria impressora nas configurações de impressão…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Como o mosaico do filtro de cor da câmera é preenchido. É aplicado ao abrir o arquivo; a visualização mostra o método com que ele foi aberto.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks: as bordas mais limpas e o menor franjamento de cor; o mais lento.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Interpolação com correção de gradiente: nítida e rápida, com algum franjamento de cor em detalhes finos.
-	The fastest and the softest, with colour fringing on fine detail.	O mais rápido e o mais suave, com franjamento de cor em detalhes finos.
-	This Smart Object must be rasterized before proceeding. Its contents will no longer be editable. Rasterize the Smart Object?	Este objeto inteligente precisa ser rasterizado antes de continuar. O conteúdo não poderá mais ser editado. Rasterizar o objeto inteligente?
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	Edição com IA…
 @id	edit.ai.codex	Edição com IA…
 	Describe your edit	Descreva a edição

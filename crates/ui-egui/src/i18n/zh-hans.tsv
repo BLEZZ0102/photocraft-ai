@@ -3323,40 +3323,7 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Keep Relative Position During Layer Reordering	重新排列图层时保持相对位置
 	Shrinkwrap Canvas on Save	保存时将画布缩至内容大小
 
-# AI distribution controls, retained from the previous release.
-	Layer via Copy	通过复制创建图层
-	Layer via Cut	通过剪切创建图层
-	Inverse Selection	反选选区
-	Working CMY Plate	工作 CMY 版
-	Legacy Macintosh RGB	旧版 Macintosh RGB
-	Internet Standard RGB	互联网标准 RGB
-	Color Blindness — Protanopia-type	色盲 — 红色盲型
-	Color Blindness — Deuteranopia-type	色盲 — 绿色盲型
-	New Window for Document	为文档新建窗口
-	Click to restore the current colour	单击恢复当前颜色
-	Default colours (D)	默认颜色（D）
-	Open a document to select a colour range.	打开文档以选择色彩范围。
-	Quick Export As PNG	快速导出为 PNG
-	Swap colours (X)	交换颜色 (X)
-	Click to fill similar colours	单击以填充相近颜色
-	Sample: foreground colour	采样：前景色
-	Uses the foreground and background colours.	使用前景色和背景色。
-	Enable animations	启用动画
-	Click to sample the foreground colour  ·  {key}-click for background	单击拾取前景色  ·  按 {key} 单击拾取背景色
-	Centre the gradient (offset 0, 0)	将渐变居中（偏移量 0, 0）
-	Cancelled opening {name}	已取消打开 {name}
-	Cancelled {label}	已取消 {label}
-	{label} is writing the file and can no longer be cancelled	{label} 正在写入文件，已无法取消
-	Save cancelled	已取消存储
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	绕中心拖动以旋转视图  ·  Shift 限制为 15°
-	Out of gamut for printing: click for the nearest printable colour	超出打印色域：单击使用最接近的可打印颜色
-	Not a web colour: click for the nearest web colour	不是 Web 颜色：单击使用最接近的 Web 颜色
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	拖移绘制裁剪框 · 在框内拖移以移动 · 拖移边缘调整大小（{ratio} 比例，{centre} 中心）· 绘制时按 Space 移动 · 方向键微移 · X 切换方向 · {commit} 确认 · Esc 取消
-	Remember to turn off the printer's own colour management in Print Settings…	请记得在打印设置中关闭打印机自身的色彩管理…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	如何填补相机彩色滤镜阵列的马赛克。在打开文件时应用；预览显示打开时所用的方法。
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks：边缘最干净、色边最少，速度最慢。
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	梯度校正插值：锐利且快速，细节处有些许色边。
-	The fastest and the softest, with colour fringing on fine detail.	最快也最柔和，细节处有色边。
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	AI 编辑…
 @id	edit.ai.codex	AI 编辑…
 	Describe your edit	描述你想进行的编辑

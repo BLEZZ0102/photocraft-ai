@@ -4830,43 +4830,7 @@ cameraRaw	White Balance: As Shot	Vitbalans: som tagen
 	Keep Relative Position During Layer Reordering	Behåll relativ position vid ändring av lagerordning
 	Shrinkwrap Canvas on Save	Krymp arbetsytan till innehållet vid sparning
 
-# AI distribution controls, retained from the previous release.
-	Quick Export As PNG	Snabbexportera som PNG
-	Layer via Copy	Lager via kopiering
-	Layer via Cut	Lager via urklippning
-	Inverse Selection	Omvänd markering
-	New Window for Document	Nytt fönster för dokument
-	Swap colours (X)	Byt plats på färgerna (X)
-	Default colours (D)	Standardfärger (D)
-	Internet Standard RGB	Internetstandard-RGB
-	Legacy Macintosh RGB	Äldre Macintosh RGB
-	Click to restore the current colour	Klicka för att återställa den aktuella färgen
-	Click to fill similar colours	Klicka för att fylla liknande färger
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Dra en beskärningsram · dra inuti för att flytta · kanterna ändrar storlek ({ratio} proportioner, {centre} centrerat) · Blanksteg flyttar medan du ritar · piltangenterna flyttar stegvis · X byter orientering · {commit} verkställer · Esc avbryter
-	Uses the foreground and background colours.	Använder förgrunds- och bakgrundsfärgerna.
-	Open a document to select a colour range.	Öppna ett dokument för att välja ett färgintervall.
-	Color Blindness — Deuteranopia-type	Färgblindhet — deuteranopityp
-	Color Blindness — Protanopia-type	Färgblindhet — protanopityp
-	Working CMY Plate	CMY-arbetsplåt
-	Centre the gradient (offset 0, 0)	Centrera gradienten (förskjutning 0, 0)
-	Sample: foreground colour	Prov: förgrundsfärg
-	Enable animations	Aktivera animeringar
-	Cancelled opening {name}	Öppningen av {name} avbröts
-	Cancelled {label}	{label} avbröts
-	{label} is writing the file and can no longer be cancelled	{label} skriver filen och kan inte längre avbrytas
-	Save cancelled	Sparandet avbröts
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	Dra runt mitten för att rotera vyn  ·  Shift begränsar till 15°
-	Click to sample the foreground colour  ·  {key}-click for background	Klicka för att ta prov på förgrundsfärgen  ·  {key}-klicka för bakgrundsfärgen
-	Out of gamut for printing: click for the nearest printable colour	Utanför färgomfånget för utskrift: klicka för närmaste utskrivbara färg
-	Not a web colour: click for the nearest web colour	Inte en webbfärg: klicka för närmaste webbfärg
-	Remember to turn off the printer's own colour management in Print Settings…	Kom ihåg att stänga av skrivarens egen färghantering i Utskriftsinställningar…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Hur kamerans färgfiltermosaik fylls i. Den tillämpas när filen öppnas; förhandsgranskningen visar metoden som den öppnades med.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks: renast kanter och minst färgfransning, men långsammast.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Gradientkorrigerad interpolering: skarp och snabb, med viss färgfransning i fina detaljer.
-	The fastest and the softest, with colour fringing on fine detail.	Snabbast och mjukast, med färgfransar vid fina detaljer.
-	This Smart Object must be rasterized before proceeding. Its contents will no longer be editable. Rasterize the Smart Object?	Det här smarta objektet måste rasteriseras innan du fortsätter. Innehållet går inte längre att redigera. Vill du rasterisera det smarta objektet?
-cameraRaw	Cancelled opening {name}	Öppningen av {name} avbröts
-cameraRaw	Cancelled {label}	{label} avbröts
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	AI-redigering…
 @id	edit.ai.codex	AI-redigering…
 	Describe your edit	Beskriv redigeringen

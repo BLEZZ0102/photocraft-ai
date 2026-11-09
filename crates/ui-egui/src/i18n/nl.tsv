@@ -4385,40 +4385,7 @@ smartSvg	AI/PDF/EPS contents will be edited as SVG. Saving replaces the embedded
 	Keep Relative Position During Layer Reordering	Relatieve positie behouden bij het wijzigen van de laagvolgorde
 	Shrinkwrap Canvas on Save	Canvas bij opslaan verkleinen tot de inhoud
 
-# AI distribution controls, retained from the previous release.
-	Layer via Copy	Laag via kopiëren
-	Layer via Cut	Laag via knippen
-	Inverse Selection	Selectie omkeren
-	Working CMY Plate	Werkplaat CMY
-	Legacy Macintosh RGB	Verouderde Macintosh RGB
-	Internet Standard RGB	Internetstandaard RGB
-	Color Blindness — Protanopia-type	Kleurenblindheid — type protanopie
-	Color Blindness — Deuteranopia-type	Kleurenblindheid — type deuteranopie
-	New Window for Document	Nieuw venster voor document
-	Click to restore the current colour	Klik om de huidige kleur te herstellen
-	Default colours (D)	Standaardkleuren (D)
-	Open a document to select a colour range.	Open een document om een kleurbereik te selecteren.
-	Quick Export As PNG	Snel exporteren als PNG
-	Swap colours (X)	Kleuren omwisselen (X)
-	Click to fill similar colours	Klik om vergelijkbare kleuren te vullen
-	Sample: foreground colour	Monster: voorgrondkleur
-	Uses the foreground and background colours.	Gebruikt de voorgrond- en achtergrondkleur.
-	Enable animations	Animaties inschakelen
-	Click to sample the foreground colour  ·  {key}-click for background	Klik om de voorgrondkleur te bemonsteren  ·  {key}-klik voor achtergrond
-	Centre the gradient (offset 0, 0)	Het verloop centreren (verschuiving 0, 0)
-	Cancelled opening {name}	Openen van {name} geannuleerd
-	Cancelled {label}	{label} geannuleerd
-	{label} is writing the file and can no longer be cancelled	{label} schrijft het bestand en kan niet meer worden geannuleerd
-	Drag a crop box · drag inside to move · edges resize ({ratio} ratio, {centre} centre) · Space moves while drawing · arrows nudge · X swaps orientation · {commit} commits · Esc cancels	Sleep een bijsnijkader · sleep binnenin om te verplaatsen · randen wijzigen formaat ({ratio} verhouding, {centre} midden) · Spatie verplaatst tijdens tekenen · pijltjes verschuiven · X wisselt oriëntatie · {commit} past toe · Esc annuleert
-	Save cancelled	Opslaan geannuleerd
-	Drag around the centre to rotate the view  ·  Shift constrains to 15°	Sleep rond het midden om de weergave te roteren  ·  Shift beperkt tot 15°
-	Out of gamut for printing: click for the nearest printable colour	Buiten afdrukbereik: klik voor de dichtstbijzijnde afdrukbare kleur
-	Not a web colour: click for the nearest web colour	Geen webkleur: klik voor de dichtstbijzijnde webkleur
-	Remember to turn off the printer's own colour management in Print Settings…	Vergeet niet het eigen kleurbeheer van de printer uit te schakelen in de afdrukinstellingen…
-	How the camera's colour filter mosaic is filled in. It is applied when the file opens; the preview shows the method it was opened with.	Hoe het kleurfiltermozaïek van de camera wordt ingevuld. Wordt toegepast bij het openen van het bestand; de voorvertoning toont de methode waarmee het is geopend.
-	Hirakawa–Parks: the cleanest edges and the least colour fringing, the slowest.	Hirakawa–Parks: de schoonste randen en de minste kleurranden, het traagst.
-	Gradient-corrected interpolation: sharp and fast, with some colour fringing on fine detail.	Gradiëntgecorrigeerde interpolatie: scherp en snel, met wat kleurranden in fijne details.
-	The fastest and the softest, with colour fringing on fine detail.	Het snelst en het zachtst, met kleurranden in fijne details.
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
 	AI Edit…	AI-bewerking…
 @id	edit.ai.codex	AI-bewerking…
 	Describe your edit	Beschrijf de bewerking

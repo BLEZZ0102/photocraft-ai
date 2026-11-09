@@ -4634,21 +4634,19 @@ smartSvg	SVG editor opened. Save the SVG to update this Smart Object.	SVG redakt
 	Keep Relative Position During Layer Reordering	Qatları yenidən sıralayarkən nisbi mövqeyi saxlayın
 	Shrinkwrap Canvas on Save	Saxlayarkən kətanı məzmuna sıxın
 
-# AI controls: machine-assisted translations of the public English labels. Native review pending.
-	Layer via Copy	Kopyalama yolu ilə qat
-	Layer via Cut	Cut vasitəsilə qat
-	AI Edit…	AI Redaktə...
-@id	edit.ai.codex	AI Redaktə...
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
+	AI Edit…	AI Redaktə…
+@id	edit.ai.codex	AI Redaktə…
 	Describe your edit	Redaktənizi təsvir edin
 	The visible canvas and instruction will be sent to Codex using your ChatGPT sign-in. The result is fitted to the canvas and added as a new layer.	Görünən kətan və təlimat ChatGPT girişinizdən istifadə edərək Codex-ə göndəriləcək. Nəticə kətana yapışdırılır və yeni təbəqə kimi əlavə edilir.
 	Codex account has not been checked	Codex hesabı yoxlanılmayıb
-	Checking Codex connection…	Codex bağlantısı yoxlanılır...
+	Checking Codex connection…	Codex bağlantısı yoxlanılır…
 	Complete ChatGPT sign-in in your browser	Brauzerinizdə ChatGPT girişini tamamlayın
 	Connected to ChatGPT	ChatGPT-ə qoşulub
 	ChatGPT plan	ChatGPT planı
 	ChatGPT sign-in is required	ChatGPT girişi tələb olunur
 	Codex is using another login method. Sign in with ChatGPT to use your subscription.	Codex başqa giriş metodundan istifadə edir. Abunəliyinizi istifadə etmək üçün ChatGPT ilə daxil olun.
-	Cancelling sign-in…	Giriş ləğv edilir...
+	Cancelling sign-in…	Giriş ləğv edilir…
 	Sign-in cancelled	Giriş ləğv edildi
 	Could not verify the account. Check your connection or sign in again.	Hesabı doğrulamaq mümkün olmadı. Bağlantınızı yoxlayın və ya yenidən daxil olun.
 	Connection details	Bağlantı təfərrüatları
@@ -4718,11 +4716,11 @@ smartSvg	SVG editor opened. Save the SVG to update this Smart Object.	SVG redakt
 	Updates are offered only after a new AI package is published.	Yeniləmələr yalnız yeni AI paketi dərc edildikdən sonra təklif olunur.
 	PhotoCraft AI {version} is available.	PhotoCraft AI {version} mövcuddur.
 	No newer AI package is available.	Daha yeni AI paketi mövcud deyil.
-	Downloading and verifying update…	Güncəlləmə endirilir və təsdiqlənir...
+	Downloading and verifying update…	Güncəlləmə endirilir və təsdiqlənir…
 	Could not install the update.	Güncəlləməni quraşdırmaq mümkün olmadı.
 	Save your documents and wait for background tasks before updating.	Sənədlərinizi yadda saxlayın və yeniləmədən əvvəl fon tapşırıqlarını gözləyin.
 	Update and Restart	Yeniləyin və yenidən başladın
-	Checking for updates…	Güncəlləmələr yoxlanılır...
+	Checking for updates…	Güncəlləmələr yoxlanılır…
 	Could not check for updates.	Yeniləmələri yoxlamaq mümkün olmadı.
 	Updates have not been checked yet.	Yeniləmələr hələ yoxlanılmayıb.
 	Check Again	Yenidən yoxlayın

@@ -5788,6 +5788,8 @@ dependencies = [
  "resvg",
  "roxmltree 0.21.1",
  "serde_json",
+ "simplecss",
+ "svgtypes",
  "thiserror 2.0.21",
  "tiff",
  "ttf-parser",

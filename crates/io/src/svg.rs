@@ -24,6 +24,8 @@ use resvg::usvg;
 
 use crate::{ImportResult, IoError};
 
+mod reference_depth;
+
 /// Largest canvas side an SVG opens at; a larger drawing is scaled down to fit.
 pub const MAX_SIDE: u32 = 16_384;
 /// A rasterised fallback layer or a smart-object render never exceeds this many pixels.
@@ -393,7 +395,7 @@ fn options(fontdb: Arc<usvg::fontdb::Database>, depth_left: usize) -> usvg::Opti
                 Ok(std::borrow::Cow::Owned(xml)) if !xml.starts_with(&[0x1f, 0x8b]) => ("image/svg+xml", Arc::new(xml)),
                 _ => return None,
             };
-            if !nesting_depth(&xml, depth_left).is_ok_and(|depth| depth <= depth_left) {
+            if !reference_depth::checked(&xml, depth_left).is_ok_and(|depth| depth <= depth_left) {
                 return None;
             }
             return default_resolver(mime, xml, opts);
@@ -430,7 +432,7 @@ fn parse(bytes: &[u8]) -> Result<Parsed, IoError> {
 /// [`parse`] with the font database `fonts` supplies (the tests hand in an empty one).
 fn parse_with(bytes: &[u8], fonts: fn() -> Arc<usvg::fontdb::Database>) -> Result<Parsed, IoError> {
     let xml = inflate(bytes)?;
-    let depth = nesting_depth(&xml, MAX_XML_DEPTH)?;
+    let depth = reference_depth::checked(&xml, MAX_XML_DEPTH)?;
     if depth > MAX_XML_DEPTH {
         return Err(IoError::Svg(format!("elements are nested more than {MAX_XML_DEPTH} levels deep")));
     }
@@ -691,7 +693,7 @@ fn parse_image_bounded_with(
     if left.is_none() {
         return Err(overrun(IoError::Svg("embedded SVG XML exceeds the decoded byte budget".into())));
     }
-    let nesting = nesting_depth(&xml, xml_left)?;
+    let nesting = reference_depth::checked(&xml, xml_left)?;
     if nesting > xml_left {
         return Err(IoError::Svg(format!("elements are nested more than {xml_left} levels deep")));
     }

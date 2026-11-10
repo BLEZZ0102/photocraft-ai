@@ -630,9 +630,19 @@ fn a_costly_filter_past_the_pattern_recursion_cutoff_is_refused() {
     let fe = "<feMorphology operator=\"dilate\" radius=\"50\"/>";
     assert!(import("x.svg", chain(4, fe).as_bytes()).is_err(), "the filter alone is over the budget");
     let deep = chain(210, fe);
-    let e = import("x.svg", deep.as_bytes()).err().unwrap_or_else(|| panic!("opened a costly filter 210 patterns deep"));
-    assert!(matches!(&e, IoError::Svg(m) if m.contains("too costly")), "{e}");
-    assert!(svg::rasterize(deep.as_bytes(), 1.0).is_err());
+    // This drawing overflowed the shipped MSVC executable's main stack before usvg returned.
+    // Refuse it before recursive resource expansion, including in bounded smart-object paths.
+    std::thread::Builder::new()
+        .stack_size(1 << 20)
+        .spawn(move || {
+            let e = import("x.svg", deep.as_bytes()).err().unwrap_or_else(|| panic!("opened a costly filter 210 patterns deep"));
+            assert!(matches!(&e, IoError::Svg(m) if m.contains("too costly")), "{e}");
+            assert!(svg::rasterize(deep.as_bytes(), 1.0).is_err());
+            assert!(svg::import_svg_bounded_images("x.svg", deep.as_bytes(), 1 << 24).is_err());
+        })
+        .unwrap()
+        .join()
+        .unwrap();
     // A short chain with an ordinary filter still opens. Element nesting has a separate
     // XML limit, so check plain groups at that boundary rather than at the pattern cutoff.
     assert!(!open(&chain(4, "<feGaussianBlur stdDeviation=\"2\"/>")).document.layers.is_empty());

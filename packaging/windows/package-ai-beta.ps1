@@ -97,8 +97,10 @@ try {
         }
     }
     # Embedded repository assets also need their complete notices, alongside crate licences.
+    $rootPrefix = $root.TrimEnd('\', '/') + [IO.Path]::DirectorySeparatorChar
     foreach ($license in (Get-ChildItem -LiteralPath (Join-Path $root 'assets'), (Join-Path $root 'crates') -Recurse -File | Where-Object { $_.Name -match '^(LICENSE|LICENCE|COPYING|NOTICE|OFL-)' } | Sort-Object FullName)) {
-        $relative = [IO.Path]::GetRelativePath($root, $license.FullName).Replace('\', '/')
+        $fullPath = [IO.Path]::GetFullPath($license.FullName)
+        $relative = if ($fullPath.StartsWith($rootPrefix, [StringComparison]::OrdinalIgnoreCase)) { $fullPath.Substring($rootPrefix.Length).Replace('\', '/') } else { $license.Name }
         [void]$notices.AppendLine("`n=== $relative ===")
         Add-LicenseText $license.FullName
     }

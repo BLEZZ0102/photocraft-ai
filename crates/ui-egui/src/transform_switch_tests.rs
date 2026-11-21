@@ -9,10 +9,10 @@ use crate::PhotocraftApp;
 
 /// The app with a 400 × 300 document: a red 100 × 60 rectangle at (100, 100) on its own layer
 /// above the Background.
-fn app() -> Harness<'static, PhotocraftApp> {
+fn app() -> Harness<'static, Box<PhotocraftApp>> {
     let mut h = Harness::builder().with_size(egui::vec2(1400.0, 900.0)).with_max_steps(64).build_eframe(|cc| {
         PhotocraftApp::setup_context(&cc.egui_ctx, Default::default());
-        let mut app = PhotocraftApp::new(photocraft_engine::Session::new(), crate::Services::default());
+        let mut app = PhotocraftApp::with_context(cc.egui_ctx.clone(), photocraft_engine::Session::new(), crate::Services::default());
         app.run("file.new", json!({"width": 400, "height": 300, "background": "white"})).unwrap();
         app.run("layer.new.layer", json!({})).unwrap();
         app.run("select.rect", json!({"x": 100, "y": 100, "width": 100, "height": 60})).unwrap();
@@ -25,51 +25,33 @@ fn app() -> Harness<'static, PhotocraftApp> {
 }
 
 /// Open Free Transform and move the box 50 px right, 40 px down.
-fn transform_and_move(h: &mut Harness<'static, PhotocraftApp>) {
+fn transform_and_move(h: &mut Harness<'static, Box<PhotocraftApp>>) {
     let ctx = h.ctx.clone();
     crate::menus::invoke(h.state_mut(), &ctx, "edit.freeTransform", json!({})).unwrap();
     h.run_steps(2);
     let t = h.state_mut().ui.transform.as_mut().expect("Free Transform is open");
-    for p in &mut t.quad {
-        p[0] += 50.0;
-        p[1] += 40.0;
-    }
+    t.edit_box(|b| *b = b.moved((50.0, 40.0).into()));
     h.run_steps(2);
 }
 
-fn red_bounds(h: &Harness<'static, PhotocraftApp>) -> photocraft_geom::Rect {
+/// Clicks the toolbar's Eyedropper Tool: a tool that stays in view at 900 pt, where the tool
+/// column scrolls and its last tools (Hand, Zoom) lie past its end.
+fn pick_another_tool(h: &Harness<'static, Box<PhotocraftApp>>) {
+    // The framework names a toolbar button on its node and on its child: the first node is the button itself.
+    h.get_all_by_label_contains("Eyedropper Tool").next().expect("the toolbar's Eyedropper Tool").click();
+}
+
+fn red_bounds(h: &Harness<'static, Box<PhotocraftApp>>) -> photocraft_geom::Rect {
     let st = h.state().session.active().unwrap();
     let top = st.doc.layers.last().unwrap();
     top.surface().unwrap().content_bounds()
-}
-
-fn click_hand(h: &mut Harness<'static, PhotocraftApp>) {
-    // Pinned toolbar commands can leave the lower tools outside the scroll viewport.
-    h.query_by_label_contains("Hand Tool").expect("the toolbar's Hand Tool").scroll_to_me();
-    h.run_steps(4);
-    let rect = h.query_by_label_contains("Hand Tool").expect("the toolbar's Hand Tool").rect();
-    let visible = h
-        .ctx
-        .viewport(|v| {
-            v.prev_pass.widgets.layers().flat_map(|(_, widgets)| widgets.iter()).find(|w| w.rect == rect && w.sense.senses_click()).map(|w| w.interact_rect)
-        })
-        .expect("the Hand Tool has a hit area");
-    assert!(visible.is_positive(), "Hand Tool is visible after scrolling: {rect:?}, {visible:?}");
-    let pos = visible.center();
-    h.hover_at(pos);
-    h.run_steps(2);
-    for pressed in [true, false] {
-        h.event(egui::Event::PointerButton { pos, button: egui::PointerButton::Primary, pressed, modifiers: egui::Modifiers::NONE });
-        h.run_steps(1);
-    }
-    assert_eq!(h.state().ui.tool, crate::state::Tool::Hand, "the toolbar click selected Hand");
 }
 
 #[test]
 fn picking_another_tool_in_the_toolbar_applies_the_transform() {
     let mut h = app();
     transform_and_move(&mut h);
-    click_hand(&mut h);
+    pick_another_tool(&h);
     h.run_steps(4);
     assert!(h.state().ui.transform.is_none(), "the box closed");
     assert_eq!(red_bounds(&h), photocraft_geom::Rect::new(150, 140, 250, 200), "the move was applied, not cancelled");
@@ -78,10 +60,10 @@ fn picking_another_tool_in_the_toolbar_applies_the_transform() {
 /// The app with the red rectangle on a layer the last step made (Layer via Copy, which deselects in
 /// the same step), as Place Embedded leaves it for the box `begin_placed` opens: cancelling the
 /// place takes that step back.
-fn placed_app() -> Harness<'static, PhotocraftApp> {
+fn placed_app() -> Harness<'static, Box<PhotocraftApp>> {
     let mut h = Harness::builder().with_size(egui::vec2(1400.0, 900.0)).with_max_steps(64).build_eframe(|cc| {
         PhotocraftApp::setup_context(&cc.egui_ctx, Default::default());
-        let mut app = PhotocraftApp::new(photocraft_engine::Session::new(), crate::Services::default());
+        let mut app = PhotocraftApp::with_context(cc.egui_ctx.clone(), photocraft_engine::Session::new(), crate::Services::default());
         app.run("file.new", json!({"width": 400, "height": 300, "background": "white"})).unwrap();
         app.run("select.rect", json!({"x": 100, "y": 100, "width": 100, "height": 60})).unwrap();
         app.run("edit.fill", json!({"color": "#ff0000"})).unwrap();
@@ -93,20 +75,17 @@ fn placed_app() -> Harness<'static, PhotocraftApp> {
     h
 }
 
-fn history(h: &Harness<'static, PhotocraftApp>) -> Vec<String> {
+fn history(h: &Harness<'static, Box<PhotocraftApp>>) -> Vec<String> {
     h.state().session.active().unwrap().history.entries().to_vec()
 }
 
 /// The box on a just-placed layer (a file dropped on the canvas), moved.
-fn placed_and_moved(h: &mut Harness<'static, PhotocraftApp>) {
+fn placed_and_moved(h: &mut Harness<'static, Box<PhotocraftApp>>) {
     let ctx = h.ctx.clone();
     crate::transform_tool::begin_placed(h.state_mut(), &ctx).unwrap();
     h.run_steps(2);
     let t = h.state_mut().ui.transform.as_mut().expect("Free Transform is open");
-    for p in &mut t.quad {
-        p[0] += 50.0;
-        p[1] += 40.0;
-    }
+    t.edit_box(|b| *b = b.moved((50.0, 40.0).into()));
     h.run_steps(2);
 }
 
@@ -114,7 +93,7 @@ fn placed_and_moved(h: &mut Harness<'static, PhotocraftApp>) {
 fn a_placed_image_is_applied_when_another_tool_is_picked() {
     let mut h = placed_app();
     placed_and_moved(&mut h);
-    click_hand(&mut h);
+    pick_another_tool(&h);
     h.run_steps(4);
     assert!(h.state().ui.transform.is_none());
     assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 2, "the placed layer stays");
@@ -130,7 +109,8 @@ fn picking_another_layer_in_the_panel_applies_the_transform() {
         } else {
             transform_and_move(&mut h);
         }
-        h.get_by_label("Background").click();
+        let at = crate::layers_panel_nodes::row(&h, "Background").center();
+        crate::layers_panel_nodes::click(&mut h, at, egui::Modifiers::NONE);
         h.run_steps(4);
         assert!(h.state().ui.transform.is_none(), "placed {placed}");
         assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 2, "placed {placed}");
@@ -175,7 +155,7 @@ fn an_untouched_placed_image_stays_when_another_tool_or_layer_is_picked() {
             let bg = h.state().session.active().unwrap().doc.layers[0].id;
             h.state_mut().run("layer.select", json!({"layer": bg.0})).unwrap();
         } else {
-            click_hand(&mut h);
+            pick_another_tool(&h);
         }
         h.run_steps(4);
         let st = h.state().session.active().unwrap();
@@ -216,7 +196,7 @@ fn a_refused_transform_keeps_the_placed_layer_and_refuses_the_new_layer() {
     let mut h = placed_app();
     placed_and_moved(&mut h);
     let t = h.state_mut().ui.transform.as_mut().unwrap();
-    t.quad = [[0.0, 0.0], [4.0e6, 0.0], [4.0e6, 4.0e6], [0.0, 4.0e6]];
+    t.edit_box(|b| b.quad = [[0.0, 0.0], [4.0e6, 0.0], [4.0e6, 4.0e6], [0.0, 4.0e6]].map(|[x, y]: [f64; 2]| (x, y).into()));
     h.run_steps(2);
     let before = history(&h);
     let r = h.state_mut().run("layer.new.layer", json!({}));

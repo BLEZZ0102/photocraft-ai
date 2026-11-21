@@ -1,0 +1,91 @@
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
+	AI Edit…	AI Redaktə…
+@id	edit.ai.codex	AI Redaktə…
+	Describe your edit	Redaktənizi təsvir edin
+	The visible canvas and instruction will be sent to Codex using your ChatGPT sign-in. The result is fitted to the canvas and added as a new layer.	Görünən kətan və təlimat ChatGPT girişinizdən istifadə edərək Codex-ə göndəriləcək. Nəticə kətana yapışdırılır və yeni təbəqə kimi əlavə edilir.
+	Codex account has not been checked	Codex hesabı yoxlanılmayıb
+	Checking Codex connection…	Codex bağlantısı yoxlanılır…
+	Complete ChatGPT sign-in in your browser	Brauzerinizdə ChatGPT girişini tamamlayın
+	Connected to ChatGPT	ChatGPT-ə qoşulub
+	ChatGPT plan	ChatGPT planı
+	ChatGPT sign-in is required	ChatGPT girişi tələb olunur
+	Codex is using another login method. Sign in with ChatGPT to use your subscription.	Codex başqa giriş metodundan istifadə edir. Abunəliyinizi istifadə etmək üçün ChatGPT ilə daxil olun.
+	Cancelling sign-in…	Giriş ləğv edilir…
+	Sign-in cancelled	Giriş ləğv edildi
+	Could not verify the account. Check your connection or sign in again.	Hesabı doğrulamaq mümkün olmadı. Bağlantınızı yoxlayın və ya yenidən daxil olun.
+	Connection details	Bağlantı təfərrüatları
+	Sign in with ChatGPT	ChatGPT ilə daxil olun
+	Open sign-in page	Giriş səhifəsini açın
+	Check connection	Bağlantı yoxlayın
+	Cancel sign-in	Girişi ləğv edin
+	Copy sign-in link	Giriş linkini kopyalayın
+	Could not open your browser. Try again or copy the sign-in link into your browser.	Brauzerinizi açmaq mümkün olmadı. Yenidən cəhd edin və ya giriş linkini brauzerinizə kopyalayın.
+	Sign-in is managed by the installed Codex runtime and shared with Codex. PhotoCraft does not store tokens.	Daxil olma quraşdırılmış Codex işləmə vaxtı ilə idarə olunur və Codex ilə paylaşılır. PhotoCraft tokenləri saxlamır.
+	Image service	Şəkil xidməti
+	Codex (ChatGPT subscription)	Codex (ChatGPT abunəliyi)
+	Doubao / Seedream	Doubao / Seedream
+	This API sends the visible canvas and instruction to the configured service. Usage may incur charges billed by that service.	Bu API görünən kətan və təlimatı konfiqurasiya edilmiş xidmətə göndərir. İstifadə həmin xidmət tərəfindən ödənilən ödənişlərə səbəb ola bilər.
+	Model ID	Model identifikatoru
+	API address and protocol	API ünvanı və protokol
+	API address	API ünvanı
+	API protocol	API protokolu
+	Custom services must support the selected image-editing protocol. Changing the address requires a key for that address.	Xüsusi xidmətlər seçilmiş şəkil redaktə protokolunu dəstəkləməlidir. Ünvanı dəyişdirmək üçün həmin ünvan üçün açar tələb olunur.
+	API key	API açarı
+	API key configured — leave empty to keep it	API açarı konfiqurasiya edilib — onu saxlamaq üçün boş buraxın
+	Remember API key in system credential store	Sistem etimadnamə mağazasında API açarını yadda saxla
+	The API key is available for this session only.	API açarı yalnız bu sessiya üçün əlçatandır.
+	Save API settings	API parametrlərini yadda saxlayın
+	Remove API key	API açarını silin
+	API configured. Saving settings does not generate an image.	API konfiqurasiya edilmişdir. Parametrlərin saxlanması şəkil yaratmır.
+	Save your API settings before editing.	Redaktə etməzdən əvvəl API parametrlərinizi yadda saxlayın.
+	API settings saved	API parametrləri yadda saxlanıldı
+	Enter a valid API key without whitespace	Boşluq olmadan etibarlı API açarı daxil edin
+	API key removed	API açarı silindi
+	Could not load API settings	API parametrlərini yükləmək mümkün olmadı
+	The result is fitted to the canvas and added as a new layer. Your existing layers are preserved.	Nəticə kətana yapışdırılır və yeni təbəqə kimi əlavə edilir. Mövcud təbəqələriniz qorunur.
+	Codex was not found. Install and open the Codex desktop app, then check the connection again.	Codex tapılmadı. Codex masaüstü proqramını quraşdırın və açın, sonra əlaqəni yenidən yoxlayın.
+	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Tam Codex quraşdırmasından istifadə edin; codex.exe nüsxəsi yalnız şəkil redaktə komponentlərini buraxa bilər.
+	PhotoCraft AI Updates	PhotoCraft AI Yeniləmələri
+	AI Project Page	AI Layihə Səhifəsi
+	Release Notes	Buraxılış qeydləri
+	AI edit did not pass the service's content review	AI redaktəsi xidmətin məzmununa baxışdan keçmədi
+	The image service's content review is unavailable	Şəkil xidmətinin məzmuna baxışı əlçatan deyil
+	Your editing instruction did not pass the service's content review.	Redaktə təlimatınız xidmətin məzmununa baxışdan keçmədi.
+	Your reference image did not pass the service's content review.	İstinad şəkliniz xidmətin məzmununa baxışdan keçmədi.
+	The generated image did not pass the service's content review.	Yaradılan şəkil xidmətin məzmununa baxışdan keçmədi.
+	Your instruction triggered the service's content rules, which may include copyright restrictions.	Təlimatınız müəllif hüquqları məhdudiyyətlərini ehtiva edə bilən xidmətin məzmun qaydalarını işə saldı.
+	Your reference image triggered the service's content rules, which may include copyright restrictions.	İstinad şəkliniz xidmətin məzmun qaydalarını işə saldı, bunlara müəllif hüququ məhdudiyyətləri daxil ola bilər.
+	Your reference image did not pass the service's privacy review.	İstinad şəkliniz xidmətin məxfilik baxışından keçmədi.
+	The generated image triggered the service's content rules, which may include copyright restrictions.	Yaradılan şəkil müəllif hüquqları məhdudiyyətlərini ehtiva edə bilən xidmətin məzmun qaydalarını işə saldı.
+	The generated image triggered the service's impersonation restrictions.	Yaradılan şəkil xidmətin imitasiya məhdudiyyətlərinə səbəb oldu.
+	The service rejected this edit without identifying the content-review stage.	Xidmət məzmuna baxış mərhələsini müəyyən etmədən bu redaktəni rədd etdi.
+	The service's content review failed, so this edit could not be completed.	Xidmətin məzmununun nəzərdən keçirilməsi uğursuz oldu, ona görə də bu redaktəni tamamlamaq mümkün olmadı.
+	Revise the instruction and try again manually.	Təlimatları yenidən nəzərdən keçirin və əl ilə yenidən cəhd edin.
+	Choose a reference image that meets the service's requirements.	Xidmətin tələblərinə cavab verən istinad şəklini seçin.
+	Adjust the editing request or contact the service provider for details.	Redaktə sorğusunu tənzimləyin və ya ətraflı məlumat üçün xidmət təminatçınızla əlaqə saxlayın.
+	Check that your editing request meets the service's content requirements.	Redaktə sorğunuzun xidmətin məzmun tələblərinə cavab verdiyini yoxlayın.
+	Check your editing content or ask the service provider for details.	Redaktə məzmununuzu yoxlayın və ya təfərrüatlar üçün xidmət təminatçınızdan soruşun.
+	Try again manually later. Contact the service provider if the problem continues.	Daha sonra əl ilə yenidən cəhd edin. Problem davam edərsə, xidmət təminatçısı ilə əlaqə saxlayın.
+	This edit did not change existing layers or add a new layer.	Bu redaktə mövcud təbəqələri dəyişmədi və ya yeni qat əlavə etmədi.
+	Error code: {code}	Səhv kodu: {code}
+	Include individual layer images, names and structure	Fərdi təbəqə şəkillərini, adlarını və strukturunu daxil edin
+	Also send hidden layers	Gizli təbəqələri də göndərin
+	Up to 15 layer images.	15 qat şəkillərə qədər.
+	Isolated previews may reveal content covered by other layers or group masks.	Təcrid olunmuş önizləmələr digər təbəqələr və ya qrup maskaları ilə əhatə olunan məzmunu aşkar edə bilər.
+	AI Edit	Süni intellektlə redaktə
+	AI Edit via API	API vasitəsilə AI Edit
+	Codex Account	Codex Hesabı
+	AI Provider Settings	AI Provayder Parametrləri
+	API settings	API parametrləri
+	Updates are offered only after a new AI package is published.	Yeniləmələr yalnız yeni AI paketi dərc edildikdən sonra təklif olunur.
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} mövcuddur.
+	No newer AI package is available.	Daha yeni AI paketi mövcud deyil.
+	Downloading and verifying update…	Güncəlləmə endirilir və təsdiqlənir…
+	Could not install the update.	Güncəlləməni quraşdırmaq mümkün olmadı.
+	Save your documents and wait for background tasks before updating.	Sənədlərinizi yadda saxlayın və yeniləmədən əvvəl fon tapşırıqlarını gözləyin.
+	Update and Restart	Yeniləyin və yenidən başladın
+	Checking for updates…	Güncəlləmələr yoxlanılır…
+	Could not check for updates.	Yeniləmələri yoxlamaq mümkün olmadı.
+	Updates have not been checked yet.	Yeniləmələr hələ yoxlanılmayıb.
+	Check Again	Yenidən yoxlayın
+	Installed version: {version}	Quraşdırılmış versiya: {version}

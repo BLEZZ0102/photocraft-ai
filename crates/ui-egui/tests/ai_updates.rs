@@ -28,7 +28,8 @@ fn explicit_update_click_reports_preparation_failure_without_closing() {
         PhotocraftApp::setup_context(&cc.egui_ctx, Default::default());
         let mut session = Session::new();
         session.edit_prefs(|p| p.interface.language = "en".into());
-        let mut app = PhotocraftApp::new(
+        let mut app = PhotocraftApp::with_context(
+            cc.egui_ctx.clone(),
             session,
             Services {
                 prepare_update: Some(Box::new(move |_| {
@@ -70,7 +71,7 @@ fn update_notice_preserves_unsaved_documents_and_localizes_every_language() {
             })),
             ..Default::default()
         };
-        let mut app = PhotocraftApp::new(session, services);
+        let mut app = PhotocraftApp::with_context(cc.egui_ctx.clone(), session, services);
         app.session.updates.status =
             Status::Available { release: Release { version: "99.0.0".into(), url: "https://github.com/storytold/photocraft/releases/tag/v99.0.0".into() } };
         app

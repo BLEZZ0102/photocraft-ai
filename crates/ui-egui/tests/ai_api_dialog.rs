@@ -6,18 +6,22 @@ use egui_kittest::{
 use photocraft_ui_egui::{PhotocraftApp, Services};
 use serde_json::json;
 
-fn harness() -> Harness<'static, PhotocraftApp> {
+fn harness() -> Harness<'static, Box<PhotocraftApp>> {
     let mut h = Harness::builder().with_size(egui::vec2(800.0, 600.0)).with_max_steps(64).build_eframe(|cc| {
         PhotocraftApp::setup_context(&cc.egui_ctx, Default::default());
         let mut session = photocraft_engine::Session::new();
         session.edit_prefs(|p| p.interface.language = "en".into());
         session.execute("file.new", json!({"width":16,"height":12})).unwrap();
-        PhotocraftApp::new(session, Services::default())
+        PhotocraftApp::with_context(cc.egui_ctx.clone(), session, Services::default())
     });
     let ctx = h.ctx.clone();
     photocraft_ui_egui::menus::invoke(h.state_mut(), &ctx, "edit.ai.codex", json!({})).unwrap();
     h.run_steps(3);
     h
+}
+
+fn fields_mut<'a>(h: &'a mut Harness<'static, Box<PhotocraftApp>>) -> &'a mut serde_json::Map<String, serde_json::Value> {
+    &mut h.state_mut().ui.ai_edit.as_mut().expect("AI Edit dialog is open").fields
 }
 
 #[test]
@@ -33,8 +37,8 @@ fn saved_api_confirmation_remains_independent_of_codex_sign_in() {
             }),
         )
         .unwrap();
-    h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("flux"));
-    h.state_mut().ui.dialogs[0].fields.insert("prompt".into(), json!("Make the circle yellow"));
+    fields_mut(&mut h).insert("provider".into(), json!("flux"));
+    fields_mut(&mut h).insert("prompt".into(), json!("Make the circle yellow"));
     h.run_steps(4);
     assert!(!h.get_by_label("OK").accesskit_node().is_disabled());
     h.state_mut().session.authorize = Some(|command, _| {
@@ -46,17 +50,16 @@ fn saved_api_confirmation_remains_independent_of_codex_sign_in() {
             Ok(())
         }
     });
-    let id = h.state().ui.dialogs[0].id;
-    let error = photocraft_ui_egui::dialogs::confirm(h.state_mut(), id).unwrap_err();
+    let error = photocraft_ui_egui::ai_edit_ui::confirm(h.state_mut()).unwrap_err();
     assert!(error.contains("Offline API integration gate"), "{error}");
-    assert!(h.state().ui.dialogs.is_empty());
+    assert!(h.state().ui.ai_edit.is_none());
     assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 1);
 }
 
 #[test]
 fn selector_exposes_all_services_and_opens_no_browser_or_generation() {
     let mut h = harness();
-    h.get_by_label("Image service").click();
+    h.get_by_role_and_label(egui::accesskit::Role::ComboBox, "Image service").click();
     h.run_steps(2);
     assert!(h.query_by_label("Gemini / Nano Banana").is_some());
     assert!(h.query_by_label("Doubao / Seedream").is_some());
@@ -73,8 +76,8 @@ fn selector_exposes_all_services_and_opens_no_browser_or_generation() {
 #[test]
 fn saved_session_key_is_hidden_ready_with_prompt_and_removed_explicitly() {
     let mut h = harness();
-    h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("seedream"));
-    h.state_mut().ui.dialogs[0].fields.insert("prompt".into(), json!("Make the circle yellow"));
+    fields_mut(&mut h).insert("provider".into(), json!("seedream"));
+    fields_mut(&mut h).insert("prompt".into(), json!("Make the circle yellow"));
     h.run_steps(3);
     h.get_by_role(egui::accesskit::Role::PasswordInput).click();
     h.run_steps(2);
@@ -88,9 +91,14 @@ fn saved_session_key_is_hidden_ready_with_prompt_and_removed_explicitly() {
     h.get_by_label("Save API settings").click();
     h.run_steps(3);
     assert!(h.state().session.ai_api.has_key("seedream").unwrap(), "Save failed: {:?}; button: {save_rect:?}", h.state().ui.ai_api);
-    assert!(!h.get_by_label("OK").accesskit_node().is_disabled(), "API state: {:?}; fields: {:?}", h.state().ui.ai_api, h.state().ui.dialogs[0].fields);
+    assert!(
+        !h.get_by_label("OK").accesskit_node().is_disabled(),
+        "API state: {:?}; fields: {:?}",
+        h.state().ui.ai_api,
+        h.state().ui.ai_edit.as_ref().unwrap().fields
+    );
     assert!(!format!("{:?}", h.state().session.journal).contains("private-ui-test-key"));
-    let fields = &h.state().ui.dialogs[0].fields;
+    let fields = &h.state().ui.ai_edit.as_ref().unwrap().fields;
     let (command, params) = photocraft_ui_egui::ai_api_ui::edit_command(fields, "edit.ai.codex".into(), json!({}));
     assert_eq!(command, "edit.ai.api");
     assert_eq!(params, json!({"provider":"seedream","prompt":"Make the circle yellow"}));
@@ -113,14 +121,14 @@ fn saved_session_key_is_hidden_ready_with_prompt_and_removed_explicitly() {
 fn flux_configuration_routes_only_to_the_explicit_flux_provider() {
     let mut h = harness();
     h.state_mut().session.execute("ai.provider.settings", json!({"action":"save","provider":"flux","profile":photocraft_engine::cmd::ai_provider_cmds::preset("flux"),"apiKey":"synthetic-flux-key","rememberKey":false})).unwrap();
-    h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("flux"));
-    h.state_mut().ui.dialogs[0].fields.insert("prompt".into(), json!("make yellow"));
-    h.state_mut().ui.dialogs[0].fields.insert("sendLayerContext".into(), json!(true));
-    h.state_mut().ui.dialogs[0].fields.insert("includeHiddenLayers".into(), json!(true));
+    fields_mut(&mut h).insert("provider".into(), json!("flux"));
+    fields_mut(&mut h).insert("prompt".into(), json!("make yellow"));
+    fields_mut(&mut h).insert("sendLayerContext".into(), json!(true));
+    fields_mut(&mut h).insert("includeHiddenLayers".into(), json!(true));
     h.run_steps(4);
     assert!(!h.get_by_label("OK").accesskit_node().is_disabled());
     let (command, params) = photocraft_ui_egui::ai_api_ui::edit_command(
-        &h.state().ui.dialogs[0].fields,
+        &h.state().ui.ai_edit.as_ref().unwrap().fields,
         "edit.ai.codex".into(),
         json!({"sendLayerContext":true,"includeHiddenLayers":true}),
     );
@@ -133,8 +141,8 @@ fn flux_configuration_routes_only_to_the_explicit_flux_provider() {
 #[test]
 fn pasted_seedream_key_trims_boundary_whitespace_and_reports_saved() {
     let mut h = harness();
-    h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("seedream"));
-    h.state_mut().ui.dialogs[0].fields.insert("prompt".into(), json!("make yellow"));
+    fields_mut(&mut h).insert("provider".into(), json!("seedream"));
+    fields_mut(&mut h).insert("prompt".into(), json!("make yellow"));
     h.run_steps(3);
     h.get_by_role(egui::accesskit::Role::PasswordInput).click();
     h.run_steps(2);
@@ -153,10 +161,14 @@ fn pasted_seedream_key_trims_boundary_whitespace_and_reports_saved() {
 
 #[test]
 fn invalid_internal_whitespace_or_hidden_characters_are_rejected_with_chinese_feedback() {
+    if !photocraft_ui_egui::i18n::catalogs_embedded() {
+        eprintln!("skipped: built without craft-i18n (CRAFT_I18N_DIR unset); AI overlay is tested in i18n::ai_tests");
+        return;
+    }
     for key in ["synthetic key", "synthetic\u{200b}key", "   "] {
         let mut h = harness();
         h.state_mut().session.execute("prefs.set", json!({"path":"interface.language","value":"zh-hans"})).unwrap();
-        h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("seedream"));
+        fields_mut(&mut h).insert("provider".into(), json!("seedream"));
         h.run_steps(3);
         h.get_by_role(egui::accesskit::Role::PasswordInput).click();
         h.run_steps(2);
@@ -174,7 +186,7 @@ fn invalid_internal_whitespace_or_hidden_characters_are_rejected_with_chinese_fe
 #[test]
 fn cancelling_drops_secret_draft_without_saving() {
     let mut h = harness();
-    h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("gemini"));
+    fields_mut(&mut h).insert("provider".into(), json!("gemini"));
     h.run_steps(3);
     h.get_by_role(egui::accesskit::Role::PasswordInput).click();
     h.run_steps(2);
@@ -182,7 +194,7 @@ fn cancelling_drops_secret_draft_without_saving() {
     h.run_steps(2);
     h.get_by_label("Cancel").click();
     h.run_steps(2);
-    assert!(h.state().ui.dialogs.is_empty());
+    assert!(h.state().ui.ai_edit.is_none());
     assert_eq!(h.state().ui.ai_api, Default::default());
     assert!(!h.state().session.ai_api.has_key("gemini").unwrap());
 }
@@ -192,29 +204,32 @@ fn all_languages_update_ai_controls_and_saved_feedback_without_losing_the_prompt
     use photocraft_ui_egui::i18n::{Lang, tr};
     let mut h = harness();
     h.state_mut().session.execute("ai.provider.settings", json!({"action":"save","provider":"seedream","profile":photocraft_engine::cmd::ai_provider_cmds::preset("seedream"),"apiKey":"local-translation-key","rememberKey":false})).unwrap();
-    h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("seedream"));
-    h.state_mut().ui.dialogs[0].fields.insert("prompt".into(), json!("Keep this instruction unchanged"));
-    h.state_mut().ui.dialogs[0].fields.insert("__aiApiSettingsOpen:seedream".into(), json!(true));
-    h.state_mut().session.execute("prefs.set", json!({"path":"interface.language","value":"zh-hans"})).unwrap();
+    fields_mut(&mut h).insert("provider".into(), json!("seedream"));
+    fields_mut(&mut h).insert("prompt".into(), json!("Keep this instruction unchanged"));
+    fields_mut(&mut h).insert("__aiApiSettingsOpen:seedream".into(), json!(true));
+    let initial_lang = if photocraft_ui_egui::i18n::catalogs_embedded() { "zh-hans" } else { "en" };
+    h.state_mut().session.execute("prefs.set", json!({"path":"interface.language","value":initial_lang})).unwrap();
     h.run_steps(4);
     h.run();
-    h.get_by_label("保存 API 配置").click();
+    let save_label = if initial_lang == "zh-hans" { "保存 API 配置" } else { "Save API settings" };
+    let saved_label = if initial_lang == "zh-hans" { "API 配置已保存" } else { "API settings saved" };
+    h.get_by_label(save_label).click();
     h.run();
-    assert!(h.query_by_label("API 配置已保存").is_some(), "save state: {:?}; rect: {:?}", h.state().ui.ai_api, h.get_by_label("保存 API 配置").rect());
+    assert!(h.query_by_label(saved_label).is_some(), "save state: {:?}; rect: {:?}", h.state().ui.ai_api, h.get_by_label(save_label).rect());
     for lang in Lang::all() {
         h.state_mut().session.execute("prefs.set", json!({"path":"interface.language","value":lang.code()})).unwrap();
         h.run_steps(3);
         for key in ["Image service", "Model ID", "Save API settings", "API settings saved"] {
-            assert!(h.query_by_label(tr(lang, key)).is_some(), "{}: missing {key}", lang.code());
+            assert!(h.query_all_by_label(tr(lang, key)).next().is_some(), "{}: missing {key}", lang.code());
         }
-        assert_eq!(h.state().ui.dialogs[0].fields["prompt"], "Keep this instruction unchanged");
+        assert_eq!(h.state().ui.ai_edit.as_ref().unwrap().fields["prompt"], "Keep this instruction unchanged");
         assert!(!h.get_by_label(tr(lang, "OK")).accesskit_node().is_disabled());
-        h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("codex"));
+        fields_mut(&mut h).insert("provider".into(), json!("codex"));
         h.run_steps(3);
         for key in ["Image service", "Sign in with ChatGPT", "Check connection"] {
-            assert!(h.query_by_label(tr(lang, key)).is_some(), "{}: missing {key}", lang.code());
+            assert!(h.query_all_by_label(tr(lang, key)).next().is_some(), "{}: missing {key}", lang.code());
         }
-        h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("seedream"));
+        fields_mut(&mut h).insert("provider".into(), json!("seedream"));
     }
     assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 1);
     assert!(!h.state().session.ai_account.pending());
@@ -224,7 +239,7 @@ fn all_languages_update_ai_controls_and_saved_feedback_without_losing_the_prompt
 #[test]
 fn expanded_api_settings_keep_confirmation_buttons_on_a_small_screen() {
     let mut h = harness();
-    h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("gemini"));
+    fields_mut(&mut h).insert("provider".into(), json!("gemini"));
     h.run_steps(3);
     h.get_by_label("API address and protocol").click();
     h.run_steps(3);
@@ -241,8 +256,8 @@ fn configured_api_controls_fold_without_losing_configuration_or_prompt() {
     for provider in ["gemini", "seedream", "flux"] {
         let mut h = harness();
         h.state_mut().session.execute("ai.provider.settings", json!({"action":"save","provider":provider,"profile":photocraft_engine::cmd::ai_provider_cmds::preset(provider),"apiKey":"local-fold-test-key","rememberKey":false})).unwrap();
-        h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!(provider));
-        h.state_mut().ui.dialogs[0].fields.insert("prompt".into(), json!("Keep this prompt"));
+        fields_mut(&mut h).insert("provider".into(), json!(provider));
+        fields_mut(&mut h).insert("prompt".into(), json!("Keep this prompt"));
         h.run_steps(4);
         assert!(h.query_by_label("Save API settings").is_none());
         assert!(h.query_by_role(egui::accesskit::Role::PasswordInput).is_none());
@@ -255,7 +270,7 @@ fn configured_api_controls_fold_without_losing_configuration_or_prompt() {
         h.get_by_label("API settings").click();
         h.run_steps(24);
         assert!(h.query_by_label("Save API settings").is_none());
-        assert_eq!(h.state().ui.dialogs[0].fields["prompt"], "Keep this prompt");
+        assert_eq!(h.state().ui.ai_edit.as_ref().unwrap().fields["prompt"], "Keep this prompt");
         assert!(h.state().session.ai_api.has_key(provider).unwrap());
         assert!(!h.get_by_label("OK").accesskit_node().is_disabled());
         assert!(!serde_json::to_string(&h.state().ui).unwrap().contains("local-fold-test-key"));
@@ -266,8 +281,8 @@ fn configured_api_controls_fold_without_losing_configuration_or_prompt() {
 #[test]
 fn folding_unsaved_key_keeps_the_draft_and_requires_an_explicit_save() {
     let mut h = harness();
-    h.state_mut().ui.dialogs[0].fields.insert("provider".into(), json!("seedream"));
-    h.state_mut().ui.dialogs[0].fields.insert("prompt".into(), json!("Keep this prompt"));
+    fields_mut(&mut h).insert("provider".into(), json!("seedream"));
+    fields_mut(&mut h).insert("prompt".into(), json!("Keep this prompt"));
     h.run_steps(4);
     h.run();
     h.get_by_role(egui::accesskit::Role::PasswordInput).click();

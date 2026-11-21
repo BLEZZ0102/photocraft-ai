@@ -1,5 +1,8 @@
 //! API controls in the AI edit dialog. Secret drafts are never serialized or returned by inspect.
 use crate::PhotocraftApp;
+use craft::ui::contract::{Bind, Entry, Show as _};
+use craft::ui::pickers::Select;
+use craft::ui::runtime::env::Label;
 use photocraft_engine::cmd::ai_provider_cmds::{COMMAND, Profile, Protocol, preset};
 use serde_json::{Map, Value, json};
 
@@ -72,22 +75,23 @@ pub fn selector(app: &mut PhotocraftApp, ui: &mut egui::Ui, fields: &mut Map<Str
     let before = selected(fields).to_owned();
     let mut provider = before.clone();
     ui.horizontal(|ui| {
-        let label = ui.label(tl!("Image service"));
-        craft_ui::ComboBox::from_id_salt("ai-image-service")
-            .selected_text(match provider.as_str() {
-                "gemini" => "Gemini / Nano Banana",
-                "seedream" => tl!("Doubao / Seedream"),
-                "flux" => "FLUX / Black Forest Labs",
-                _ => tl!("Codex (ChatGPT subscription)"),
-            })
-            .show_ui(ui, |ui| {
-                ui.selectable_value(&mut provider, "codex".into(), tl!("Codex (ChatGPT subscription)"));
-                ui.selectable_value(&mut provider, "gemini".into(), "Gemini / Nano Banana");
-                ui.selectable_value(&mut provider, "seedream".into(), tl!("Doubao / Seedream"));
-                ui.selectable_value(&mut provider, "flux".into(), "FLUX / Black Forest Labs");
-            })
-            .response
-            .labelled_by(label.id);
+        ui.label(tl!("Image service"));
+        let entries = [
+            Entry::new("codex", Label::from(tl!("Codex (ChatGPT subscription)"))),
+            Entry::new("gemini", Label::from("Gemini / Nano Banana")),
+            Entry::new("seedream", Label::from(tl!("Doubao / Seedream"))),
+            Entry::new("flux", Label::from("FLUX / Black Forest Labs")),
+        ];
+        let current = match provider.as_str() {
+            "gemini" => "gemini",
+            "seedream" => "seedream",
+            "flux" => "flux",
+            _ => "codex",
+        };
+        let out = Select::new(tl!("Image service"), Bind::given(current), &entries).show(ui);
+        if let Some(&picked) = out.value() {
+            provider = picked.to_owned();
+        }
     });
     if provider != before {
         crate::ai_account_ui::closed(app);
@@ -136,17 +140,18 @@ pub fn body(app: &mut PhotocraftApp, ui: &mut egui::Ui, fields: &mut Map<String,
                 ui.add(egui::TextEdit::singleline(&mut profile.endpoint).id_salt(("ai-api-endpoint", &provider)).desired_width(400.0).char_limit(2048))
                     .labelled_by(label.id);
                 ui.horizontal(|ui| {
-                    let label = ui.label(tl!("API protocol"));
+                    ui.label(tl!("API protocol"));
                     let before = profile.protocol;
-                    craft_ui::ComboBox::from_id_salt("ai-api-protocol")
-                        .selected_text(protocol_label(profile.protocol))
-                        .show_ui(ui, |ui| {
-                            for protocol in [Protocol::GeminiInteractions, Protocol::GeminiGenerateContent, Protocol::Seedream, Protocol::Flux] {
-                                ui.selectable_value(&mut profile.protocol, protocol, protocol_label(protocol));
-                            }
-                        })
-                        .response
-                        .labelled_by(label.id);
+                    let entries = [
+                        Entry::new(Protocol::GeminiInteractions, Label::from(protocol_label(Protocol::GeminiInteractions))),
+                        Entry::new(Protocol::GeminiGenerateContent, Label::from(protocol_label(Protocol::GeminiGenerateContent))),
+                        Entry::new(Protocol::Seedream, Label::from(protocol_label(Protocol::Seedream))),
+                        Entry::new(Protocol::Flux, Label::from(protocol_label(Protocol::Flux))),
+                    ];
+                    let out = Select::new(tl!("API protocol"), Bind::given(profile.protocol), &entries).show(ui);
+                    if let Some(&picked) = out.value() {
+                        profile.protocol = picked;
+                    }
                     if before != profile.protocol {
                         profile.endpoint = match profile.protocol {
                             Protocol::GeminiInteractions => "https://generativelanguage.googleapis.com/v1beta/interactions",
@@ -205,7 +210,7 @@ pub fn body(app: &mut PhotocraftApp, ui: &mut egui::Ui, fields: &mut Map<String,
         apply(app, &provider, result, Some("API key removed"));
     }
     ui.separator();
-    crate::view_cmds::form_body(ui, fields);
+    crate::ai_edit_ui::prompt_body(ui, fields);
 }
 
 /// Confirmation contains only a provider name and instruction, never a key or draft URL.

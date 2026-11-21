@@ -91,12 +91,12 @@ pub(super) fn prepare(doc: &Document, active: Option<photocraft_doc::LayerId>, i
 }
 
 /// Flatten into a fresh export document to strip file names, EXIF, XMP and opaque PSD data.
-pub(super) fn png_bytes(source: &Document, intent: photocraft_cms::Intent, bpc: bool) -> Result<Vec<u8>> {
+pub(super) fn png_bytes(source: &Document, intent: craft_cms::Intent, bpc: bool) -> Result<Vec<u8>> {
     let mut input = Document::new("Canvas", source.size, source.mode, source.depth);
     input.icc_profile = source.icc_profile.clone();
     let surface = photocraft_compose::flatten_to_surface(source, source.pixel_format(), None);
     input.layers.push(Layer::new("Canvas", LayerContent::Raster(surface)));
-    crate::color_cmds::convert_document(&mut input, photocraft_cms::builtin::srgb(), intent, bpc)?;
+    crate::color_cmds::convert_document(&mut input, craft_cms::builtin::srgb(), intent, bpc)?;
     crate::image_cmds::for_each_surface(&mut input.layers, true, &mut |surface, _| {
         *surface = surface.convert(surface.format().with_sample(photocraft_color::SampleType::U8));
     });
@@ -115,7 +115,7 @@ pub(super) fn export(
     plan: Plan,
     workspace: &Path,
     canvas_bytes: usize,
-    intent: photocraft_cms::Intent,
+    intent: craft_cms::Intent,
     bpc: bool,
     cancelled: &dyn Fn() -> bool,
 ) -> Result<LayerContext> {
@@ -271,12 +271,12 @@ mod tests {
     fn oversized_context_and_cancellation_fail_before_provider_access() {
         let mut doc = document("rgb", 8, "#ff0000");
         let layer = doc.layers[0].clone();
-        doc.layers = vec![layer.clone(); MAX_LAYER_IMAGES + 1];
+        doc.layers = vec![layer.clone(); MAX_LAYER_IMAGES + 1].into();
         assert!(prepare(&doc, None, false).is_err());
-        doc.layers = vec![layer.clone()];
+        doc.layers = vec![layer.clone()].into();
         doc.layers[0].name = "x".repeat(1025);
         assert!(prepare(&doc, None, false).is_err());
-        doc.layers = vec![layer.clone()];
+        doc.layers = vec![layer.clone()].into();
         let work = tempfile::tempdir().unwrap();
         assert!(matches!(export(&doc, prepare(&doc, None, false).unwrap(), work.path(), 0, Default::default(), true, &|| true), Err(EngineError::Cancelled)));
         assert_eq!(std::fs::read_dir(work.path()).unwrap().count(), 0);
@@ -291,17 +291,17 @@ mod tests {
         assert!(matches!(export(&doc, prepare(&doc, None, false).unwrap(), work.path(), 0, Default::default(), true, &cancelled), Err(EngineError::Cancelled)));
         assert_eq!(std::fs::read_dir(work.path()).unwrap().count(), 0);
         let mut group = Layer::group("x".repeat(1024), vec![]);
-        doc.layers = vec![group.clone(); MAX_CONTEXT_NODES];
+        doc.layers = vec![group.clone(); MAX_CONTEXT_NODES].into();
         assert!(prepare(&doc, None, false).is_err()); // bounded serialized manifest
         group.name.clear();
-        doc.layers = vec![group; MAX_CONTEXT_NODES + 1];
+        doc.layers = vec![group; MAX_CONTEXT_NODES + 1].into();
         assert!(prepare(&doc, None, false).is_err()); // bounded entry count
-        doc.layers = vec![layer.clone()];
+        doc.layers = vec![layer.clone()].into();
         for _ in 0..MAX_DEPTH {
-            doc.layers = vec![Layer::group("nested", std::mem::take(&mut doc.layers))];
+            doc.layers = vec![Layer::group("nested", std::mem::take(&mut *doc.layers))].into();
         }
         assert!(validate_tree(&doc.layers).is_err());
-        doc.layers = vec![layer; MAX_TREE_NODES + 1];
+        doc.layers = vec![layer; MAX_TREE_NODES + 1].into();
         assert!(validate_tree(&doc.layers).is_err());
     }
 }

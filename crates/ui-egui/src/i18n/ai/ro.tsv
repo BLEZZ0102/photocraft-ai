@@ -1,0 +1,91 @@
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
+	AI Edit…	Editare AI…
+@id	edit.ai.codex	Editare AI…
+	Describe your edit	Descrieți editarea dvs
+	The visible canvas and instruction will be sent to Codex using your ChatGPT sign-in. The result is fitted to the canvas and added as a new layer.	Pânza vizibilă și instrucțiunile vor fi trimise către Codex utilizând conectarea dvs. ChatGPT. Rezultatul este fixat pe pânză și adăugat ca strat nou.
+	Codex account has not been checked	Contul Codex nu a fost verificat
+	Checking Codex connection…	Se verifică conexiunea Codex…
+	Complete ChatGPT sign-in in your browser	Finalizați conectarea la ChatGPT în browser
+	Connected to ChatGPT	Conectat la ChatGPT
+	ChatGPT plan	Plan ChatGPT
+	ChatGPT sign-in is required	Conectarea ChatGPT este necesară
+	Codex is using another login method. Sign in with ChatGPT to use your subscription.	Codex folosește o altă metodă de conectare. Conectați-vă cu ChatGPT pentru a vă folosi abonamentul.
+	Cancelling sign-in…	Se anulează conectarea…
+	Sign-in cancelled	Conectarea a fost anulată
+	Could not verify the account. Check your connection or sign in again.	Nu s-a putut verifica contul. Verificați-vă conexiunea sau conectați-vă din nou.
+	Connection details	Detalii de conectare
+	Sign in with ChatGPT	Conectați-vă cu ChatGPT
+	Open sign-in page	Deschideți pagina de conectare
+	Check connection	Verificați conexiunea
+	Cancel sign-in	Anulați conectarea
+	Copy sign-in link	Copiați linkul de conectare
+	Could not open your browser. Try again or copy the sign-in link into your browser.	Browserul nu a putut fi deschis. Încercați din nou sau copiați linkul de conectare în browser.
+	Sign-in is managed by the installed Codex runtime and shared with Codex. PhotoCraft does not store tokens.	Conectarea este gestionată de runtime-ul Codex instalat și partajată cu Codex. PhotoCraft nu stochează jetoane.
+	Image service	Serviciu de imagine
+	Codex (ChatGPT subscription)	Codex (abonament ChatGPT)
+	Doubao / Seedream	Doubao / Seedream
+	This API sends the visible canvas and instruction to the configured service. Usage may incur charges billed by that service.	Acest API trimite pânza vizibilă și instrucțiunile către serviciul configurat. Utilizarea poate genera taxe facturate de serviciul respectiv.
+	Model ID	ID model
+	API address and protocol	Adresă și protocol API
+	API address	adresa API
+	API protocol	Protocolul API
+	Custom services must support the selected image-editing protocol. Changing the address requires a key for that address.	Serviciile personalizate trebuie să accepte protocolul de editare a imaginilor selectat. Schimbarea adresei necesită o cheie pentru adresa respectivă.
+	API key	cheie API
+	API key configured — leave empty to keep it	Cheia API configurată - lăsați gol pentru ao păstra
+	Remember API key in system credential store	Amintiți-vă cheia API în magazinul de acreditări de sistem
+	The API key is available for this session only.	Cheia API este disponibilă numai pentru această sesiune.
+	Save API settings	Salvați setările API
+	Remove API key	Eliminați cheia API
+	API configured. Saving settings does not generate an image.	API-ul configurat. Salvarea setărilor nu generează o imagine.
+	Save your API settings before editing.	Salvați setările API-ului înainte de a edita.
+	API settings saved	Setările API au fost salvate
+	Enter a valid API key without whitespace	Introduceți o cheie API validă fără spații albe
+	API key removed	Cheia API a fost eliminată
+	Could not load API settings	Nu s-au putut încărca setările API
+	The result is fitted to the canvas and added as a new layer. Your existing layers are preserved.	Rezultatul este fixat pe pânză și adăugat ca strat nou. Straturile dvs. existente sunt păstrate.
+	Codex was not found. Install and open the Codex desktop app, then check the connection again.	Codexul nu a fost găsit. Instalați și deschideți aplicația desktop Codex, apoi verificați din nou conexiunea.
+	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	Utilizați instalarea completă a Codex; Numai copierea codex.exe poate omite componente de editare a imaginilor.
+	PhotoCraft AI Updates	Actualizări PhotoCraft AI
+	AI Project Page	Pagina de proiect AI
+	AI edit did not pass the service's content review	Editarea AI nu a trecut de evaluarea conținutului serviciului
+	The image service's content review is unavailable	Revizuirea conținutului serviciului de imagine nu este disponibilă
+	Your editing instruction did not pass the service's content review.	Instrucțiunea dvs. de editare nu a trecut de evaluarea conținutului serviciului.
+	Your reference image did not pass the service's content review.	Imaginea dvs. de referință nu a trecut de evaluarea conținutului serviciului.
+	The generated image did not pass the service's content review.	Imaginea generată nu a trecut de evaluarea conținutului serviciului.
+	Your instruction triggered the service's content rules, which may include copyright restrictions.	Instrucțiunea dvs. a declanșat regulile de conținut ale serviciului, care pot include restricții privind drepturile de autor.
+	Your reference image triggered the service's content rules, which may include copyright restrictions.	Imaginea dvs. de referință a declanșat regulile de conținut ale serviciului, care pot include restricții privind drepturile de autor.
+	Your reference image did not pass the service's privacy review.	Imaginea dvs. de referință nu a trecut de evaluarea de confidențialitate a serviciului.
+	The generated image triggered the service's content rules, which may include copyright restrictions.	Imaginea generată a declanșat regulile de conținut ale serviciului, care pot include restricții de drepturi de autor.
+	The generated image triggered the service's impersonation restrictions.	Imaginea generată a declanșat restricțiile de uzurpare a identității serviciului.
+	The service rejected this edit without identifying the content-review stage.	Serviciul a respins această modificare fără a identifica etapa de revizuire a conținutului.
+	The service's content review failed, so this edit could not be completed.	Examinarea conținutului serviciului nu a reușit, așa că această modificare nu a putut fi finalizată.
+	Revise the instruction and try again manually.	Revizuiți instrucțiunile și încercați din nou manual.
+	Choose a reference image that meets the service's requirements.	Alegeți o imagine de referință care îndeplinește cerințele serviciului.
+	Adjust the editing request or contact the service provider for details.	Ajustați cererea de editare sau contactați furnizorul de servicii pentru detalii.
+	Check that your editing request meets the service's content requirements.	Verificați dacă solicitarea dvs. de editare îndeplinește cerințele de conținut ale serviciului.
+	Check your editing content or ask the service provider for details.	Verificați conținutul de editare sau întrebați furnizorul de servicii pentru detalii.
+	Try again manually later. Contact the service provider if the problem continues.	Încercați din nou manual mai târziu. Contactați furnizorul de servicii dacă problema persistă.
+	This edit did not change existing layers or add a new layer.	Această modificare nu a modificat straturile existente și nu a adăugat un strat nou.
+	Error code: {code}	Cod de eroare: {code}
+	Include individual layer images, names and structure	Includeți imagini de straturi individuale, nume și structură
+	Also send hidden layers	Trimite, de asemenea, straturi ascunse
+	Up to 15 layer images.	Până la 15 imagini de straturi.
+	Isolated previews may reveal content covered by other layers or group masks.	Previzualizările izolate pot dezvălui conținut acoperit de alte straturi sau măști de grup.
+	AI Edit	Editare cu IA
+	AI Edit via API	AI Edit prin API
+	Codex Account	Contul Codex
+	AI Provider Settings	Setările furnizorului AI
+	API settings	Setări API
+	Updates are offered only after a new AI package is published.	Actualizările sunt oferite numai după publicarea unui nou pachet AI.
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} este disponibil.
+	No newer AI package is available.	Nu este disponibil niciun pachet AI mai nou.
+	Downloading and verifying update…	Se descarcă și se verifică actualizarea…
+	Could not install the update.	Nu s-a putut instala actualizarea.
+	Save your documents and wait for background tasks before updating.	Salvați documentele și așteptați activitățile de fundal înainte de a actualiza.
+	Check Again	Căutare din nou
+	Checking for updates…	Se caută actualizări…
+	Could not check for updates.	Nu s-au putut căuta actualizări.
+	Installed version: {version}	Versiune instalată: {version}
+	Release Notes	Note de lansare
+	Update and Restart	Actualizare și repornire
+	Updates have not been checked yet.	Actualizările nu au fost încă căutate.

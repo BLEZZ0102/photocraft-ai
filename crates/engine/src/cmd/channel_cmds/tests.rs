@@ -772,7 +772,7 @@ fn apply_image_of_a_cmyk_composite_onto_rgb_keeps_black() {
     {
         let d = s.active_mut().unwrap();
         let id = d.active_layer.unwrap();
-        let surf = std::sync::Arc::make_mut(&mut d.doc).layer_mut(id).unwrap().surface_mut().unwrap();
+        let surf = std::sync::Arc::make_mut(d.doc_mut()).layer_mut(id).unwrap().surface_mut().unwrap();
         let n = surf.format().channels();
         let mut k = vec![0.0; 20 * 20 * n];
         k.chunks_exact_mut(n).for_each(|p| p[3] = 1.0);
@@ -795,7 +795,7 @@ fn apply_image_of_a_cmyk_composite_onto_an_alpha_channel_takes_its_luminosity() 
         {
             let d = s.active_mut().unwrap();
             let id = d.active_layer.unwrap();
-            let surf = std::sync::Arc::make_mut(&mut d.doc).layer_mut(id).unwrap().surface_mut().unwrap();
+            let surf = std::sync::Arc::make_mut(d.doc_mut()).layer_mut(id).unwrap().surface_mut().unwrap();
             let n = surf.format().channels();
             let mut k = vec![1.0; 20 * 20 * n];
             k.chunks_exact_mut(n).for_each(|p| p[..3].fill(0.0));
@@ -896,6 +896,32 @@ fn split_and_merge_channels() {
     let p = px(&s, 1, 1);
     assert!((p[0] - 1.0).abs() < 0.003 && (p[1] - 128.0 / 255.0).abs() < 0.003 && p[2].abs() < 0.003, "{p:?}");
     assert!(s.execute("channel.merge", json!({"mode": "cmyk"})).is_err());
+}
+
+/// #9236: CMYK channels split into greyscale shown as the Channels panel shows them (white
+/// paper, dark ink), and merge back into the same inks.
+#[test]
+fn split_and_merge_cmyk_keep_ink_dark() {
+    let mut s = Session::new();
+    s.execute("file.new", json!({"width": 40, "height": 20, "mode": "cmyk", "background": "white"})).unwrap();
+    // Rich black (#8359): its inks don't survive a trip through RGB, so the old path fails here.
+    let rgb = photocraft_color::convert::cmyk_to_rgb([1.0, 1.0, 1.0, 0.0]).map(|c| c.clamp(0.0, 1.0));
+    s.execute("tools.setColors", json!({"foreground": rgb, "foregroundCmyk": [1.0, 1.0, 1.0, 0.0]})).unwrap();
+    s.execute("select.rect", json!({"x": 0, "y": 0, "width": 20, "height": 20})).unwrap();
+    s.execute("edit.fillForeground", json!({})).unwrap();
+    s.execute("select.deselect", json!({})).unwrap();
+    let (ink, paper) = (px(&s, 1, 1), px(&s, 30, 1));
+    assert!(ink[..3].iter().all(|v| *v > 0.99) && paper[..4].iter().all(|v| *v < 0.01), "{ink:?} {paper:?}");
+    s.execute("channel.split", json!({})).unwrap();
+    assert_eq!(s.documents().len(), 4);
+    for (i, ink) in ink[..4].iter().enumerate() {
+        let at = |x| s.documents()[i].doc.layers[0].surface().unwrap().pixel(x, 1)[0];
+        assert!((at(1) - (1.0 - ink)).abs() < 0.003, "channel {i}: {} for ink {ink}", at(1));
+        assert!((at(30) - 1.0).abs() < 0.003, "channel {i}: paper is white, got {}", at(30));
+    }
+    s.execute("channel.merge", json!({"mode": "cmyk", "documents": [0, 1, 2, 3]})).unwrap();
+    let back = px(&s, 1, 1);
+    assert!(back[..4].iter().zip(&ink[..4]).all(|(a, b)| (a - b).abs() < 0.003), "{back:?} vs {ink:?}");
 }
 
 #[test]
@@ -1219,7 +1245,7 @@ fn split_refuses_an_image_with_more_than_one_layer() {
     assert!(err.to_string().contains("flatten"), "{err}");
     assert_eq!(s.documents().len(), 1, "the layered document stays open");
     assert_eq!(doc(&s).layers.len(), 2, "with its layers");
-    std::sync::Arc::make_mut(&mut s.active_mut().unwrap().doc).layers[1].visible = false;
+    std::sync::Arc::make_mut(s.active_mut().unwrap().doc_mut()).layers[1].visible = false;
     assert!(s.execute("channel.split", json!({})).is_err(), "a hidden second layer still counts");
     assert_eq!((s.documents().len(), doc(&s).layers.len()), (1, 2));
     s.execute("layer.flattenImage", json!({})).unwrap();
@@ -1233,7 +1259,7 @@ fn split_refuses_an_image_with_more_than_one_layer() {
     assert_eq!(s.execute("channel.split", json!({})).unwrap()["documents"].as_array().unwrap().len(), 3);
     // A lone group is a layer the split would lose.
     let mut s = session();
-    std::sync::Arc::make_mut(&mut s.active_mut().unwrap().doc).layers = vec![Layer::group("Group 1", vec![])];
+    std::sync::Arc::make_mut(s.active_mut().unwrap().doc_mut()).layers = vec![Layer::group("Group 1", vec![])].into();
     assert!(!s.is_enabled("channel.split"));
     assert!(s.execute("channel.split", json!({})).is_err());
     assert_eq!(s.documents().len(), 1);

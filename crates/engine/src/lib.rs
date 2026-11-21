@@ -26,7 +26,7 @@ pub mod hidden_target;
 pub mod inspect;
 pub mod installed_profiles;
 pub mod jobs;
-pub mod kys;
+pub mod keymap_defs;
 pub mod layer_place;
 pub mod layer_style;
 pub mod link_watch;
@@ -46,7 +46,7 @@ pub mod shell_commands;
 pub mod shortcut_sets;
 pub mod snap;
 pub use photocraft_gen::api_error;
-pub use variables_cmds::{export_data_sets_with, import_data_sets_text};
+pub use variables_cmds::{DATA_SET_LAYER_LOCKED, data_set_preview, export_data_sets_with, import_data_sets_text};
 pub use video_cmds::render_video_with;
 
 use std::sync::Arc;
@@ -63,12 +63,17 @@ pub use photocraft_paint::BrushSettings;
 pub mod cmd;
 mod doc_state;
 mod error;
+mod install;
+pub mod registry;
 mod session;
 
 pub use cmd as commands;
 pub use cmd::actions_cmds;
 pub use cmd::actions_edit_cmds;
 pub use cmd::adjust_cmds;
+pub use cmd::ai_account_cmds;
+pub use cmd::ai_cmds;
+pub use cmd::ai_provider_cmds;
 pub use cmd::align_cmds;
 pub use cmd::analysis_cmds;
 pub use cmd::artboard_cmds;
@@ -122,12 +127,12 @@ pub use cmd::layer_xmp_cmds;
 pub use cmd::lens_cmds;
 pub use cmd::magnetic_cmds;
 pub use cmd::mask_view_cmds;
-use cmd::migrate_cmds;
+pub use cmd::migrate_cmds;
 pub use cmd::mode_cmds;
 pub use cmd::multichannel_cmds;
 pub use cmd::notes_cmds;
 pub use cmd::paint_cmds;
-use cmd::path_edit_cmds;
+pub use cmd::path_edit_cmds;
 pub use cmd::pattern_cmds;
 pub use cmd::pattern_fill_cmds;
 pub use cmd::perspective_crop_cmds;
@@ -153,9 +158,9 @@ pub use cmd::stamp_cmds;
 pub use cmd::style_asl_cmds;
 pub use cmd::swatch_cmds;
 pub use cmd::symmetry_cmds;
-use cmd::timeline_cmds;
+pub use cmd::timeline_cmds;
 pub use cmd::transform_cmds;
-use cmd::trap_cmds;
+pub use cmd::trap_cmds;
 pub use cmd::type_area_cmds;
 pub use cmd::type_caret_cmds;
 pub use cmd::type_cmds;
@@ -164,14 +169,14 @@ pub use cmd::type_mask_cmds;
 pub use cmd::type_spell_cmds;
 pub use cmd::type_styles_cmds;
 pub use cmd::updates_cmds;
-use cmd::variables_cmds;
+pub use cmd::variables_cmds;
 pub use cmd::vector_cmds;
-use cmd::video_cmds;
+pub use cmd::video_cmds;
 pub use cmd::vp_cmds;
 pub use cmd::warp_cmds;
 pub use cmd::web_cmds;
-use cmd::wia_cmds;
-pub use doc_state::{CopiedStyle, DocState, PRECHECKED, ToolState};
+pub use cmd::wia_cmds;
+pub use doc_state::{CopiedStyle, DocState, DocStateInputs, PRECHECKED, ToolState, selected_in};
 pub use error::{EngineError, Result};
 pub use session::move_item;
 use session::restore_target;
@@ -203,6 +208,7 @@ pub(crate) fn active_layer_of(s: &Session) -> std::result::Result<&photocraft_do
 #[derive(Default)]
 pub struct Session {
     docs: Vec<DocState>,
+    documents_generation: u64,
     /// Override Open belongs only to one Batch scratch session, never to caller preferences.
     pub(crate) batch_open: Option<file_cmds::BatchOpen>,
     /// Import diagnostics retained by a Batch scratch that suppresses only profile prompts.
@@ -223,7 +229,7 @@ pub struct Session {
     /// `restore_layer_selection`, `layer_multi_cmds::set_selection`, `set_active_layer`, undo / redo /
     /// rollback, document switches). Compare two readings for equality to know whether anything
     /// changed in between; it is not an exact count of operations (one operation may advance it
-    /// more than once). Writing `DocState::active_layer` directly bypasses it.
+    /// more than once). Calling `DocState::set_active_layer` directly bypasses it.
     active_layer_changes: u64,
     pub tools: ToolState,
     /// Log of executed commands (for action recording and debugging).
@@ -290,6 +296,12 @@ pub struct Session {
     /// the same check a top-level request sees. `None` runs everything, which is what a local
     /// UI and `photocraft-cli run` do.
     pub authorize: Option<fn(&str, &serde_json::Value) -> Result<()>>,
+    /// The gate automation runs under in this process (the desktop's policy). An action
+    /// automation wrote ([`actions_cmds::Action::automation`]) plays under it when no gate is
+    /// installed, as when the user presses its key, so it never gets the user's file access.
+    /// `None` when there is no automation policy to keep (headless sessions gate everything
+    /// with `authorize`).
+    pub automation_gate: Option<fn(&str, &serde_json::Value) -> Result<()>>,
     /// A further route for File › Print when neither `lp` nor a CUPS server over IPP is
     /// reachable (the XDG Print portal in a Flatpak); see `print_cmds::Spooler`.
     pub print_spooler: Option<print_cmds::Spooler>,
@@ -344,6 +356,9 @@ pub struct Session {
     /// command reporting too narrow a redraw area (#4053). Counted in debug and test builds only;
     /// tests read it.
     pub damage_misses: usize,
+    /// Commands that left the whole document to redraw (`last_damage` None) while changing under
+    /// 25 % of it ([`Session::dispatch`]). Counted in debug and test builds only; tests read it.
+    pub whole_redraws: usize,
 }
 
 #[cfg(test)]
@@ -351,9 +366,14 @@ mod brush_pressure_size_default_tests;
 #[cfg(test)]
 mod embed_all_linked_tests;
 #[cfg(test)]
+mod eraser_gray_background_tests;
+#[cfg(test)]
 mod fill_layer_mode_tests;
 #[cfg(test)]
 mod mixer_indexed_bitmap_tests;
+
+#[cfg(test)]
+mod mixer_toggle_commands_tests;
 #[cfg(test)]
 mod pattern_mode_tests;
 #[cfg(test)]
@@ -365,5 +385,10 @@ mod tests;
 mod fx_mode_tests;
 
 #[cfg(test)]
+mod dense_budget_tests;
+
+#[cfg(test)]
 mod brush_clear_background_tests;
 pub mod command_hints;
+#[cfg(test)]
+mod pencil_auto_erase_exact_tests;

@@ -163,11 +163,11 @@ fn file_new_tags_the_document_with_the_chosen_profile() {
     // #321: New Document › Color Profile, as in Photoshop: another profile than the working space.
     let desc = |s: &Session| {
         let bytes = s.active().unwrap().doc.icc_profile.clone();
-        bytes.map(|b| photocraft_cms::Profile::parse(&b).unwrap().description)
+        bytes.map(|b| craft_cms::Profile::parse(&b).unwrap().description)
     };
     let mut s = Session::new();
     s.execute("file.new", json!({"width": 4, "height": 4, "profile": "adobe-rgb-compat"})).unwrap();
-    assert_eq!(desc(&s).as_deref(), Some(photocraft_cms::Builtin::AdobeRgbCompat.description()));
+    assert_eq!(desc(&s).as_deref(), Some(craft_cms::Builtin::AdobeRgbCompat.description()));
     s.execute("file.new", json!({"width": 4, "height": 4, "mode": "cmyk", "profile": "coated-cmyk"})).unwrap();
     assert!(desc(&s).is_some());
     // The working space (the default, or asked for) leaves it as before.
@@ -470,7 +470,7 @@ fn subtract_clears_selection_when_only_disjoint_off_canvas_pixels_remain() {
     selection.fill_rect(Rect::new(-4, 10, 0, 14), &[1.0]);
     selection.fill_rect(Rect::new(20, 10, 24, 14), &[1.0]);
     selection.fill_rect(Rect::new(64, 10, 68, 14), &[1.0]);
-    Arc::make_mut(&mut s.active_mut().unwrap().doc).selection = Some(selection);
+    Arc::make_mut(s.active_mut().unwrap().doc_mut()).selection = Some(selection);
 
     s.execute("select.rect", json!({"x": 0, "y": 0, "width": 64, "height": 48, "mode": "subtract"})).unwrap();
 
@@ -481,7 +481,7 @@ fn subtract_clears_selection_when_only_disjoint_off_canvas_pixels_remain() {
 fn subtract_clears_selection_with_nonzero_default_when_canvas_is_empty() {
     use photocraft_raster::Surface;
     let mut s = session_with_doc();
-    Arc::make_mut(&mut s.active_mut().unwrap().doc).selection = Some(Surface::with_default(photocraft_color::PixelFormat::GRAY8, &[1.0]));
+    Arc::make_mut(s.active_mut().unwrap().doc_mut()).selection = Some(Surface::with_default(photocraft_color::PixelFormat::GRAY8, &[1.0]));
     s.execute("select.rect", json!({"x": 0, "y": 0, "width": 64, "height": 48, "mode": "subtract"})).unwrap();
     assert!(s.active().unwrap().doc.selection.is_none());
 }
@@ -509,7 +509,7 @@ fn undo_and_redo_restore_the_targeted_layers() {
     let mut s = session_with_doc();
     let target = |s: &Session| {
         let st = s.active().unwrap();
-        (st.active_layer.unwrap(), st.selected_layers())
+        (st.active_layer.unwrap(), st.selected_layers().to_vec())
     };
     let select = |s: &mut Session, id: LayerId, mode: &str| {
         let steps = s.active().unwrap().history.past_len();
@@ -966,10 +966,31 @@ fn command_list_filter_finds_the_marquees_by_keyword() {
     assert!(found("no command is called this").is_empty());
 }
 
+/// The rename to "RAW Develop" is display only: the filter and RAW Defaults are still found by
+/// Photoshop's "Camera Raw" name, which their keywords carry (#12403).
+#[test]
+fn command_list_filter_finds_the_raw_commands_by_their_photoshop_name() {
+    let mut s = Session::new();
+    let list = s.execute("command.list", json!({})).unwrap();
+    let rows = list.as_array().unwrap();
+    let found = |needle: &str| -> Vec<String> {
+        rows.iter().filter(|c| crate::commands::list_entry_matches(c, needle)).map(|c| c["id"].as_str().unwrap().to_string()).collect()
+    };
+    for needle in ["camera raw", "Camera Raw", "CAMERA RAW"] {
+        let ids = found(needle);
+        assert!(ids.contains(&"filter.cameraRaw".to_string()), "{needle}: {ids:?}");
+        assert!(ids.contains(&"edit.preferences.rawDefaults".to_string()), "{needle}: {ids:?}");
+    }
+    // What the menus show is the new name, and the keywords are not a label.
+    let label = |id: &str| rows.iter().find(|c| c["id"] == id).unwrap()["label"].as_str().unwrap().to_string();
+    assert_eq!(label("filter.cameraRaw"), "RAW Develop Filter…");
+    assert_eq!(label("edit.preferences.rawDefaults"), "RAW Defaults…");
+}
+
 /// Every keyword entry names a real command, so a renamed id can't leave one behind.
 #[test]
 fn search_keywords_name_real_commands() {
-    for (id, words) in crate::commands::SEARCH_KEYWORDS {
+    for (id, words) in crate::registry::SEARCH_KEYWORDS {
         assert!(crate::commands::find(id).is_some(), "keywords for unknown command {id}");
         assert!(!words.trim().is_empty(), "{id}");
     }
@@ -1916,18 +1937,18 @@ fn restore_layer_selection_puts_back_what_still_exists() {
     s.active_mut().unwrap().saved_revision = s.active().unwrap().revision;
     s.restore_layer_selection(Some(b), &[a, gone, b], Some(a)).unwrap();
     let st = s.active().unwrap();
-    assert_eq!((st.active_layer, st.selected_layers(), st.layer_anchor), (Some(b), vec![a, b], Some(a)));
+    assert_eq!((st.active_layer, st.selected_layers().to_vec(), st.layer_anchor), (Some(b), vec![a, b], Some(a)));
     assert_eq!(st.saved_revision, st.revision, "selection is not an edit");
     let snap = |s: &Session| {
         let st = s.active().unwrap();
-        (st.active_layer, st.selected_layers(), st.layer_anchor, st.revision, st.saved_revision)
+        (st.active_layer, st.selected_layers().to_vec(), st.layer_anchor, st.revision, st.saved_revision)
     };
     let before = snap(&s);
     assert!(matches!(s.restore_layer_selection(Some(gone), &[gone], None), Err(EngineError::NoLayer(_))));
     assert_eq!(snap(&s), before, "an error changes nothing");
     s.restore_layer_selection(None, &[a], Some(a)).unwrap();
     let st = s.active().unwrap();
-    assert_eq!((st.active_layer, st.selected_layers(), st.layer_anchor), (None, vec![], None), "no layer selected");
+    assert_eq!((st.active_layer, st.selected_layers().to_vec(), st.layer_anchor), (None, vec![], None), "no layer selected");
     assert!(Session::new().restore_layer_selection(None, &[], None).is_err(), "no document");
 }
 
@@ -1941,7 +1962,7 @@ fn history_states_share_large_document_payloads() {
     s.execute("file.new", json!({"width": 16, "height": 16})).unwrap();
     let raw_id = {
         let st = s.active_mut().unwrap();
-        let doc = std::sync::Arc::make_mut(&mut st.doc);
+        let doc = std::sync::Arc::make_mut(st.doc_mut());
         doc.metadata.xmp = Some("x".repeat(1 << 20).into());
         doc.duotone = Some(Duotone { inks: vec![DuotoneInk::new("Black", [0.0; 3])], psd_raw: Some(vec![7u8; 1 << 16].into()) });
         let layer = Layer::new("kept", LayerContent::Adjustment(Adjustment::Unsupported { psd_key: "abcd".into(), raw: vec![9u8; 1 << 16].into() }));
@@ -2041,4 +2062,17 @@ fn the_active_layer_marker_advances_for_a_new_document_and_not_for_a_same_layer_
     assert_eq!(s.active_layer_changes(), before, "re-selecting the active layer leaves the marker alone");
     s.execute("file.new", json!({"width": 8, "height": 8})).unwrap();
     assert!(s.active_layer_changes() > before, "a new active document advances the marker");
+}
+
+#[test]
+fn sessions_share_builtin_brushes_until_edited() {
+    let mut first = Session::new();
+    let second = Session::new();
+    assert!(std::sync::Arc::ptr_eq(&first.tools.presets, &second.tools.presets));
+    let count = second.tools.presets.len();
+    first.execute("brush.presets.save", serde_json::json!({"name": "Session-only test brush"})).unwrap();
+    assert_eq!(second.tools.presets.len(), count);
+    assert!(second.tools.presets.iter().all(|preset| preset.name != "Session-only test brush"));
+    assert!(first.tools.presets.iter().any(|preset| preset.name == "Session-only test brush"));
+    assert!(!std::sync::Arc::ptr_eq(&first.tools.presets, &second.tools.presets));
 }

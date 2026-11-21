@@ -1,0 +1,91 @@
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
+	AI Edit…	עריכת AI…
+@id	edit.ai.codex	עריכת AI…
+	Describe your edit	תאר את העריכה שלך
+	The visible canvas and instruction will be sent to Codex using your ChatGPT sign-in. The result is fitted to the canvas and added as a new layer.	הקנבס הגלוי וההוראות יישלחו אל Codex באמצעות הכניסה שלך באמצעות ChatGPT. התוצאה מותאמת לקנבס ומתווספת כשכבה חדשה.
+	Codex account has not been checked	חשבון Codex לא נבדק
+	Checking Codex connection…	בודק חיבור Codex…
+	Complete ChatGPT sign-in in your browser	השלם את הכניסה של ChatGPT בדפדפן שלך
+	Connected to ChatGPT	מחובר ל-ChatGPT
+	ChatGPT plan	תוכנית ChatGPT
+	ChatGPT sign-in is required	נדרשת כניסה ל-ChatGPT
+	Codex is using another login method. Sign in with ChatGPT to use your subscription.	Codex משתמש בשיטת התחברות אחרת. היכנס באמצעות ChatGPT כדי להשתמש במנוי שלך.
+	Cancelling sign-in…	מבטל את הכניסה…
+	Sign-in cancelled	הכניסה בוטלה
+	Could not verify the account. Check your connection or sign in again.	לא ניתן היה לאמת את החשבון. בדוק את החיבור שלך או היכנס שוב.
+	Connection details	פרטי חיבור
+	Sign in with ChatGPT	היכנס באמצעות ChatGPT
+	Open sign-in page	פתח את דף הכניסה
+	Check connection	בדוק חיבור
+	Cancel sign-in	בטל את הכניסה
+	Copy sign-in link	העתק את קישור הכניסה
+	Could not open your browser. Try again or copy the sign-in link into your browser.	לא ניתן היה לפתוח את הדפדפן שלך. נסה שוב או העתק את קישור הכניסה לדפדפן שלך.
+	Sign-in is managed by the installed Codex runtime and shared with Codex. PhotoCraft does not store tokens.	הכניסה מנוהלת על ידי זמן הריצה של Codex המותקן ומשותפת עם Codex. PhotoCraft אינו מאחסן אסימונים.
+	Image service	שירות תדמית
+	Codex (ChatGPT subscription)	Codex (מנוי ChatGPT)
+	Doubao / Seedream	Doubao / Seedream
+	This API sends the visible canvas and instruction to the configured service. Usage may incur charges billed by that service.	ממשק API זה שולח את הקנבס הגלוי וההוראה לשירות המוגדר. השימוש עשוי לגרור חיובים שחובו על ידי שירות זה.
+	Model ID	מזהה דגם
+	API address and protocol	כתובת API ופרוטוקול
+	API address	כתובת API
+	API protocol	פרוטוקול API
+	Custom services must support the selected image-editing protocol. Changing the address requires a key for that address.	שירותים מותאמים אישית חייבים לתמוך בפרוטוקול עריכת התמונה שנבחר. שינוי הכתובת דורש מפתח עבור כתובת זו.
+	API key	מפתח API
+	API key configured — leave empty to keep it	מפתח API מוגדר - השאר ריק כדי לשמור אותו
+	Remember API key in system credential store	זכור מפתח API בחנות אישורי המערכת
+	The API key is available for this session only.	מפתח ה-API זמין עבור הפעלה זו בלבד.
+	Save API settings	שמור הגדרות API
+	Remove API key	הסר מפתח API
+	API configured. Saving settings does not generate an image.	API מוגדר. שמירת הגדרות לא יוצרת תמונה.
+	Save your API settings before editing.	שמור את הגדרות ה-API שלך לפני העריכה.
+	API settings saved	הגדרות API נשמרו
+	Enter a valid API key without whitespace	הזן מפתח API חוקי ללא רווח לבן
+	API key removed	מפתח API הוסר
+	Could not load API settings	לא ניתן היה לטעון את הגדרות ה-API
+	The result is fitted to the canvas and added as a new layer. Your existing layers are preserved.	התוצאה מותאמת לקנבס ומתווספת כשכבה חדשה. השכבות הקיימות שלך נשמרות.
+	Codex was not found. Install and open the Codex desktop app, then check the connection again.	קודקס לא נמצא. התקן ופתח את אפליקציית שולחן העבודה של Codex, ולאחר מכן בדוק שוב את החיבור.
+	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	השתמש בהתקנה המלאה של Codex; העתקת codex.exe בלבד עלולה להשמיט רכיבים לעריכת תמונות.
+	PhotoCraft AI Updates	עדכוני בינה מלאכותית של PhotoCraft
+	AI Project Page	עמוד פרויקט AI
+	AI edit did not pass the service's content review	עריכת AI לא עברה את סקירת התוכן של השירות
+	The image service's content review is unavailable	סקירת התוכן של שירות התמונות אינה זמינה
+	Your editing instruction did not pass the service's content review.	הוראת העריכה שלך לא עברה את סקירת התוכן של השירות.
+	Your reference image did not pass the service's content review.	תמונת ההפניה שלך לא עברה את סקירת התוכן של השירות.
+	The generated image did not pass the service's content review.	התמונה שנוצרה לא עברה את סקירת התוכן של השירות.
+	Your instruction triggered the service's content rules, which may include copyright restrictions.	ההוראה שלך הפעילה את כללי התוכן של השירות, שעשויים לכלול הגבלות על זכויות יוצרים.
+	Your reference image triggered the service's content rules, which may include copyright restrictions.	תמונת ההפניה שלך הפעילה את כללי התוכן של השירות, שעשויים לכלול הגבלות על זכויות יוצרים.
+	Your reference image did not pass the service's privacy review.	תמונת ההפניה שלך לא עברה את סקירת הפרטיות של השירות.
+	The generated image triggered the service's content rules, which may include copyright restrictions.	התמונה שנוצרה הפעילה את כללי התוכן של השירות, שעשויים לכלול הגבלות זכויות יוצרים.
+	The generated image triggered the service's impersonation restrictions.	התמונה שנוצרה הפעילה את מגבלות ההתחזות של השירות.
+	The service rejected this edit without identifying the content-review stage.	השירות דחה עריכה זו מבלי לזהות את שלב בדיקת התוכן.
+	The service's content review failed, so this edit could not be completed.	סקירת התוכן של השירות נכשלה, ולכן לא ניתן היה להשלים את העריכה הזו.
+	Revise the instruction and try again manually.	שנה את ההוראה ונסה שוב באופן ידני.
+	Choose a reference image that meets the service's requirements.	בחר תמונת עזר העונה לדרישות השירות.
+	Adjust the editing request or contact the service provider for details.	התאם את בקשת העריכה או פנה לספק השירות לפרטים.
+	Check that your editing request meets the service's content requirements.	בדוק שבקשת העריכה שלך עומדת בדרישות התוכן של השירות.
+	Check your editing content or ask the service provider for details.	בדוק את תוכן העריכה שלך או שאל את ספק השירות לקבלת פרטים.
+	Try again manually later. Contact the service provider if the problem continues.	נסה שוב ידנית מאוחר יותר. פנה לספק השירות אם הבעיה נמשכת.
+	This edit did not change existing layers or add a new layer.	עריכה זו לא שינתה שכבות קיימות או הוספה שכבה חדשה.
+	Error code: {code}	קוד שגיאה: {code}
+	Include individual layer images, names and structure	כלול תמונות שכבות בודדות, שמות ומבנה
+	Also send hidden layers	שלח גם שכבות נסתרות
+	Up to 15 layer images.	עד 15 תמונות שכבות.
+	Isolated previews may reveal content covered by other layers or group masks.	תצוגות מקדימות מבודדות עשויות לחשוף תוכן המכוסה על ידי שכבות אחרות או מסכות קבוצתיות.
+	AI Edit	עריכת AI
+	AI Edit via API	עריכת AI באמצעות API
+	Codex Account	חשבון קודקס
+	AI Provider Settings	הגדרות ספק AI
+	API settings	הגדרות API
+	Updates are offered only after a new AI package is published.	עדכונים מוצעים רק לאחר פרסום חבילת AI חדשה.
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} זמין.
+	No newer AI package is available.	אין חבילת AI חדשה יותר זמינה.
+	Downloading and verifying update…	מוריד ומאמת עדכון…
+	Could not install the update.	לא ניתן היה להתקין את העדכון.
+	Save your documents and wait for background tasks before updating.	שמור את המסמכים שלך והמתן למשימות רקע לפני עדכון.
+	Check Again	בדוק שוב
+	Checking for updates…	בודק עדכונים…
+	Could not check for updates.	לא ניתן היה לבדוק עדכונים.
+	Installed version: {version}	גרסה מותקנת: {version}
+	Release Notes	הערות גרסה
+	Update and Restart	עדכן והפעל מחדש
+	Updates have not been checked yet.	העדכונים לא נבדקו עדיין.

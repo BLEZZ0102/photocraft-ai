@@ -2,7 +2,7 @@
 #[test]
 fn layer_sharing_notices_are_translated_in_chinese() {
     for code in ["zh-hans", "zh-hant"] {
-        let lang = super::Lang::from_code(code).unwrap();
+        let lang = super::Lang::from_code(code).or_else(|| super::ai_catalog::test_lang(code)).unwrap();
         for text in [
             "Include individual layer images, names and structure",
             "Also send hidden layers",
@@ -108,18 +108,33 @@ const AI_KEYS: &[(&str, &str)] = &[
 
 #[test]
 fn every_registered_catalog_covers_ai_controls_and_dynamic_notices() {
-    use super::{LANGUAGES, Lang, catalog::parse_entries, tr, tr_id};
+    use super::{LANGUAGES, Lang, ai_catalog, tr, tr_id};
     for info in LANGUAGES.iter().filter(|info| info.code != "en") {
-        let lang = Lang::from_code(info.code).unwrap();
-        let (entries, errors) = parse_entries(&info.text());
-        assert!(errors.is_empty(), "{}: {errors:?}", info.code);
-        let entries: std::collections::HashMap<(&str, &str), &str> = entries.iter().map(|(ctx, src, tr)| ((ctx.as_str(), src.as_str()), tr.as_str())).collect();
+        let raw = ai_catalog::raw(info.code).unwrap_or_else(|| panic!("{} lacks an AI overlay catalog", info.code));
+        let mut entries = std::collections::HashMap::new();
+        for (idx, line) in raw.lines().enumerate() {
+            let trimmed = line.trim();
+            if trimmed.is_empty() || trimmed.starts_with('#') {
+                continue;
+            }
+            let mut cols = line.split('\t');
+            let ctx = cols.next().unwrap_or_else(|| panic!("{}:{} missing context", info.code, idx + 1));
+            let src = cols.next().unwrap_or_else(|| panic!("{}:{} missing source", info.code, idx + 1));
+            let val = cols.next().unwrap_or_else(|| panic!("{}:{} missing translation", info.code, idx + 1));
+            assert!(cols.next().is_none(), "{}:{} unexpected extra column", info.code, idx + 1);
+            entries.insert((ctx, src), val);
+        }
+        let lang = Lang::from_code(info.code).or_else(|| ai_catalog::test_lang(info.code)).unwrap();
         for &(context, source) in AI_KEYS {
             let expected = entries.get(&(context, source)).unwrap_or_else(|| panic!("{} lacks {context:?} {source:?}", info.code));
             if source != "Doubao / Seedream" {
                 assert_ne!(*expected, source, "{}: untranslated AI text {source:?}", info.code);
             }
-            let rendered = if context == "@id" { tr_id(lang, source, "AI Edit…") } else { tr(lang, source) };
+            let rendered = if context == "@id" {
+                if lang.catalogs.is_none() { tr_id(lang, source, "AI Edit…") } else { ai_catalog::get(info.code, "@id", source).unwrap_or("AI Edit…") }
+            } else {
+                tr(lang, source)
+            };
             assert_eq!(rendered, *expected, "{}: {source}", info.code);
         }
     }

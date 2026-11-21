@@ -18,7 +18,7 @@ pub(crate) fn report(app: &mut PhotocraftApp, command: &str, error: &str) -> boo
     app.ui.status = format!("{}: {}", i18n::t(title), i18n::t(message));
     app.ui.status_error = true;
     // Store source templates so already-visible notices follow language changes too.
-    let id = notices::post(app, title, lines, true, None);
+    let id = notices::post(app, title, lines, notices::Tone::Bad, None);
     if let Some(notice) = app.ui.notices.iter_mut().find(|notice| notice.id == id) {
         notice.args.push(("code".into(), rejected.code.into()));
     }
@@ -72,7 +72,8 @@ mod tests {
     use photocraft_engine::Session;
 
     fn rendered(app: &PhotocraftApp, lang: &str) -> String {
-        i18n::with_language(Lang::from_code(lang).unwrap(), || {
+        let resolved = Lang::from_code(lang).or_else(|| crate::i18n::ai_catalog::test_lang(lang)).unwrap();
+        i18n::with_language(resolved, || {
             let n = app.ui.notices.last().unwrap();
             std::iter::once(n.text(&n.title)).chain(n.lines.iter().map(|line| n.text(line))).collect::<Vec<_>>().join("\n")
         })

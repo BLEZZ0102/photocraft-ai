@@ -1,0 +1,91 @@
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
+	AI Edit…	AI რედაქტირება…
+@id	edit.ai.codex	AI რედაქტირება…
+	Describe your edit	აღწერეთ თქვენი რედაქტირება
+	The visible canvas and instruction will be sent to Codex using your ChatGPT sign-in. The result is fitted to the canvas and added as a new layer.	ხილული ტილო და ინსტრუქცია გაიგზავნება Codex-ში თქვენი ChatGPT შესვლის გამოყენებით. შედეგი მორგებულია ტილოზე და ემატება ახალი ფენის სახით.
+	Codex account has not been checked	Codex ანგარიში არ არის შემოწმებული
+	Checking Codex connection…	მიმდინარეობს Codex კავშირის შემოწმება…
+	Complete ChatGPT sign-in in your browser	დაასრულეთ ChatGPT შესვლა თქვენს ბრაუზერში
+	Connected to ChatGPT	დაკავშირებულია ChatGPT-თან
+	ChatGPT plan	ChatGPT გეგმა
+	ChatGPT sign-in is required	საჭიროა ChatGPT შესვლა
+	Codex is using another login method. Sign in with ChatGPT to use your subscription.	Codex იყენებს სხვა შესვლის მეთოდს. შედით ChatGPT-ით თქვენი გამოწერის გამოსაყენებლად.
+	Cancelling sign-in…	შესვლის გაუქმება…
+	Sign-in cancelled	შესვლა გაუქმდა
+	Could not verify the account. Check your connection or sign in again.	ანგარიშის გადამოწმება ვერ მოხერხდა. შეამოწმეთ თქვენი კავშირი ან ხელახლა შედით სისტემაში.
+	Connection details	კავშირის დეტალები
+	Sign in with ChatGPT	შედით ChatGPT-ით
+	Open sign-in page	გახსენით შესვლის გვერდი
+	Check connection	შეამოწმეთ კავშირი
+	Cancel sign-in	შესვლის გაუქმება
+	Copy sign-in link	დააკოპირეთ შესვლის ბმული
+	Could not open your browser. Try again or copy the sign-in link into your browser.	თქვენი ბრაუზერის გახსნა ვერ მოხერხდა. სცადეთ ხელახლა ან დააკოპირეთ შესვლის ბმული თქვენს ბრაუზერში.
+	Sign-in is managed by the installed Codex runtime and shared with Codex. PhotoCraft does not store tokens.	შესვლა იმართება დაინსტალირებული Codex გაშვების დროით და გაზიარებულია Codex-თან. PhotoCraft არ ინახავს ტოკენებს.
+	Image service	გამოსახულების სერვისი
+	Codex (ChatGPT subscription)	Codex (ChatGPT გამოწერა)
+	Doubao / Seedream	Doubao / Seedream
+	This API sends the visible canvas and instruction to the configured service. Usage may incur charges billed by that service.	ეს API აგზავნის ხილულ ტილოს და ინსტრუქციას კონფიგურირებულ სერვისში. გამოყენებამ შეიძლება გამოიწვიოს ამ სერვისის მიერ დარიცხული გადასახადები.
+	Model ID	მოდელის ID
+	API address and protocol	API მისამართი და პროტოკოლი
+	API address	API მისამართი
+	API protocol	API პროტოკოლი
+	Custom services must support the selected image-editing protocol. Changing the address requires a key for that address.	მორგებული სერვისები მხარს უნდა უჭერდეს არჩეულ გამოსახულების რედაქტირების პროტოკოლს. მისამართის შეცვლა მოითხოვს ამ მისამართის გასაღებს.
+	API key	API გასაღები
+	API key configured — leave empty to keep it	API გასაღები კონფიგურირებულია — დატოვეთ ცარიელი, რომ შეინახოთ
+	Remember API key in system credential store	დაიმახსოვრე API გასაღები სისტემის სერთიფიკატების მაღაზიაში
+	The API key is available for this session only.	API გასაღები ხელმისაწვდომია მხოლოდ ამ სესიისთვის.
+	Save API settings	შეინახეთ API პარამეტრები
+	Remove API key	ამოიღეთ API გასაღები
+	API configured. Saving settings does not generate an image.	API კონფიგურირებულია. პარამეტრების შენახვა არ ქმნის სურათს.
+	Save your API settings before editing.	შეინახეთ თქვენი API პარამეტრები რედაქტირებამდე.
+	API settings saved	API პარამეტრები შენახულია
+	Enter a valid API key without whitespace	შეიყვანეთ მოქმედი API გასაღები ცარიელი სივრცის გარეშე
+	API key removed	API გასაღები ამოღებულია
+	Could not load API settings	API პარამეტრების ჩატვირთვა ვერ მოხერხდა
+	The result is fitted to the canvas and added as a new layer. Your existing layers are preserved.	შედეგი მორგებულია ტილოზე და ემატება ახალი ფენის სახით. თქვენი არსებული ფენები შენარჩუნებულია.
+	Codex was not found. Install and open the Codex desktop app, then check the connection again.	კოდექსი ვერ მოიძებნა. დააინსტალირეთ და გახსენით Codex დესკტოპის აპლიკაცია, შემდეგ კვლავ შეამოწმეთ კავშირი.
+	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	გამოიყენეთ Codex-ის სრული ინსტალაცია; მხოლოდ codex.exe-ის კოპირებამ შეიძლება გამოტოვოს გამოსახულების რედაქტირების კომპონენტები.
+	PhotoCraft AI Updates	PhotoCraft AI განახლებები
+	AI Project Page	AI პროექტის გვერდი
+	Release Notes	გამოშვების შენიშვნები
+	AI edit did not pass the service's content review	AI რედაქტირებამ ვერ გაიარა სერვისის შინაარსის განხილვა
+	The image service's content review is unavailable	სურათების სერვისის კონტენტის მიმოხილვა მიუწვდომელია
+	Your editing instruction did not pass the service's content review.	თქვენმა რედაქტირების ინსტრუქციამ ვერ გაიარა სერვისის შინაარსის განხილვა.
+	Your reference image did not pass the service's content review.	თქვენმა საცნობარო სურათმა ვერ გაიარა სერვისის შინაარსის განხილვა.
+	The generated image did not pass the service's content review.	გენერირებულმა სურათმა ვერ გაიარა სერვისის შინაარსის განხილვა.
+	Your instruction triggered the service's content rules, which may include copyright restrictions.	თქვენმა ინსტრუქციამ გამოიწვია სერვისის კონტენტის წესები, რომელიც შეიძლება შეიცავდეს საავტორო უფლებების შეზღუდვებს.
+	Your reference image triggered the service's content rules, which may include copyright restrictions.	თქვენმა მითითების სურათმა გამოიწვია სერვისის კონტენტის წესები, რომელიც შეიძლება შეიცავდეს საავტორო უფლებების შეზღუდვებს.
+	Your reference image did not pass the service's privacy review.	თქვენმა საცნობარო სურათმა ვერ გაიარა სერვისის კონფიდენციალურობის მიმოხილვა.
+	The generated image triggered the service's content rules, which may include copyright restrictions.	გენერირებულმა სურათმა გამოიწვია სერვისის კონტენტის წესები, რომელიც შეიძლება შეიცავდეს საავტორო უფლებების შეზღუდვას.
+	The generated image triggered the service's impersonation restrictions.	გენერირებულმა სურათმა გამოიწვია სერვისის იმიტაციის შეზღუდვა.
+	The service rejected this edit without identifying the content-review stage.	სერვისმა უარყო ეს შესწორება კონტენტის განხილვის ეტაპის იდენტიფიცირების გარეშე.
+	The service's content review failed, so this edit could not be completed.	სერვისის კონტენტის განხილვა ვერ მოხერხდა, ამიტომ ეს რედაქტირება ვერ დასრულდა.
+	Revise the instruction and try again manually.	გადახედეთ ინსტრუქციას და ხელახლა სცადეთ ხელით.
+	Choose a reference image that meets the service's requirements.	აირჩიეთ საცნობარო სურათი, რომელიც აკმაყოფილებს სერვისის მოთხოვნებს.
+	Adjust the editing request or contact the service provider for details.	შეცვალეთ რედაქტირების მოთხოვნა ან დაუკავშირდით სერვისის პროვაიდერს დეტალებისთვის.
+	Check that your editing request meets the service's content requirements.	შეამოწმეთ, რომ თქვენი რედაქტირების მოთხოვნა აკმაყოფილებს სერვისის კონტენტის მოთხოვნებს.
+	Check your editing content or ask the service provider for details.	შეამოწმეთ თქვენი რედაქტირების შინაარსი ან ჰკითხეთ სერვისის პროვაიდერს დეტალებისთვის.
+	Try again manually later. Contact the service provider if the problem continues.	სცადეთ ხელახლა მოგვიანებით. თუ პრობლემა გაგრძელდება, დაუკავშირდით სერვისის პროვაიდერს.
+	This edit did not change existing layers or add a new layer.	ამ რედაქტირებამ არ შეცვალა არსებული ფენები და არ დაამატა ახალი ფენა.
+	Error code: {code}	შეცდომის კოდი: {code}
+	Include individual layer images, names and structure	ჩართეთ ცალკეული ფენის სურათები, სახელები და სტრუქტურა
+	Also send hidden layers	ასევე გაგზავნეთ ფარული ფენები
+	Up to 15 layer images.	15-მდე ფენიანი სურათი.
+	Isolated previews may reveal content covered by other layers or group masks.	იზოლირებულმა გადახედვამ შეიძლება გამოავლინოს სხვა შრეებით ან ჯგუფური ნიღბებით დაფარული კონტენტი.
+	AI Edit	AI რედაქტირება
+	AI Edit via API	AI რედაქტირება API-ით
+	Codex Account	Codex ანგარიში
+	AI Provider Settings	AI პროვაიდერის პარამეტრები
+	API settings	API პარამეტრები
+	Updates are offered only after a new AI package is published.	განახლებები შემოთავაზებულია მხოლოდ ახალი AI პაკეტის გამოქვეყნების შემდეგ.
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} ხელმისაწვდომია.
+	No newer AI package is available.	AI-ის ახალი პაკეტი არ არის ხელმისაწვდომი.
+	Downloading and verifying update…	მიმდინარეობს განახლების ჩამოტვირთვა და დადასტურება…
+	Could not install the update.	განახლების დაყენება ვერ მოხერხდა.
+	Save your documents and wait for background tasks before updating.	შეინახეთ თქვენი დოკუმენტები და დაელოდეთ ფონურ ამოცანებს განახლებამდე.
+	Update and Restart	განაახლეთ და გადატვირთეთ
+	Checking for updates…	მიმდინარეობს განახლებების შემოწმება…
+	Could not check for updates.	განახლებების შემოწმება ვერ მოხერხდა.
+	Updates have not been checked yet.	განახლებები ჯერ არ არის შემოწმებული.
+	Check Again	შეამოწმეთ ისევ
+	Installed version: {version}	დაინსტალირებული ვერსია: {version}

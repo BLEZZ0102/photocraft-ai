@@ -7,15 +7,16 @@ fn ai_edit_opens_prompt_form() {
     let mut session = photocraft_engine::Session::new();
     session.execute("file.new", json!({"width":16,"height":16})).unwrap();
     let mut app = PhotocraftApp::new(session, Services::default());
-    let items = photocraft_ui_egui::menus::menu_items(&app);
-    let fill = items.iter().position(|item| item.id == "edit.contentAwareFill").unwrap();
+    let items = photocraft_ui_egui::menus::menu_rows(&app);
+    let fill = items.iter().position(|item| item.command.id == "edit.contentAwareFill").unwrap();
     let ai = &items[fill + 1];
-    assert_eq!(ai.id, "edit.ai.codex");
+    assert_eq!(ai.command.id, "edit.ai.codex");
     assert_eq!(ai.path, ["Edit"]);
     assert!(ai.enabled);
-    let ctx = egui::Context::default();
+    let ctx = app.ctx().clone();
     let result = photocraft_ui_egui::menus::invoke(&mut app, &ctx, "edit.ai.codex", json!({})).unwrap();
-    assert!(result["dialog"].is_u64());
+    assert_eq!(result["dialog"], photocraft_ui_egui::ai_edit_ui::CONTROL_ID);
+    assert!(app.ui.ai_edit.is_some());
     assert_eq!(app.session.active().unwrap().doc.layers.len(), 1);
 }
 
@@ -70,7 +71,7 @@ mod account_flow {
         }
     }
 
-    fn harness(info: AccountInfo) -> (Harness<'static, PhotocraftApp>, Arc<Fake>) {
+    fn harness(info: AccountInfo) -> (Harness<'static, Box<PhotocraftApp>>, Arc<Fake>) {
         let fake = Arc::new(Fake {
             info: Mutex::new(Some(info)),
             finish: AtomicBool::new(false),
@@ -105,7 +106,7 @@ mod account_flow {
                 })),
                 ..Default::default()
             };
-            PhotocraftApp::new(session, services)
+            PhotocraftApp::with_context(cc.egui_ctx.clone(), session, services)
         });
         h.run_steps(3);
         let ctx = h.ctx.clone();
@@ -113,7 +114,7 @@ mod account_flow {
         (h, fake)
     }
 
-    fn wait(h: &mut Harness<'_, PhotocraftApp>, expected: State) -> bool {
+    fn wait(h: &mut Harness<'_, Box<PhotocraftApp>>, expected: State) -> bool {
         let deadline = Instant::now() + Duration::from_secs(3);
         let mut browser = false;
         while Instant::now() < deadline {
@@ -128,23 +129,6 @@ mod account_flow {
         }
         assert_eq!(h.state().ui.ai_account.status.state, expected);
         browser
-    }
-
-    #[test]
-    fn closing_one_ai_dialog_keeps_the_other_dialogs_sign_in_running() {
-        let (mut h, fake) = harness(AccountInfo::SignedOut);
-        wait(&mut h, State::SignedOut);
-        h.get_by_label("Sign in with ChatGPT").click();
-        wait(&mut h, State::WaitingForBrowser);
-        let first = h.state().ui.dialogs[0].id;
-        let fields = h.state().ui.dialogs[0].fields.clone();
-        let second = h.state_mut().ui.open_dialog(photocraft_ui_egui::state::DialogKind::Command, fields);
-        photocraft_ui_egui::dialogs::cancel(h.state_mut(), first).unwrap();
-        assert!(h.state().session.ai_account.pending());
-        assert!(h.state().ui.dialogs.iter().any(|d| d.id == second));
-        fake.finish.store(true, Ordering::Release);
-        wait(&mut h, State::Connected);
-        assert_eq!(h.state().ui.ai_account.status.state, State::Connected);
     }
 
     #[test]
@@ -173,7 +157,7 @@ mod account_flow {
         fake.finish.store(true, Ordering::Release);
         wait(&mut h, State::Connected);
         assert!(h.get_by_label("OK").accesskit_node().is_disabled(), "empty prompt");
-        h.state_mut().ui.dialogs[0].fields.insert("prompt".into(), json!("Make the circle yellow"));
+        h.state_mut().ui.ai_edit.as_mut().unwrap().fields.insert("prompt".into(), json!("Make the circle yellow"));
         h.run_steps(2);
         assert!(!h.get_by_label("OK").accesskit_node().is_disabled());
         *fake.info.lock().unwrap_or_else(PoisonError::into_inner) = None;
@@ -192,7 +176,7 @@ mod account_flow {
         wait(&mut h, State::WaitingForBrowser);
         h.get_by_label("Cancel").click();
         wait(&mut h, State::Cancelled);
-        assert!(h.state().ui.dialogs.is_empty());
+        assert!(h.state().ui.ai_edit.is_none());
         assert!(!h.state().session.ai_account.pending());
     }
 
@@ -286,16 +270,15 @@ mod account_flow {
     fn oversized_prompt_reports_byte_limit_and_keeps_dialog_and_document() {
         let (mut h, _) = harness(AccountInfo::ChatGpt { plan: None });
         wait(&mut h, State::Connected);
-        let id = h.state().ui.dialogs[0].id;
         for prompt in ["x".repeat(16_001), "字".repeat(5_334)] {
-            h.state_mut().ui.dialog_mut(id).unwrap().fields.insert("prompt".into(), json!(prompt));
-            let error = photocraft_ui_egui::dialogs::confirm(h.state_mut(), id).unwrap_err();
+            h.state_mut().ui.ai_edit.as_mut().unwrap().fields.insert("prompt".into(), json!(prompt));
+            let error = photocraft_ui_egui::ai_edit_ui::confirm(h.state_mut()).unwrap_err();
             assert_eq!(error, "prompt must contain 1–16000 bytes of text");
-            assert!(h.state().ui.dialogs.iter().any(|dialog| dialog.id == id));
+            assert!(h.state().ui.ai_edit.is_some());
             assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 1);
         }
-        h.state_mut().ui.dialog_mut(id).unwrap().fields.insert("prompt".into(), json!("x".repeat(16_000)));
-        let error = photocraft_ui_egui::dialogs::confirm(h.state_mut(), id).unwrap_err();
+        h.state_mut().ui.ai_edit.as_mut().unwrap().fields.insert("prompt".into(), json!("x".repeat(16_000)));
+        let error = photocraft_ui_egui::ai_edit_ui::confirm(h.state_mut()).unwrap_err();
         assert!(error.contains("Offline UI test: image requests are forbidden"), "boundary prompt reaches command authorization");
     }
 
@@ -328,16 +311,14 @@ mod account_flow {
         fake.hold_cancel.store(true, Ordering::Release);
         h.get_by_label("Sign in with ChatGPT").click();
         wait(&mut h, State::WaitingForBrowser);
-        let id = h.state().ui.dialogs[0].id;
-        photocraft_ui_egui::dialogs::cancel(h.state_mut(), id).unwrap();
+        assert!(photocraft_ui_egui::ai_edit_ui::cancel(h.state_mut()));
         let ctx = h.ctx.clone();
         photocraft_ui_egui::menus::invoke(h.state_mut(), &ctx, "edit.ai.codex", json!({})).unwrap();
-        let id = h.state().ui.dialogs[0].id;
-        photocraft_ui_egui::dialogs::cancel(h.state_mut(), id).unwrap();
+        assert!(photocraft_ui_egui::ai_edit_ui::cancel(h.state_mut()));
         fake.hold_cancel.store(false, Ordering::Release);
         wait(&mut h, State::Cancelled);
         assert_eq!(fake.checks.load(Ordering::Acquire), 1);
-        assert!(h.state().ui.dialogs.is_empty());
+        assert!(h.state().ui.ai_edit.is_none());
     }
 
     #[test]
@@ -346,10 +327,9 @@ mod account_flow {
         wait(&mut h, State::SignedOut);
         h.get_by_label("Sign in with ChatGPT").click();
         wait(&mut h, State::WaitingForBrowser);
-        let id = h.state().ui.dialogs[0].id;
-        h.state_mut().ui.dialog_mut(id).unwrap().fields.insert("prompt".into(), json!("Make the circle yellow"));
-        assert!(photocraft_ui_egui::dialogs::confirm(h.state_mut(), id).is_err());
-        assert!(h.state().ui.dialogs.iter().any(|dialog| dialog.id == id));
+        h.state_mut().ui.ai_edit.as_mut().unwrap().fields.insert("prompt".into(), json!("Make the circle yellow"));
+        assert!(photocraft_ui_egui::ai_edit_ui::confirm(h.state_mut()).is_err());
+        assert!(h.state().ui.ai_edit.is_some());
         assert!(h.state().session.ai_account.pending());
         assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 1);
     }
@@ -364,8 +344,8 @@ mod account_flow {
         assert!(!h.get_by_label("OK").accesskit_node().is_disabled());
         h.key_press(egui::Key::Enter);
         h.run_steps(2);
-        assert_eq!(h.state().ui.dialogs.len(), 1, "Enter must not submit the canvas");
-        assert!(h.state().ui.dialogs[0].fields["prompt"].as_str().unwrap().contains('\n'));
+        assert!(h.state().ui.ai_edit.is_some(), "Enter must not submit the canvas");
+        assert!(h.state().ui.ai_edit.as_ref().unwrap().fields["prompt"].as_str().unwrap().contains('\n'));
         assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 1);
     }
 
@@ -373,12 +353,11 @@ mod account_flow {
     fn control_confirm_rejects_stale_connected_ui_while_refresh_is_pending() {
         let (mut h, _) = harness(AccountInfo::ChatGpt { plan: None });
         wait(&mut h, State::Connected);
-        let id = h.state().ui.dialogs[0].id;
-        h.state_mut().ui.dialog_mut(id).unwrap().fields.insert("prompt".into(), json!("Make the circle yellow"));
+        h.state_mut().ui.ai_edit.as_mut().unwrap().fields.insert("prompt".into(), json!("Make the circle yellow"));
         h.state_mut().run("ai.codex.account", json!({"action":"refresh"})).unwrap();
         assert_eq!(h.state().ui.ai_account.status.state, State::Connected);
-        assert!(photocraft_ui_egui::dialogs::confirm(h.state_mut(), id).is_err());
-        assert!(h.state().ui.dialogs.iter().any(|dialog| dialog.id == id));
+        assert!(photocraft_ui_egui::ai_edit_ui::confirm(h.state_mut()).is_err());
+        assert!(h.state().ui.ai_edit.is_some());
         assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 1);
     }
 
@@ -386,33 +365,33 @@ mod account_flow {
     fn ready_confirmation_still_closes_dialog_and_reaches_the_command_gate() {
         let (mut h, _) = harness(AccountInfo::ChatGpt { plan: None });
         wait(&mut h, State::Connected);
-        let id = h.state().ui.dialogs[0].id;
-        h.state_mut().ui.dialog_mut(id).unwrap().fields.insert("prompt".into(), json!("Make the circle yellow"));
-        let error = photocraft_ui_egui::dialogs::confirm(h.state_mut(), id).unwrap_err();
+        h.state_mut().ui.ai_edit.as_mut().unwrap().fields.insert("prompt".into(), json!("Make the circle yellow"));
+        let error = photocraft_ui_egui::ai_edit_ui::confirm(h.state_mut()).unwrap_err();
         assert!(error.contains("Offline UI test: image requests are forbidden"));
-        assert!(!h.state().ui.dialogs.iter().any(|dialog| dialog.id == id));
+        assert!(h.state().ui.ai_edit.is_none());
         assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 1);
     }
+
     #[test]
     fn hidden_layer_sharing_requires_a_click_and_resets_for_a_new_edit() {
         let (mut h, _) = harness(AccountInfo::ChatGpt { plan: None });
         wait(&mut h, State::Connected);
-        assert_eq!(h.state().ui.dialogs[0].fields["sendLayerContext"], true);
-        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], false);
+        assert_eq!(h.state().ui.ai_edit.as_ref().unwrap().fields["sendLayerContext"], true);
+        assert_eq!(h.state().ui.ai_edit.as_ref().unwrap().fields["includeHiddenLayers"], false);
         h.get_by_label("Also send hidden layers").click();
         h.run_steps(2);
-        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], true);
+        assert_eq!(h.state().ui.ai_edit.as_ref().unwrap().fields["includeHiddenLayers"], true);
         h.get_by_label("Include individual layer images, names and structure").click();
         h.run_steps(2);
-        assert_eq!(h.state().ui.dialogs[0].fields["sendLayerContext"], false);
-        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], false);
+        assert_eq!(h.state().ui.ai_edit.as_ref().unwrap().fields["sendLayerContext"], false);
+        assert_eq!(h.state().ui.ai_edit.as_ref().unwrap().fields["includeHiddenLayers"], false);
         assert!(h.get_by_label("Also send hidden layers").accesskit_node().is_disabled());
         h.get_by_label("Cancel").click();
         h.run_steps(2);
         let ctx = h.ctx.clone();
         photocraft_ui_egui::menus::invoke(h.state_mut(), &ctx, "edit.ai.codex", json!({})).unwrap();
         h.run_steps(3);
-        assert_eq!(h.state().ui.dialogs[0].fields["sendLayerContext"], true);
-        assert_eq!(h.state().ui.dialogs[0].fields["includeHiddenLayers"], false);
+        assert_eq!(h.state().ui.ai_edit.as_ref().unwrap().fields["sendLayerContext"], true);
+        assert_eq!(h.state().ui.ai_edit.as_ref().unwrap().fields["includeHiddenLayers"], false);
     }
 }

@@ -86,7 +86,7 @@ pub(crate) fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
         .resizable(false)
         .default_width(380.0)
         .show(ctx, |ui| {
-            let t = crate::theme::Tokens::get(ctx);
+            let warning = ui.visuals().warn_fg_color;
             ui.label(crate::i18n::fmt(crate::i18n::t("Installed version: {version}"), &[("version", photocraft_engine::build_info::VERSION)]));
             ui.label(tl!("Updates are offered only after a new AI package is published."));
             ui.add_space(8.0);
@@ -107,7 +107,7 @@ pub(crate) fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
                     ui.label(tl!("No newer AI package is available."));
                 }
                 Status::Failed { message } => {
-                    ui.colored_label(t.warning, tl!("Could not check for updates."));
+                    ui.colored_label(warning, tl!("Could not check for updates."));
                     ui.label(message);
                 }
                 Status::Idle => {
@@ -120,7 +120,7 @@ pub(crate) fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
                     ui.label(tl!("Downloading and verifying update…"));
                 }
                 InstallStatus::Failed { message } => {
-                    ui.colored_label(t.warning, tl!("Could not install the update."));
+                    ui.colored_label(warning, tl!("Could not install the update."));
                     ui.label(message);
                 }
                 _ => {}
@@ -159,6 +159,12 @@ pub(crate) fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
     }
 }
 
+/// Populate a synthetic release offer for offscreen visual snapshots (`examples/snapshot.rs`).
+pub fn preview_release(app: &mut PhotocraftApp, version: &str, url: &str) {
+    app.session.updates.status = Status::Available { release: photocraft_engine::updates_cmds::Release { version: version.to_owned(), url: url.to_owned() } };
+    app.ui.updates_open = true;
+}
+
 pub(crate) fn safe_to_restart(app: &PhotocraftApp) -> bool {
     !app.has_unsaved_work()
         && !app.saving()
@@ -168,12 +174,11 @@ pub(crate) fn safe_to_restart(app: &PhotocraftApp) -> bool {
         && app.ui.transform.is_none()
         && app.ui.type_transform.is_none()
         && app.ui.pen.is_none()
-        && app.ui.crop_rect.is_none()
-        && app.ui.perspective_crop.is_none()
+        && !crate::crop_ui::pending(app)
+        && crate::perspective_crop_ui::quad(app).is_none()
         && app.discard.is_none()
-        && app.drag.is_none()
+        && !crate::canvas::tools::in_gesture(app)
         && app.live_stroke.is_none()
-        && !app.press_stroke
         && app.remove_pending.is_empty()
         && app.remove_trail.is_none()
 }
@@ -191,9 +196,6 @@ mod tests {
     fn uncommitted_pointer_work_defers_restart() {
         let mut app = PhotocraftApp::new(Session::new(), Services::default());
         assert!(safe_to_restart(&app));
-        app.press_stroke = true;
-        assert!(!safe_to_restart(&app));
-        app.press_stroke = false;
         app.remove_pending.push(serde_json::json!({"points": [[1.0, 1.0]]}));
         assert!(!safe_to_restart(&app));
         app.remove_pending.clear();
@@ -281,7 +283,7 @@ mod tests {
                 ..Default::default()
             },
         );
-        (app, calls, sender)
+        (*app, calls, sender)
     }
 
     fn at(app: &mut PhotocraftApp, ctx: &egui::Context, time: f64) {
@@ -423,7 +425,7 @@ mod tests {
         let call = |app: &mut PhotocraftApp, method: &str, params: Value| {
             let (req, _) = crate::control::ControlRequest::new(method, params);
             match crate::control::handle(app, &ctx, &req) {
-                crate::control::Outcome::Done(value) => value,
+                crate::control::Reply::Done(value) => value,
                 _ => panic!("expected an immediate reply"),
             }
         };

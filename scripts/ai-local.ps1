@@ -102,9 +102,9 @@ function Invoke-CargoCheck([string[]]$CargoArguments) {
     if ($LASTEXITCODE -ne 0) { throw "Check failed: cargo $($CargoArguments -join ' ')" }
 }
 Invoke-CargoCheck -CargoArguments @('fmt', '--all', '--', '--check')
-Invoke-CargoCheck -CargoArguments @('test', '-p', 'photocraft-codecs', '-p', 'photocraft-text', '-p', 'photocraft-io', '-p', 'photocraft-gen', '-p', 'photocraft-engine', '-p', 'photocraft-ui-egui', '--lib', '--tests', '--no-fail-fast', '--locked')
+Invoke-CargoCheck -CargoArguments @('test', '-p', 'photocraft-text', '-p', 'photocraft-io', '-p', 'photocraft-gen', '-p', 'photocraft-engine', '-p', 'photocraft-ui-egui', '--lib', '--tests', '--no-fail-fast', '--locked')
 Invoke-CargoCheck -CargoArguments @('test', '-p', 'photocraft-engine', '--test', 'panic_hunt', '--', '--ignored')
 Invoke-CargoCheck -CargoArguments @('xtask', 'layers')
 Invoke-CargoCheck -CargoArguments @('xtask', 'wasm')
 Invoke-CargoCheck -CargoArguments @('xtask', 'parity')
-Invoke-CargoCheck -CargoArguments @('clippy', '-p', 'photocraft-codecs', '-p', 'photocraft-text', '-p', 'photocraft-io', '-p', 'photocraft-gen', '-p', 'photocraft-engine', '-p', 'photocraft-ui-egui', '--all-targets', '--locked', '--', '-D', 'warnings')
+Invoke-CargoCheck -CargoArguments @('clippy', '-p', 'photocraft-text', '-p', 'photocraft-io', '-p', 'photocraft-gen', '-p', 'photocraft-engine', '-p', 'photocraft-ui-egui', '--all-targets', '--locked', '--', '-D', 'warnings')

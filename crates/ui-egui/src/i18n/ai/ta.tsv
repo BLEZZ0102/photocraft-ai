@@ -1,0 +1,91 @@
+# AI controls. Translation provenance and native-review limits are in LICENSE-translations.txt.
+	AI Edit…	AI திருத்தம்…
+@id	edit.ai.codex	AI திருத்தம்…
+	Describe your edit	உங்கள் திருத்தத்தை விவரிக்கவும்
+	The visible canvas and instruction will be sent to Codex using your ChatGPT sign-in. The result is fitted to the canvas and added as a new layer.	உங்கள் ChatGPT உள்நுழைவைப் பயன்படுத்தி தெரியும் கேன்வாஸ் மற்றும் அறிவுறுத்தல்கள் கோடெக்ஸுக்கு அனுப்பப்படும். இதன் விளைவாக கேன்வாஸில் பொருத்தப்பட்டு புதிய லேயராக சேர்க்கப்படுகிறது.
+	Codex account has not been checked	கோடெக்ஸ் கணக்கு சரிபார்க்கப்படவில்லை
+	Checking Codex connection…	கோடெக்ஸ் இணைப்பைச் சரிபார்க்கிறது…
+	Complete ChatGPT sign-in in your browser	உங்கள் உலாவியில் ChatGPT உள்நுழைவை முடிக்கவும்
+	Connected to ChatGPT	ChatGPT உடன் இணைக்கப்பட்டது
+	ChatGPT plan	ChatGPT திட்டம்
+	ChatGPT sign-in is required	ChatGPT உள்நுழைவு தேவை
+	Codex is using another login method. Sign in with ChatGPT to use your subscription.	கோடெக்ஸ் மற்றொரு உள்நுழைவு முறையைப் பயன்படுத்துகிறது. உங்கள் சந்தாவைப் பயன்படுத்த ChatGPT மூலம் உள்நுழையவும்.
+	Cancelling sign-in…	உள்நுழைவை ரத்துசெய்கிறது…
+	Sign-in cancelled	உள்நுழைவு ரத்து செய்யப்பட்டது
+	Could not verify the account. Check your connection or sign in again.	கணக்கைச் சரிபார்க்க முடியவில்லை. உங்கள் இணைப்பைச் சரிபார்க்கவும் அல்லது மீண்டும் உள்நுழையவும்.
+	Connection details	இணைப்பு விவரங்கள்
+	Sign in with ChatGPT	ChatGPT மூலம் உள்நுழையவும்
+	Open sign-in page	உள்நுழைவு பக்கத்தைத் திறக்கவும்
+	Check connection	இணைப்பைச் சரிபார்க்கவும்
+	Cancel sign-in	உள்நுழைவை ரத்துசெய்
+	Copy sign-in link	உள்நுழைவு இணைப்பை நகலெடுக்கவும்
+	Could not open your browser. Try again or copy the sign-in link into your browser.	உங்கள் உலாவியைத் திறக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும் அல்லது உள்நுழைவு இணைப்பை உங்கள் உலாவியில் நகலெடுக்கவும்.
+	Sign-in is managed by the installed Codex runtime and shared with Codex. PhotoCraft does not store tokens.	உள்நுழைவு நிறுவப்பட்ட கோடெக்ஸ் இயக்க நேரத்தால் நிர்வகிக்கப்படுகிறது மற்றும் கோடெக்ஸுடன் பகிரப்படுகிறது. ஃபோட்டோகிராஃப்ட் டோக்கன்களை சேமிக்காது.
+	Image service	பட சேவை
+	Codex (ChatGPT subscription)	கோடெக்ஸ் (ChatGPT சந்தா)
+	Doubao / Seedream	Doubao / Seedream
+	This API sends the visible canvas and instruction to the configured service. Usage may incur charges billed by that service.	இந்த API உள்ளமைக்கப்பட்ட சேவைக்கு புலப்படும் கேன்வாஸ் மற்றும் வழிமுறைகளை அனுப்புகிறது. பயன்பாட்டிற்கு அந்த சேவையால் கட்டணம் விதிக்கப்படலாம்.
+	Model ID	மாதிரி ஐடி
+	API address and protocol	API முகவரி மற்றும் நெறிமுறை
+	API address	API முகவரி
+	API protocol	API நெறிமுறை
+	Custom services must support the selected image-editing protocol. Changing the address requires a key for that address.	தனிப்பயன் சேவைகள் தேர்ந்தெடுக்கப்பட்ட பட-எடிட்டிங் நெறிமுறையை ஆதரிக்க வேண்டும். முகவரியை மாற்றுவதற்கு அந்த முகவரிக்கான விசை தேவை.
+	API key	API விசை
+	API key configured — leave empty to keep it	API விசை கட்டமைக்கப்பட்டது - அதை வைத்திருக்க காலியாக விடவும்
+	Remember API key in system credential store	கணினி நற்சான்றிதழில் API விசையை நினைவில் கொள்ளுங்கள்
+	The API key is available for this session only.	API விசை இந்த அமர்வுக்கு மட்டுமே கிடைக்கும்.
+	Save API settings	API அமைப்புகளைச் சேமிக்கவும்
+	Remove API key	API விசையை அகற்று
+	API configured. Saving settings does not generate an image.	API கட்டமைக்கப்பட்டது. அமைப்புகளைச் சேமிப்பது படத்தை உருவாக்காது.
+	Save your API settings before editing.	திருத்துவதற்கு முன் உங்கள் API அமைப்புகளைச் சேமிக்கவும்.
+	API settings saved	API அமைப்புகள் சேமிக்கப்பட்டன
+	Enter a valid API key without whitespace	இடைவெளி இல்லாமல் சரியான API விசையை உள்ளிடவும்
+	API key removed	API விசை அகற்றப்பட்டது
+	Could not load API settings	API அமைப்புகளை ஏற்ற முடியவில்லை
+	The result is fitted to the canvas and added as a new layer. Your existing layers are preserved.	இதன் விளைவாக கேன்வாஸில் பொருத்தப்பட்டு புதிய லேயராக சேர்க்கப்படுகிறது. ஏற்கனவே உள்ள அடுக்குகள் பாதுகாக்கப்பட்டுள்ளன.
+	Codex was not found. Install and open the Codex desktop app, then check the connection again.	கோடெக்ஸ் கிடைக்கவில்லை. கோடெக்ஸ் டெஸ்க்டாப் பயன்பாட்டை நிறுவி திறக்கவும், பின்னர் இணைப்பை மீண்டும் சரிபார்க்கவும்.
+	Use the complete Codex installation; copying codex.exe alone may omit image-editing components.	முழுமையான கோடெக்ஸ் நிறுவலைப் பயன்படுத்தவும்; codex.exe ஐ மட்டும் நகலெடுப்பது படத்தைத் திருத்தும் கூறுகளைத் தவிர்க்கலாம்.
+	PhotoCraft AI Updates	PhotoCraft AI புதுப்பிப்புகள்
+	AI Project Page	AI திட்டப் பக்கம்
+	Release Notes	வெளியீட்டு குறிப்புகள்
+	AI edit did not pass the service's content review	AI திருத்தமானது சேவையின் உள்ளடக்க மதிப்பாய்வில் தேர்ச்சி பெறவில்லை
+	The image service's content review is unavailable	படச் சேவையின் உள்ளடக்க மதிப்பாய்வு கிடைக்கவில்லை
+	Your editing instruction did not pass the service's content review.	உங்கள் எடிட்டிங் அறிவுறுத்தல் சேவையின் உள்ளடக்க மதிப்பாய்வில் தேர்ச்சி பெறவில்லை.
+	Your reference image did not pass the service's content review.	உங்கள் குறிப்புப் படம் சேவையின் உள்ளடக்க மதிப்பாய்வில் தேர்ச்சி பெறவில்லை.
+	The generated image did not pass the service's content review.	உருவாக்கப்பட்ட படம் சேவையின் உள்ளடக்க மதிப்பாய்வில் தேர்ச்சி பெறவில்லை.
+	Your instruction triggered the service's content rules, which may include copyright restrictions.	உங்கள் அறிவுறுத்தல் சேவையின் உள்ளடக்க விதிகளைத் தூண்டியது, இதில் பதிப்புரிமைக் கட்டுப்பாடுகள் இருக்கலாம்.
+	Your reference image triggered the service's content rules, which may include copyright restrictions.	உங்கள் குறிப்புப் படம், சேவையின் உள்ளடக்க விதிகளைத் தூண்டியது, இதில் பதிப்புரிமைக் கட்டுப்பாடுகள் இருக்கலாம்.
+	Your reference image did not pass the service's privacy review.	உங்கள் குறிப்புப் படம் சேவையின் தனியுரிமை மதிப்பாய்வில் தேர்ச்சி பெறவில்லை.
+	The generated image triggered the service's content rules, which may include copyright restrictions.	உருவாக்கப்பட்ட படம், சேவையின் உள்ளடக்க விதிகளைத் தூண்டியது, இதில் பதிப்புரிமைக் கட்டுப்பாடுகள் இருக்கலாம்.
+	The generated image triggered the service's impersonation restrictions.	உருவாக்கப்பட்ட படம், சேவையின் ஆள்மாறாட்டம் கட்டுப்பாடுகளைத் தூண்டியது.
+	The service rejected this edit without identifying the content-review stage.	உள்ளடக்க மதிப்பாய்வு கட்டத்தை அடையாளம் காணாமல் இந்த திருத்தத்தை சேவை நிராகரித்தது.
+	The service's content review failed, so this edit could not be completed.	சேவையின் உள்ளடக்க மதிப்பாய்வு தோல்வியடைந்ததால், இந்த திருத்தத்தை முடிக்க முடியவில்லை.
+	Revise the instruction and try again manually.	அறிவுறுத்தலைச் சரிபார்த்து, கைமுறையாக மீண்டும் முயற்சிக்கவும்.
+	Choose a reference image that meets the service's requirements.	சேவையின் தேவைகளைப் பூர்த்தி செய்யும் குறிப்புப் படத்தைத் தேர்ந்தெடுக்கவும்.
+	Adjust the editing request or contact the service provider for details.	எடிட்டிங் கோரிக்கையை சரிசெய்யவும் அல்லது விவரங்களுக்கு சேவை வழங்குநரைத் தொடர்பு கொள்ளவும்.
+	Check that your editing request meets the service's content requirements.	உங்கள் எடிட்டிங் கோரிக்கை சேவையின் உள்ளடக்கத் தேவைகளைப் பூர்த்திசெய்கிறதா எனச் சரிபார்க்கவும்.
+	Check your editing content or ask the service provider for details.	உங்கள் எடிட்டிங் உள்ளடக்கத்தைச் சரிபார்க்கவும் அல்லது விவரங்களுக்கு சேவை வழங்குனரிடம் கேட்கவும்.
+	Try again manually later. Contact the service provider if the problem continues.	பிறகு கைமுறையாக மீண்டும் முயற்சிக்கவும். சிக்கல் தொடர்ந்தால் சேவை வழங்குநரைத் தொடர்பு கொள்ளவும்.
+	This edit did not change existing layers or add a new layer.	இந்த திருத்தம் ஏற்கனவே உள்ள லேயர்களை மாற்றவில்லை அல்லது புதிய லேயரை சேர்க்கவில்லை.
+	Error code: {code}	பிழைக் குறியீடு: {code}
+	Include individual layer images, names and structure	தனிப்பட்ட அடுக்கு படங்கள், பெயர்கள் மற்றும் கட்டமைப்பைச் சேர்க்கவும்
+	Also send hidden layers	மறைக்கப்பட்ட அடுக்குகளையும் அனுப்பவும்
+	Up to 15 layer images.	15 அடுக்கு படங்கள் வரை.
+	Isolated previews may reveal content covered by other layers or group masks.	தனிமைப்படுத்தப்பட்ட மாதிரிக்காட்சிகள் மற்ற அடுக்குகள் அல்லது குழு முகமூடிகளால் மூடப்பட்ட உள்ளடக்கத்தை வெளிப்படுத்தலாம்.
+	AI Edit	AI திருத்தம்
+	AI Edit via API	API வழியாக AI திருத்தம்
+	Codex Account	கோடெக்ஸ் கணக்கு
+	AI Provider Settings	AI வழங்குநர் அமைப்புகள்
+	API settings	API அமைப்புகள்
+	Updates are offered only after a new AI package is published.	புதிய AI தொகுப்பு வெளியிடப்பட்ட பின்னரே புதுப்பிப்புகள் வழங்கப்படுகின்றன.
+	PhotoCraft AI {version} is available.	PhotoCraft AI {version} கிடைக்கிறது.
+	No newer AI package is available.	புதிய AI தொகுப்பு எதுவும் இல்லை.
+	Downloading and verifying update…	புதுப்பிப்பைப் பதிவிறக்கிச் சரிபார்க்கிறது…
+	Could not install the update.	புதுப்பிப்பை நிறுவ முடியவில்லை.
+	Save your documents and wait for background tasks before updating.	உங்கள் ஆவணங்களைச் சேமித்து, புதுப்பிக்கும் முன் பின்னணிப் பணிகளுக்காகக் காத்திருக்கவும்.
+	Update and Restart	புதுப்பித்து மறுதொடக்கம் செய்யுங்கள்
+	Checking for updates…	புதுப்பிப்புகளைச் சரிபார்க்கிறது…
+	Could not check for updates.	புதுப்பிப்புகளைச் சரிபார்க்க முடியவில்லை.
+	Updates have not been checked yet.	புதுப்பிப்புகள் இன்னும் சரிபார்க்கப்படவில்லை.
+	Check Again	மீண்டும் சரிபார்க்கவும்
+	Installed version: {version}	நிறுவப்பட்ட பதிப்பு: {version}

@@ -83,14 +83,14 @@ fn open_browser(app: &mut PhotocraftApp, ctx: &Context) {
 
 pub fn tick(app: &mut PhotocraftApp, ctx: &Context) {
     let pending = app.session.ai_account.pending();
-    if pending || app.ui.dialogs.iter().any(|dialog| owns(&dialog.fields)) {
+    if pending || crate::ai_edit_ui::is_open(app) {
         action(app, "status");
     }
     // A reopened dialog can outlive the cancelled worker. Retry only after polling
     // its completion, and never start an implicit refresh after the dialog closes.
     if app.ui.ai_account.refresh_requested && !app.session.ai_account.pending() {
         app.ui.ai_account.refresh_requested = false;
-        if app.ui.dialogs.iter().any(|dialog| owns(&dialog.fields)) {
+        if crate::ai_edit_ui::is_open(app) {
             action(app, "refresh");
         }
     }
@@ -189,5 +189,5 @@ pub fn body(app: &mut PhotocraftApp, ui: &mut egui::Ui, fields: &mut Map<String,
     }
     ui.weak(tl!("Sign-in is managed by the installed Codex runtime and shared with Codex. PhotoCraft does not store tokens."));
     ui.separator();
-    crate::view_cmds::form_body(ui, fields);
+    crate::ai_edit_ui::prompt_body(ui, fields);
 }

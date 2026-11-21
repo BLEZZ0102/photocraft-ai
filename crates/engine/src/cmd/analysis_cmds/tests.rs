@@ -19,7 +19,7 @@ fn failed_compound_restores_layer_target_history_and_journal() {
     let selected = s.active().unwrap().active_layer.unwrap();
     {
         let st = s.active_mut().unwrap();
-        st.selected_layers = vec![background, selected];
+        *st.selection_mut() = vec![background, selected];
         st.layer_anchor = Some(background);
         st.coalesce = Some("previous-gesture".into());
     }
@@ -554,6 +554,28 @@ fn iso_from_unix_matches_the_old_cycle_conversion_including_beyond_chrono() {
     assert_eq!(iso_from_unix(-10_000_000_000_000), "-314918-08-13T06:13:20Z");
     assert_eq!(iso_from_unix(i64::MAX), "292277026596-12-04T15:30:07Z");
     assert_eq!(iso_from_unix(i64::MIN), "-292277022657-01-27T08:29:52Z");
+}
+
+#[test]
+fn csv_text_cells_that_read_as_formulas_are_neutralised() {
+    for (cell, want) in [
+        ("=1+1", "'=1+1"),
+        ("@SUM(A1)", "'@SUM(A1)"),
+        ("-2+3", "'-2+3"),
+        ("+cmd|x", "'+cmd|x"),
+        ("-5.5", "-5.5"),
+        ("px", "px"),
+        ("\n=1+1", "\"'\n=1+1\""),
+        ("\u{ff1d}1+1", "'\u{ff1d}1+1"),
+        ("\u{ff0b}1", "'\u{ff0b}1"),
+        ("\u{ff20}SUM(A1)", "'\u{ff20}SUM(A1)"),
+        (" =1+1", "' =1+1"),
+        ("  -2+3", "'  -2+3"),
+        (" -5.5", " -5.5"),
+    ] {
+        assert_eq!(csv_field(&json!(cell)), want, "{cell}");
+    }
+    assert_eq!(csv_field(&json!(-5.5)), "-5.5", "numbers are not text cells");
 }
 
 #[test]

@@ -76,6 +76,7 @@ fn update_notice_preserves_unsaved_documents_and_localizes_every_language() {
             Status::Available { release: Release { version: "99.0.0".into(), url: "https://github.com/storytold/photocraft/releases/tag/v99.0.0".into() } };
         app
     });
+    h.ctx.set_missing_glyph_policy(egui::MissingGlyphPolicy::Tofu);
     h.run_steps(4);
     assert!(h.query_by_label("PhotoCraft AI Updates").is_some());
     assert!(h.get_by_label("Update and Restart").accesskit_node().is_disabled());
@@ -109,4 +110,83 @@ fn update_notice_preserves_unsaved_documents_and_localizes_every_language() {
     assert!(h.state().has_unsaved_work());
     assert!(h.state().ui.updates_open);
     assert_eq!(*opened.lock().unwrap(), ["https://github.com/BLEZZ0102/photocraft-ai"]);
+}
+
+#[test]
+fn update_dialog_shows_download_progress_bar_and_cancels_cleanly() {
+    use photocraft_engine::updates_cmds::{DownloadProgress, InstallStatus, PrepareEvent, PrepareTask};
+    use std::sync::{
+        atomic::{AtomicBool, Ordering},
+        mpsc,
+    };
+
+    let cancelled = Arc::new(AtomicBool::new(false));
+    let cancel_flag = cancelled.clone();
+    let sender = Arc::new(Mutex::new(None));
+    let sender_slot = sender.clone();
+    let mut h = Harness::builder().with_size(egui::vec2(800.0, 600.0)).build_eframe(move |cc| {
+        PhotocraftApp::setup_context(&cc.egui_ctx, Default::default());
+        let mut session = Session::new();
+        session.edit_prefs(|p| p.interface.language = "en".into());
+        let mut app = PhotocraftApp::with_context(
+            cc.egui_ctx.clone(),
+            session,
+            Services {
+                prepare_update: Some(Box::new(move |_| {
+                    let (tx, rx) = mpsc::channel();
+                    *sender_slot.lock().unwrap() = Some(tx);
+                    let flag = cancel_flag.clone();
+                    Ok(PrepareTask::new(rx, Some(Box::new(move || flag.store(true, Ordering::SeqCst)))))
+                })),
+                ..Default::default()
+            },
+        );
+        app.session.updates.status =
+            Status::Available { release: Release { version: "0.23.1-ai-beta.4".into(), url: photocraft_engine::updates_cmds::RELEASES.into() } };
+        app
+    });
+    h.run_steps(4);
+    h.get_by_label("Update and Restart").click();
+    h.run_steps(4);
+    assert!(matches!(h.state().session.updates.install_status, InstallStatus::Downloading { .. }));
+
+    let total = 100 * 1024 * 1024;
+    let done = 45 * 1024 * 1024;
+    sender
+        .lock()
+        .unwrap()
+        .as_ref()
+        .unwrap()
+        .send(PrepareEvent::Progress(DownloadProgress { downloaded_bytes: done, total_bytes: total, reconnecting: false, verifying: false }))
+        .unwrap();
+    h.run_steps(4);
+    assert!(h.query_by_label("45.0 / 100.0 MB").is_some());
+    assert!(h.query_by_label("45%").is_some());
+
+    sender
+        .lock()
+        .unwrap()
+        .as_ref()
+        .unwrap()
+        .send(PrepareEvent::Progress(DownloadProgress { downloaded_bytes: done, total_bytes: total, reconnecting: true, verifying: false }))
+        .unwrap();
+    h.run_steps(4);
+    assert!(h.query_all_by_label("Reconnecting…").next().is_some());
+
+    sender
+        .lock()
+        .unwrap()
+        .as_ref()
+        .unwrap()
+        .send(PrepareEvent::Progress(DownloadProgress { downloaded_bytes: total, total_bytes: total, reconnecting: false, verifying: true }))
+        .unwrap();
+    h.run_steps(4);
+    assert!(h.query_all_by_label("Verifying update…").next().is_some());
+    assert!(h.query_by_label("100%").is_some());
+
+    h.get_by_label("Cancel").click();
+    h.run_steps(4);
+    assert!(cancelled.load(Ordering::SeqCst));
+    assert_eq!(h.state().session.updates.install_status, InstallStatus::Idle);
+    assert!(h.query_by_label("Update and Restart").is_some());
 }

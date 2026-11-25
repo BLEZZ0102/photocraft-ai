@@ -1,12 +1,13 @@
 //! Windows x64 AI packages. HTTPS + GitHub's SHA-256 is the trust boundary for unsigned betas.
 //! The helper never runs shell text, and never touches documents or profile directories.
 use super::{Kind, Update};
-use craft_update::{Http, Stop, process};
-use photocraft_engine::updates_cmds::{PrepareFn, ReadyFn};
+use craft_update::{Http, Stop, http::Transfer, process};
+use photocraft_engine::updates_cmds::{DownloadProgress, PrepareEvent, PrepareFn, PrepareTask, ReadyFn};
 use serde::{Deserialize, Serialize};
 use std::io::Read;
 use std::path::{Path, PathBuf};
-use std::time::Duration;
+use std::sync::Arc;
+use std::time::{Duration, Instant};
 use winreg::{
     RegKey,
     enums::{HKEY_CURRENT_USER, KEY_READ, KEY_WOW64_64KEY},
@@ -61,30 +62,72 @@ pub(super) fn service() -> PrepareFn {
     Box::new(|version| {
         let version = version.to_string();
         let (tx, rx) = std::sync::mpsc::channel();
+        let stop = Arc::new(Stop::default());
+        let worker_stop = Arc::clone(&stop);
         std::thread::Builder::new()
             .name("AI update download".into())
             .spawn(move || {
-                let _ = tx.send(prepare(&version));
+                let mut emit = |progress: DownloadProgress| {
+                    let _ = tx.send(PrepareEvent::Progress(progress));
+                };
+                let result = prepare(&version, &worker_stop, &mut emit);
+                let _ = tx.send(PrepareEvent::Done(result));
             })
             .map_err(|e| e.to_string())?;
-        Ok(rx)
+        Ok(PrepareTask::new(rx, Some(Box::new(move || stop.cancel()))))
     })
 }
 
-fn prepare(version: &str) -> Result<ReadyFn, String> {
+fn progress_from_transfer(transfer: Transfer, fallback_total: u64) -> DownloadProgress {
+    match transfer {
+        Transfer::Bytes { done, total } => DownloadProgress {
+            downloaded_bytes: done,
+            total_bytes: if total > 0 { total } else { fallback_total },
+            reconnecting: false,
+            verifying: false,
+        },
+        Transfer::Reconnecting { done, total } => DownloadProgress {
+            downloaded_bytes: done,
+            total_bytes: if total > 0 { total } else { fallback_total },
+            reconnecting: true,
+            verifying: false,
+        },
+    }
+}
+
+fn prepare(version: &str, stop: &Stop, on_progress: &mut dyn FnMut(DownloadProgress)) -> Result<ReadyFn, String> {
+    stop.check()?;
+    on_progress(DownloadProgress::default());
     let kind = installed_kind()?;
     let http = Http::new("Photocraft-dev")?;
     // Re-fetch publication and digest at the explicit click, rather than trusting UI parameters.
     let update = super::fetch(&http, photocraft_engine::build_info::VERSION, kind)?
         .filter(|u| u.version == version)
         .ok_or("This AI package is no longer available; check again")?;
+    stop.check()?;
+    on_progress(DownloadProgress { downloaded_bytes: 0, total_bytes: update.asset.size, reconnecting: false, verifying: false });
     let root = cache()?;
     std::fs::create_dir_all(&root).map_err(|e| e.to_string())?;
     let root = root.canonicalize().map_err(|e| e.to_string())?;
     let dir = tempfile::Builder::new().prefix("update-").tempdir_in(&root).map_err(|e| e.to_string())?;
     let package = dir.path().join(&update.asset.name);
     let hash = update.asset.sha256.as_deref().ok_or("No published checksum")?;
-    http.download(&update.asset.url, &package, update.asset.size, hash, &Stop::default(), &mut |_| {})?;
+    let mut last_sent: Option<Instant> = None;
+    let mut last_reconnecting = false;
+    http.download(&update.asset.url, &package, update.asset.size, hash, stop, &mut |transfer| {
+        let progress = progress_from_transfer(transfer, update.asset.size);
+        let now = Instant::now();
+        let finished = progress.total_bytes > 0 && progress.downloaded_bytes >= progress.total_bytes;
+        let state_changed = progress.reconnecting != last_reconnecting;
+        let due = last_sent.is_none_or(|t| now.duration_since(t) >= Duration::from_millis(50));
+        if state_changed || finished || due {
+            last_sent = Some(now);
+            last_reconnecting = progress.reconnecting;
+            on_progress(progress);
+        }
+    })?;
+    stop.check()?;
+    on_progress(DownloadProgress { downloaded_bytes: update.asset.size, total_bytes: update.asset.size, reconnecting: false, verifying: true });
     let target = std::env::current_exe().and_then(std::fs::canonicalize).map_err(|e| e.to_string())?;
     let job = Job {
         pid: std::process::id(),
@@ -96,6 +139,7 @@ fn prepare(version: &str) -> Result<ReadyFn, String> {
         hash: hash.into(),
     };
     validate_package(&job, &update)?;
+    stop.check()?;
     // Reuse one helper slot across updates instead of retaining a full executable per release.
     let helper = root.join("ai-update-helper.exe");
     std::fs::copy(&job.target, &helper).map_err(|e| e.to_string())?;
@@ -418,5 +462,21 @@ mod tests {
         let path = dir.path().join("job.json");
         std::fs::write(&path, "{}").unwrap();
         assert!(finish_job(&path).unwrap_err().contains("location"));
+    }
+
+    #[test]
+    fn transfer_events_map_to_download_progress_with_fallback_total() {
+        assert_eq!(
+            progress_from_transfer(Transfer::Bytes { done: 512, total: 2048 }, 4096),
+            DownloadProgress { downloaded_bytes: 512, total_bytes: 2048, reconnecting: false, verifying: false }
+        );
+        assert_eq!(
+            progress_from_transfer(Transfer::Bytes { done: 512, total: 0 }, 4096),
+            DownloadProgress { downloaded_bytes: 512, total_bytes: 4096, reconnecting: false, verifying: false }
+        );
+        assert_eq!(
+            progress_from_transfer(Transfer::Reconnecting { done: 1024, total: 0 }, 4096),
+            DownloadProgress { downloaded_bytes: 1024, total_bytes: 4096, reconnecting: true, verifying: false }
+        );
     }
 }

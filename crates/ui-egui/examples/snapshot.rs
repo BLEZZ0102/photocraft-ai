@@ -71,6 +71,8 @@ fn main() {
     let scale: f32 = arg(&args, "--scale").and_then(|s| s.parse().ok()).unwrap_or(2.0);
     let wayland_notice = args.iter().any(|a| a == "--wayland-notice");
     let update_notice = args.iter().any(|a| a == "--update-notice");
+    let update_downloading = args.iter().any(|a| a == "--update-downloading");
+    let lang = arg(&args, "--lang");
     let script: Vec<(String, Value)> =
         arg(&args, "--script").map(|s| serde_json::from_str::<Vec<(String, Value)>>(&s).expect("--script must be [[method, params], …]")).unwrap_or_default();
 
@@ -114,8 +116,20 @@ fn main() {
             let mut services = services;
             services.is_wayland = wayland_notice;
             services.xwayland_command = wayland_notice.then(|| "WAYLAND_DISPLAY= photocraft".into());
-            let mut app = PhotocraftApp::with_context(cc.egui_ctx.clone(), photocraft_engine::Session::new(), services);
-            if update_notice {
+            let mut session = photocraft_engine::Session::new();
+            if let Some(code) = &lang {
+                session.edit_prefs(|p| p.interface.language = code.clone());
+            }
+            let mut app = PhotocraftApp::with_context(cc.egui_ctx.clone(), session, services);
+            if update_downloading {
+                photocraft_ui_egui::updates_ui::preview_downloading(
+                    &mut app,
+                    "0.23.1-ai-beta.4",
+                    "https://github.com/BLEZZ0102/photocraft-ai/releases/tag/v0.23.1-ai-beta.4",
+                    64_800_000,
+                    99_975_168,
+                );
+            } else if update_notice {
                 photocraft_ui_egui::updates_ui::preview_release(&mut app, "99.0.0", "https://github.com/storytold/photocraft/releases/tag/v99.0.0");
             }
             app.background_jobs = background_jobs;

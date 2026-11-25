@@ -71,6 +71,8 @@ const AI_KEYS: &[(&str, &str)] = &[
     (r#""#, r#"No newer AI package is available."#),
     (r#""#, r#"Update and Restart"#),
     (r#""#, r#"Downloading and verifying update…"#),
+    (r#""#, r#"Reconnecting…"#),
+    (r#""#, r#"Verifying update…"#),
     (r#""#, r#"Could not install the update."#),
     (r#""#, r#"Save your documents and wait for background tasks before updating."#),
     (r#""#, r#"AI Project Page"#),

@@ -17,14 +17,57 @@ pub type CheckFn = Box<dyn FnMut() -> std::result::Result<Receiver<CheckResult>,
 /// Download/verify first; the returned action schedules installation only after a second save guard.
 pub type ReadyFn = Box<dyn FnOnce() -> std::result::Result<(), String> + Send>;
 pub type PrepareResult = std::result::Result<ReadyFn, String>;
-pub type PrepareFn = Box<dyn FnMut(&str) -> std::result::Result<Receiver<PrepareResult>, String> + Send>;
+
+/// Download and verification progress reported by the update worker.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DownloadProgress {
+    pub downloaded_bytes: u64,
+    pub total_bytes: u64,
+    pub reconnecting: bool,
+    pub verifying: bool,
+}
+
+impl DownloadProgress {
+    /// Progress fraction in `0.0..=1.0`, or `None` while the total size is unknown.
+    pub fn fraction(self) -> Option<f32> {
+        if self.total_bytes == 0 {
+            return None;
+        }
+        let done = self.downloaded_bytes.min(self.total_bytes);
+        Some((done as f64 / self.total_bytes as f64) as f32)
+    }
+}
+
+/// Messages streamed from the update preparation worker to the engine.
+pub enum PrepareEvent {
+    Progress(DownloadProgress),
+    Done(PrepareResult),
+}
+
+/// A running update download/verification worker: progress+result channel and optional cancel trigger.
+pub struct PrepareTask {
+    pub events: Receiver<PrepareEvent>,
+    pub cancel: Option<Box<dyn FnOnce() + Send>>,
+}
+
+impl PrepareTask {
+    pub fn new(events: Receiver<PrepareEvent>, cancel: Option<Box<dyn FnOnce() + Send>>) -> Self {
+        Self { events, cancel }
+    }
+}
+
+pub type PrepareFn = Box<dyn FnMut(&str) -> std::result::Result<PrepareTask, String> + Send>;
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "status", rename_all = "camelCase")]
 pub enum InstallStatus {
     #[default]
     Idle,
-    Downloading,
+    Downloading {
+        #[serde(default, flatten)]
+        progress: DownloadProgress,
+    },
     Ready,
     Restarting,
     Failed {
@@ -60,26 +103,43 @@ pub struct Updates {
     pub install_status: InstallStatus,
     pub status: Status,
     pending: Option<Receiver<CheckResult>>,
-    preparing: Option<Receiver<PrepareResult>>,
+    preparing: Option<PrepareTask>,
     ready: Option<ReadyFn>,
 }
 
 impl Updates {
     pub fn poll_install(&mut self) {
-        let Some(rx) = &self.preparing else { return };
-        let result = match rx.try_recv() {
-            Ok(r) => r,
-            Err(TryRecvError::Empty) => return,
-            Err(TryRecvError::Disconnected) => Err("The update download stopped before returning a result".into()),
-        };
-        self.preparing = None;
-        self.install_status = match result {
-            Ok(ready) => {
-                self.ready = Some(ready);
-                InstallStatus::Ready
+        for _ in 0..4096 {
+            let event = {
+                let Some(task) = &self.preparing else { return };
+                match task.events.try_recv() {
+                    Ok(ev) => Ok(ev),
+                    Err(TryRecvError::Empty) => return,
+                    Err(TryRecvError::Disconnected) => Err("The update download stopped before returning a result".to_string()),
+                }
+            };
+            match event {
+                Ok(PrepareEvent::Progress(progress)) => {
+                    self.install_status = InstallStatus::Downloading { progress };
+                }
+                Ok(PrepareEvent::Done(result)) => {
+                    self.preparing = None;
+                    self.install_status = match result {
+                        Ok(ready) => {
+                            self.ready = Some(ready);
+                            InstallStatus::Ready
+                        }
+                        Err(message) => InstallStatus::Failed { message },
+                    };
+                    return;
+                }
+                Err(message) => {
+                    self.preparing = None;
+                    self.install_status = InstallStatus::Failed { message };
+                    return;
+                }
             }
-            Err(message) => InstallStatus::Failed { message },
-        };
+        }
     }
 
     /// Consume a completed check; a disconnected worker becomes an actionable error.
@@ -135,7 +195,7 @@ fn enabled(s: &Session) -> std::result::Result<(), String> {
 
 fn check(s: &mut Session, p: &Value) -> Result<Value> {
     empty_params(p)?;
-    if matches!(s.updates.install_status, InstallStatus::Downloading | InstallStatus::Ready | InstallStatus::Restarting) {
+    if matches!(s.updates.install_status, InstallStatus::Downloading { .. } | InstallStatus::Ready | InstallStatus::Restarting) {
         return Err(EngineError::Other("Finish the current update before checking again".into()));
     }
     // Repeated automation requests must not spawn an unbounded number of network workers.
@@ -171,7 +231,7 @@ pub fn specs() -> Vec<CommandSpec> {
                 if !matches!(s.updates.status, Status::Available { .. }) {
                     return Err("No AI update is available".into());
                 }
-                if matches!(s.updates.install_status, InstallStatus::Downloading | InstallStatus::Ready | InstallStatus::Restarting) {
+                if matches!(s.updates.install_status, InstallStatus::Downloading { .. } | InstallStatus::Ready | InstallStatus::Restarting) {
                     return Err("An update is already in progress".into());
                 }
                 ensure_saved(s).map_err(|e| e.to_string())
@@ -179,21 +239,48 @@ pub fn specs() -> Vec<CommandSpec> {
             run: |s, p| {
                 empty_params(p)?;
                 ensure_saved(s)?;
-                if matches!(s.updates.install_status, InstallStatus::Downloading | InstallStatus::Ready | InstallStatus::Restarting) {
+                if matches!(s.updates.install_status, InstallStatus::Downloading { .. } | InstallStatus::Ready | InstallStatus::Restarting) {
                     return Err(EngineError::Other("An update is already in progress".into()));
                 }
                 let Status::Available { release } = &s.updates.status else { return Err(EngineError::Other("No AI update is available".into())) };
                 let start = s.updates.prepare.as_mut().ok_or_else(|| EngineError::Other("One-click updates are unavailable in this frontend".into()))?;
                 match start(&release.version) {
-                    Ok(rx) => {
-                        s.updates.preparing = Some(rx);
-                        s.updates.install_status = InstallStatus::Downloading;
+                    Ok(task) => {
+                        s.updates.preparing = Some(task);
+                        s.updates.install_status = InstallStatus::Downloading { progress: DownloadProgress::default() };
                     }
                     Err(message) => {
                         s.updates.install_status = InstallStatus::Failed { message: message.clone() };
                         return Err(EngineError::Other(message));
                     }
                 }
+                Ok(json!(s.updates.install_status))
+            },
+        },
+        CommandSpec {
+            id: "updates.cancel",
+            label: "Cancel Update Download",
+            menu: &[],
+            shortcut: None,
+            params: "{}",
+            journal: false,
+            enabled: |s| {
+                if !matches!(s.updates.install_status, InstallStatus::Downloading { .. }) {
+                    return Err("No update download is in progress".into());
+                }
+                Ok(())
+            },
+            run: |s, p| {
+                empty_params(p)?;
+                if !matches!(s.updates.install_status, InstallStatus::Downloading { .. }) {
+                    return Err(EngineError::Other("No update download is in progress".into()));
+                }
+                if let Some(mut task) = s.updates.preparing.take()
+                    && let Some(cancel) = task.cancel.take()
+                {
+                    cancel();
+                }
+                s.updates.install_status = InstallStatus::Idle;
                 Ok(json!(s.updates.install_status))
             },
         },
@@ -282,17 +369,19 @@ mod tests {
             assert_eq!(version, "0.19.0-ai-beta.1");
             let (tx, rx) = std::sync::mpsc::channel();
             let count = scheduled.clone();
-            tx.send(Ok(Box::new(move || {
+            tx.send(PrepareEvent::Done(Ok(Box::new(move || {
                 count.fetch_add(1, Ordering::SeqCst);
                 Ok(())
-            }) as ReadyFn))
+            }) as ReadyFn)))
                 .unwrap();
-            Ok(rx)
+            Ok(PrepareTask::new(rx, None))
         }));
         for p in [Value::Null, json!([]), json!({"url":"evil"})] {
             assert!(s.execute("updates.install", p.clone()).is_err());
+            assert!(s.execute("updates.cancel", p.clone()).is_err());
             assert!(s.execute("updates.restart", p).is_err());
         }
+        assert!(s.execute("updates.cancel", json!({})).is_err());
         s.execute("updates.install", json!({})).unwrap();
         assert!(s.execute("updates.install", json!({})).is_err());
         assert_eq!(s.execute("updates.status", json!({})).unwrap()["installation"]["status"], "ready");
@@ -308,6 +397,50 @@ mod tests {
     }
 
     #[test]
+    fn progress_events_update_status_and_cancel_stops_download() {
+        use std::sync::{
+            Arc,
+            atomic::{AtomicBool, Ordering},
+        };
+        let mut s = Session::new();
+        let cancelled = Arc::new(AtomicBool::new(false));
+        let flag = cancelled.clone();
+        let sender = Arc::new(std::sync::Mutex::new(None));
+        let slot = sender.clone();
+        s.updates.status = Status::Available { release: Release { version: "0.23.1-ai-beta.4".into(), url: RELEASES.into() } };
+        s.updates.prepare = Some(Box::new(move |_| {
+            let (tx, rx) = std::sync::mpsc::channel();
+            *slot.lock().unwrap() = Some(tx);
+            let flag = flag.clone();
+            Ok(PrepareTask::new(rx, Some(Box::new(move || flag.store(true, Ordering::SeqCst)))))
+        }));
+        let started = s.execute("updates.install", json!({})).unwrap();
+        assert_eq!(started["status"], "downloading");
+        assert_eq!(started["totalBytes"], 0);
+        {
+            let guard = sender.lock().unwrap();
+            let tx = guard.as_ref().unwrap();
+            tx.send(PrepareEvent::Progress(DownloadProgress { downloaded_bytes: 25, total_bytes: 100, reconnecting: false, verifying: false })).unwrap();
+            tx.send(PrepareEvent::Progress(DownloadProgress { downloaded_bytes: 50, total_bytes: 100, reconnecting: true, verifying: false })).unwrap();
+        }
+        let status = s.execute("updates.status", json!({})).unwrap();
+        assert_eq!(status["installation"]["status"], "downloading");
+        assert_eq!(status["installation"]["downloadedBytes"], 50);
+        assert_eq!(status["installation"]["totalBytes"], 100);
+        assert_eq!(status["installation"]["reconnecting"], true);
+        assert_eq!(status["installation"]["verifying"], false);
+        assert_eq!(DownloadProgress { downloaded_bytes: 50, total_bytes: 100, reconnecting: false, verifying: false }.fraction(), Some(0.5));
+        assert_eq!(DownloadProgress { downloaded_bytes: 150, total_bytes: 100, reconnecting: false, verifying: false }.fraction(), Some(1.0));
+        assert_eq!(DownloadProgress::default().fraction(), None);
+
+        let after_cancel = s.execute("updates.cancel", json!({})).unwrap();
+        assert_eq!(after_cancel["status"], "idle");
+        assert!(cancelled.load(Ordering::SeqCst));
+        assert!(s.execute("updates.cancel", json!({})).is_err());
+        assert_eq!(s.execute("updates.install", json!({})).unwrap()["status"], "downloading");
+    }
+
+    #[test]
     fn failed_or_disconnected_downloads_do_not_schedule_installation() {
         for disconnect in [false, true] {
             let mut s = Session::new();
@@ -315,9 +448,9 @@ mod tests {
             s.updates.prepare = Some(Box::new(move |_| {
                 let (tx, rx) = std::sync::mpsc::channel();
                 if !disconnect {
-                    tx.send(Err("checksum mismatch".into())).unwrap();
+                    tx.send(PrepareEvent::Done(Err("checksum mismatch".into()))).unwrap();
                 }
-                Ok(rx)
+                Ok(PrepareTask::new(rx, None))
             }));
             s.execute("updates.install", json!({})).unwrap();
             s.execute("updates.status", json!({})).unwrap();

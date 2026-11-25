@@ -1,6 +1,10 @@
 //! One background check at startup and a non-modal window for release information.
 
-use photocraft_engine::updates_cmds::{InstallStatus, Status};
+use craft::ui::contract::{Props as _, Show as _, ShowContainer as _, Sizing};
+use craft::ui::display::{Progress, Shade, Text};
+use craft::ui::layout::RowAlign;
+use craft::ui::layout_components::Row;
+use photocraft_engine::updates_cmds::{DownloadProgress, InstallStatus, Status};
 use serde_json::Value;
 
 use crate::PhotocraftApp;
@@ -44,7 +48,7 @@ pub(crate) fn tick(app: &mut PhotocraftApp, ctx: &egui::Context) {
         ctx.send_viewport_cmd(egui::ViewportCommand::Close);
         return;
     }
-    if matches!(app.session.updates.install_status, InstallStatus::Downloading) {
+    if matches!(app.session.updates.install_status, InstallStatus::Downloading { .. }) {
         ctx.request_repaint_after(std::time::Duration::from_millis(100));
     }
     // `updates.status` also polls (automation may consume the result before this frame).
@@ -79,6 +83,7 @@ pub(crate) fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
     let status = app.session.updates.status.clone();
     let mut retry = false;
     let mut install = false;
+    let mut cancel = false;
     egui::Window::new(tl!("PhotoCraft AI Updates"))
         .id(egui::Id::unique("photocraft_updates"))
         .open(&mut open)
@@ -115,9 +120,30 @@ pub(crate) fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
                 }
             }
             match &app.session.updates.install_status {
-                InstallStatus::Downloading => {
-                    ui.spinner();
-                    ui.label(tl!("Downloading and verifying update…"));
+                InstallStatus::Downloading { progress } => {
+                    let progress = *progress;
+                    ui.add_space(4.0);
+                    let label = progress_label(progress);
+                    ui.horizontal(|ui| {
+                        ui.spinner();
+                        ui.label(label);
+                    });
+                    let bar = match progress.fraction() {
+                        Some(fraction) => Progress::new(fraction),
+                        None => Progress::indeterminate(),
+                    };
+                    bar.label(label.to_owned()).sizing(Sizing::FillWidth).show(ui);
+                    if progress.total_bytes > 0 {
+                        let pct = ((progress.fraction().unwrap_or(0.0) * 100.0).round() as u32).min(100);
+                        let detail = format_transfer(progress.downloaded_bytes, progress.total_bytes);
+                        Row::new().align(RowAlign::SpaceBetween).fill_width().show(ui, |ui, _| {
+                            Text::new(detail.clone()).shade(Shade::Faint).show(ui);
+                            Text::new(format!("{pct}%")).shade(Shade::Faint).show(ui);
+                        });
+                    }
+                    if ui.button(tl!("Cancel")).clicked() {
+                        cancel = true;
+                    }
                 }
                 InstallStatus::Failed { message } => {
                     ui.colored_label(warning, tl!("Could not install the update."));
@@ -125,7 +151,7 @@ pub(crate) fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
                 }
                 _ => {}
             }
-            let busy = matches!(app.session.updates.install_status, InstallStatus::Downloading | InstallStatus::Restarting);
+            let busy = matches!(app.session.updates.install_status, InstallStatus::Downloading { .. } | InstallStatus::Restarting);
             if app.session.updates.prepare.is_some() && matches!(status, Status::Available { .. }) && !busy {
                 let saved = safe_to_restart(app);
                 if !saved {
@@ -153,16 +179,55 @@ pub(crate) fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
     if retry {
         let _ = check(app, ctx, serde_json::json!({}));
     }
+    if cancel {
+        app.updates_rt.auto_restart = false;
+        let _ = app.run("updates.cancel", serde_json::json!({}));
+    }
     if install {
         let id = if matches!(app.session.updates.install_status, InstallStatus::Ready) { "updates.restart" } else { "updates.install" };
         app.updates_rt.auto_restart = app.run(id, serde_json::json!({})).is_ok();
     }
 }
 
+fn progress_label(progress: DownloadProgress) -> &'static str {
+    if progress.reconnecting {
+        tl!("Reconnecting…")
+    } else if progress.verifying {
+        tl!("Verifying update…")
+    } else {
+        tl!("Downloading and verifying update…")
+    }
+}
+
+fn format_transfer(done: u64, total: u64) -> String {
+    const KIB: f64 = 1024.0;
+    const MIB: f64 = 1024.0 * 1024.0;
+    const GIB: f64 = 1024.0 * 1024.0 * 1024.0;
+    let done = done.min(total);
+    let (unit, scale) = if total as f64 >= GIB {
+        ("GB", GIB)
+    } else if total as f64 >= MIB {
+        ("MB", MIB)
+    } else if total as f64 >= KIB {
+        ("KB", KIB)
+    } else {
+        return format!("{done} / {total} B");
+    };
+    format!("{:.1} / {:.1} {unit}", done as f64 / scale, total as f64 / scale)
+}
+
 /// Populate a synthetic release offer for offscreen visual snapshots (`examples/snapshot.rs`).
 pub fn preview_release(app: &mut PhotocraftApp, version: &str, url: &str) {
     app.session.updates.status = Status::Available { release: photocraft_engine::updates_cmds::Release { version: version.to_owned(), url: url.to_owned() } };
     app.ui.updates_open = true;
+}
+
+/// Populate a synthetic in-progress download for offscreen visual snapshots (`examples/snapshot.rs`).
+pub fn preview_downloading(app: &mut PhotocraftApp, version: &str, url: &str, downloaded_bytes: u64, total_bytes: u64) {
+    preview_release(app, version, url);
+    app.session.updates.install_status = InstallStatus::Downloading {
+        progress: DownloadProgress { downloaded_bytes, total_bytes, reconnecting: false, verifying: false },
+    };
 }
 
 pub(crate) fn safe_to_restart(app: &PhotocraftApp) -> bool {
@@ -212,12 +277,12 @@ mod tests {
                 prepare_update: Some(Box::new(move |_| {
                     let (tx, rx) = mpsc::channel();
                     let count = scheduled.clone();
-                    tx.send(Ok(Box::new(move || {
+                    tx.send(photocraft_engine::updates_cmds::PrepareEvent::Done(Ok(Box::new(move || {
                         *count.lock().unwrap() += 1;
                         Ok(())
-                    }) as photocraft_engine::updates_cmds::ReadyFn))
+                    }) as photocraft_engine::updates_cmds::ReadyFn)))
                         .unwrap();
-                    Ok(rx)
+                    Ok(photocraft_engine::updates_cmds::PrepareTask::new(rx, None))
                 })),
                 ..Default::default()
             },

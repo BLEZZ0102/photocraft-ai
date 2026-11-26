@@ -82,15 +82,19 @@ fn open_browser(app: &mut PhotocraftApp, ctx: &Context) {
 }
 
 pub fn tick(app: &mut PhotocraftApp, ctx: &Context) {
+    tick_with_open(app, ctx, crate::ai_edit_ui::is_open(app));
+}
+
+fn tick_with_open(app: &mut PhotocraftApp, ctx: &Context, dialog_open: bool) {
     let pending = app.session.ai_account.pending();
-    if pending || crate::ai_edit_ui::is_open(app) {
+    if pending || dialog_open {
         action(app, "status");
     }
     // A reopened dialog can outlive the cancelled worker. Retry only after polling
     // its completion, and never start an implicit refresh after the dialog closes.
     if app.ui.ai_account.refresh_requested && !app.session.ai_account.pending() {
         app.ui.ai_account.refresh_requested = false;
-        if crate::ai_edit_ui::is_open(app) {
+        if dialog_open {
             action(app, "refresh");
         }
     }
@@ -125,7 +129,9 @@ pub fn can_confirm(app: &PhotocraftApp, fields: &Map<String, Value>) -> bool {
 }
 
 pub fn body(app: &mut PhotocraftApp, ui: &mut egui::Ui, fields: &mut Map<String, Value>) {
-    tick(app, ui.ctx());
+    // `ai_edit_ui::show` temporarily takes `app.ui.ai_edit` while drawing its body, so pass
+    // `dialog_open = true` directly instead of re-reading `ai_edit_ui::is_open(app)`.
+    tick_with_open(app, ui.ctx(), true);
     ui.set_max_width(440.0);
     if crate::ai_api_ui::selector(app, ui, fields) {
         crate::ai_api_ui::body(app, ui, fields);

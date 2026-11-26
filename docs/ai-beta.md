@@ -1,8 +1,8 @@
-# PhotoCraft AI Beta 0.23.1-ai-beta.4
+# PhotoCraft AI Beta 0.23.1-ai-beta.4.0.1
 
 An unofficial community build of PhotoCraft, distributed by BLEZZ0102 under MIT OR Apache-2.0. Original PhotoCraft contributors retain their credits.
 
-This version integrates upstream PhotoCraft v0.23.1 through 42c853396, synchronized on November 21, 2026. It retains layer-aware Codex input, explicit Gemini/Seedream/FLUX image API providers, standalone AI translations layered over craft-i18n, the independent AI update channel and the Windows installer path fix. Keep backups of important documents while using this beta.
+This version integrates upstream PhotoCraft v0.23.1 through 9d317c5fb, synchronized on November 25, 2026. It retains layer-aware Codex input, explicit Gemini/Seedream/FLUX image API providers, standalone AI translations layered over craft-i18n, the independent AI update channel with live download progress and cancellation, and the Windows installer path fix. Keep backups of important documents while using this beta.
 
 ## Installation
 
@@ -31,7 +31,7 @@ Gemini, Doubao/Seedream and FLUX use explicitly configured APIs and continue to 
 Download AI builds from https://github.com/BLEZZ0102/photocraft-ai/releases.
 Updates are offered only after a newer AI release is published with a complete package and verified GitHub digest. Save your work and wait for background tasks before updating.
 
-This update is Beta 4. The leading 0.23.1 identifies the upstream PhotoCraft version. The source snapshot above identifies the integrated main revision.
+This update is Beta 4.0.1. The leading 0.23.1 identifies the upstream PhotoCraft version. The source snapshot above identifies the integrated main revision.
 
 Beta 3.1.1 and Beta 3.1.2 users (MSI and portable ZIP) can update in-app via Help > Check for Updates. If an earlier Beta 2 or Beta 3 MSI build reports Windows Installer error 1619 during an in-app update, close PhotoCraft AI and run the newer AI MSI directly. The installer upgrades the existing per-user installation without uninstalling it first. Beta 1 also requires a manual upgrade.
 

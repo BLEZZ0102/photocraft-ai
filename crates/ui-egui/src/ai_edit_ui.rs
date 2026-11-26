@@ -189,7 +189,13 @@ pub fn show(app: &mut PhotocraftApp, ctx: &egui::Context) {
 
     app.ui.ai_edit = Some(dialog);
     if do_confirm {
-        let _ = confirm(app);
+        let notices_before = app.ui.notices.len();
+        if let Err(err) = confirm(app) {
+            log::warn!("AI Edit confirm failed: {err}");
+            if app.ui.notices.len() == notices_before {
+                crate::notices::error(app, format!("{}: {err}", tl!("AI Edit")));
+            }
+        }
     } else if do_cancel || !open {
         cancel(app);
     }

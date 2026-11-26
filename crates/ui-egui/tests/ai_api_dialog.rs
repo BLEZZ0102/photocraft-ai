@@ -7,13 +7,16 @@ use photocraft_ui_egui::{PhotocraftApp, Services};
 use serde_json::json;
 
 fn harness() -> Harness<'static, Box<PhotocraftApp>> {
+    photocraft_ui_egui::i18n::set_current(photocraft_ui_egui::i18n::Lang::EN);
     let mut h = Harness::builder().with_size(egui::vec2(800.0, 600.0)).with_max_steps(64).build_eframe(|cc| {
         PhotocraftApp::setup_context(&cc.egui_ctx, Default::default());
+        cc.egui_ctx.set_missing_glyph_policy(egui::MissingGlyphPolicy::Tofu);
         let mut session = photocraft_engine::Session::new();
         session.edit_prefs(|p| p.interface.language = "en".into());
         session.execute("file.new", json!({"width":16,"height":12})).unwrap();
         PhotocraftApp::with_context(cc.egui_ctx.clone(), session, Services::default())
     });
+    h.ctx.set_missing_glyph_policy(egui::MissingGlyphPolicy::Tofu);
     let ctx = h.ctx.clone();
     photocraft_ui_egui::menus::invoke(h.state_mut(), &ctx, "edit.ai.codex", json!({})).unwrap();
     h.run_steps(3);

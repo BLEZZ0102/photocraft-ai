@@ -394,4 +394,93 @@ mod account_flow {
         assert_eq!(h.state().ui.ai_edit.as_ref().unwrap().fields["sendLayerContext"], true);
         assert_eq!(h.state().ui.ai_edit.as_ref().unwrap().fields["includeHiddenLayers"], false);
     }
+
+    #[test]
+    fn clicking_ok_runs_background_job_through_blocking_overlay_and_adds_layer() {
+        use base64::{Engine as _, engine::general_purpose::STANDARD};
+        use std::io::{Read, Write};
+
+        let mut source = photocraft_engine::Session::new();
+        source.execute("file.new", json!({"width": 16, "height": 12, "background": "#ff0000"})).unwrap();
+        let bytes = photocraft_io::export(&source.active().unwrap().doc, "png", &Default::default()).unwrap().bytes;
+        let body = json!({"data": [{"b64_json": STANDARD.encode(&bytes)}]}).to_string();
+
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let endpoint = format!("http://{}/edit", listener.local_addr().unwrap());
+        let server = std::thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            stream.set_read_timeout(Some(Duration::from_secs(5))).unwrap();
+            let mut request = Vec::new();
+            loop {
+                let mut chunk = [0; 4096];
+                let n = stream.read(&mut chunk).unwrap();
+                assert!(n > 0);
+                request.extend_from_slice(&chunk[..n]);
+                if let Some(index) = request.windows(4).position(|w| w == b"\r\n\r\n") {
+                    let headers = String::from_utf8_lossy(&request[..index]).to_ascii_lowercase();
+                    let length =
+                        headers.lines().find_map(|line| line.strip_prefix("content-length:").and_then(|n| n.trim().parse::<usize>().ok())).unwrap();
+                    if request.len() >= index + 4 + length {
+                        break;
+                    }
+                }
+            }
+            // Hold past DIALOG_DELAY_MS (250 ms) so BlockingOverlay renders while the job runs.
+            std::thread::sleep(Duration::from_millis(350));
+            write!(stream, "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}", body.len())
+                .unwrap();
+        });
+
+        let mut h = Harness::builder().with_size(egui::vec2(1280.0, 900.0)).with_max_steps(64).build_eframe(move |cc| {
+            PhotocraftApp::setup_context(&cc.egui_ctx, Default::default());
+            cc.egui_ctx.set_missing_glyph_policy(egui::MissingGlyphPolicy::Tofu);
+            let mut session = photocraft_engine::Session::new();
+            session.edit_prefs(|p| p.interface.language = "en".into());
+            session.execute("file.new", json!({"width": 16, "height": 12})).unwrap();
+            let mut profile = photocraft_engine::cmd::ai_provider_cmds::preset("seedream").unwrap();
+            profile.endpoint = endpoint;
+            session.ai_api.save("seedream", profile, Some("offline-ui-key"), false).unwrap();
+            let mut app = PhotocraftApp::with_context(cc.egui_ctx.clone(), session, Services::default());
+            app.background_jobs = true;
+            app
+        });
+        h.ctx.set_missing_glyph_policy(egui::MissingGlyphPolicy::Tofu);
+        h.run_steps(3);
+        let ctx = h.ctx.clone();
+        photocraft_ui_egui::menus::invoke(h.state_mut(), &ctx, "edit.ai.codex", json!({})).unwrap();
+        h.run_steps(2);
+        assert!(h.state().dialog_open(), "AI Edit modal must be counted by dialog_open()");
+        photocraft_ui_egui::ai_edit_ui::set_field(h.state_mut(), "provider", json!("seedream")).unwrap();
+        photocraft_ui_egui::ai_edit_ui::set_field(h.state_mut(), "prompt", json!("Make it red")).unwrap();
+        h.run_steps(3);
+        assert!(!h.get_by_label("OK").accesskit_node().is_disabled());
+        h.get_by_label("OK").click();
+        h.run_steps(2);
+        assert!(h.state().ui.ai_edit.is_none(), "clicking OK closes the AI Edit modal");
+        assert!(h.state().session.has_jobs(), "background AI job must be running");
+
+        let deadline = Instant::now() + Duration::from_secs(5);
+        while Instant::now() < deadline && h.state().session.has_jobs() {
+            h.run_steps(1);
+            std::thread::sleep(Duration::from_millis(20));
+        }
+        h.run_steps(2);
+        server.join().unwrap();
+        assert!(!h.state().session.has_jobs(), "background AI job finished");
+        assert_eq!(h.state().session.active().unwrap().doc.layers.len(), 2, "generated layer must be added");
+        assert!(!h.state().ui.status_error, "unexpected status error: {}", h.state().ui.status);
+    }
+
+    #[test]
+    fn synchronous_confirm_error_posts_visible_notice() {
+        let (mut h, _) = harness(AccountInfo::ChatGpt { plan: None });
+        wait(&mut h, State::Connected);
+        h.state_mut().ui.ai_edit.as_mut().unwrap().fields.insert("prompt".into(), json!("Make it yellow"));
+        h.run_steps(2);
+        h.get_by_label("OK").click();
+        h.run_steps(2);
+        assert!(h.state().ui.ai_edit.is_none());
+        assert!(h.state().ui.status_error);
+        assert!(h.state().ui.status.contains("Offline UI test: image requests are forbidden"), "status: {}", h.state().ui.status);
+    }
 }
